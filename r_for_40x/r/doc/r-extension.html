@@ -1,0 +1,480 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<title>
+      R-Extension
+</title>
+  <link rel="stylesheet" href="../../../docs/netlogo.css" type="text/css">
+  <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
+  <h1>
+      R-Extension
+  </h1>
+  <p>
+  by Jan C. Thiele<sup>1</sup> and Volker Grimm<sup>2</sup>
+  </p>
+  <p>
+  <sup>1</sup> Department Ecoinformatics, Biometrics and Forest Growth<br />
+  University of G&ouml;ttingen<br />
+  Buesgenweg 4<br />
+  37077 Göttingen, Germany<br />
+  Contact: jthiele@gwdg.de
+  </p>
+  <p>  
+  <sup>2</sup> Helmholtz Centre of Environmental Research - UFZ<br />
+  Department of Ecological Modelling<br />
+  Permoserstr. 15<br />
+  04318 Leipzig, Germany<br />
+  Contact: volker.grimm@ufz.de
+  </p>
+  <p>
+    The r-Extension of NetLogo provides primitives to use the statistical software                
+    GNU  R  (see <a href="http://www.r-project.org/">http://www.r-project.org/</a>) 
+    within a NetLogo model. There are primitives to  create R-Variables with values 
+    from NetLogo variables or agents and others to evaluate commands in R with and 
+    without return values. 
+  </p>
+  <h2>
+    Citation
+  </h2>
+  <p>
+    follows
+  </p>
+  <h2>
+    Installation/Configuration of the r-Extension
+  </h2>
+  <p>
+    Copy the folder of the r-Extension (name is <i>r</i>) into the extensions folder of your 
+    NetLogo installation.
+  </p>
+    <h3>
+      Windows
+    </h3>
+    <p>
+    <ol>	
+      <li>
+        Download and install R (see <a href="http://www.r-project.org/">
+        http://www.r-project.org/</a>).
+      </li>
+      <li>
+        Install the rJava package in R: There are two different ways to do this: 
+        <ol type="a">
+          <li>
+            Start the RGui from your program list, click on the item <i>Packages</i> in the 
+            menu bar and then on <i>Install Package(s)</i>. Select your favorite server and 
+            find <i>rJava</i> in the list of packages.
+          </li>
+          <li>
+            Open console, type <i>R</i> (Environment variable <i>PATH</i> has to contain R for 
+            this, see 3.). Then type <i>install.packages("rJava")</i> and follow the 
+            instructions (for further information see <a         
+            href="http://www.rforge.net/rJava/index.html">
+            http://www.rforge.net/rJava/index.html</a>). 
+          </li>
+        </ol>
+      </li>
+      <li>
+        Set Environment Variables of the operation system: <i>Control Panel</i> &rarr; 
+        <i>System</i> &rarr; <i>Advanced Environment Variables</i> &rarr; <i>System 
+        Variables</i>:
+        <ol type="a">
+          <li>
+            Create a new entry: 
+            <ul>
+              <li>
+                Variable Name: <i>R_HOME</i>
+              </li>
+              <li>
+                Variable Value: &lt;Path to folder of your R-Installation, e.g. <i>C:\Program 
+                Files\R\R2.9.2\</i>&gt;
+              </li>
+            </ul>
+          </li>
+          <li>
+            Add a value to variable <i>PATH</i>:
+            <ul>
+              <li>
+                Variable Name: <i>PATH</i>
+              </li>
+              <li>
+                Variable Value: <i>...;  %R_HOME%\bin</i>
+              </li>
+            </ul>
+          <li>
+            Create a new entry:
+            <ul> 
+              <li>Variable Name: <i>JRI_HOME</i></li>
+              <li>Variable Value: &lt;Path to folder of <i>jri</i> in <i>rJava</i> in your 
+                  R-library-Path, e.g. <i>C:\Program Files\R\R2.9.2\library\rJava/jri</i> or 
+                  for Windows Vista maybe something like 
+                  <i>C:\Users\myusername\Documents\R\win-library\2.9\rJava\jri</i>&gt;
+              </li>
+            </ul>
+          </li>
+        </ol>
+      </li>
+    </ol>
+    </p>
+    <p class="screenshot">
+            <img alt="screen shot" src="images/environment.jpg">
+    </p>
+    <p>
+      64-bit Windows isn't supported by rJava/JRI currently (but a solution seems to come with 
+      rJava 0.8.3). Please start NetLogo by using a 32-bit Java installation on your 64-bit 
+      system. 
+    </p>    
+
+    <h3>
+      Linux
+    </h3>
+    <p>
+      R must be installed. If you have installed it via a package manager, it should be 
+      callable after installation in the console when typing <i>R</i>. 
+    </p>
+    <p>
+      If R is running, install the R-package rJava , type <i>install.packages("rJava")</i> and 
+      follow the instructions (for further information see <a 
+      href="http://www.rforge.net/rJava/index.html">
+      http://www.rforge.net/rJava/index.html</a>). 
+    </p>
+      Then you have to set two global environment variables by typing:
+    </p>
+    <p>
+      <ol type="a">
+        <li>
+          export R_HOME= &lt;path to your R installation, e.g. <i>/usr/lib/R</i>&gt;
+        </li>
+        <li>
+          export JRI_HOME= &lt;path to the <i>jri</i>-folder of the rJava library, e.g. 
+          <i>/usr/lib/R/library/rJava/jri or /usr/local/lib/R/site-packages/jri</i>&gt;  
+        </li>
+      </ol>
+    </p>
+    <p>
+      Then start NetLogo from this shell. If you won't set the variables after a restart 
+      again, you can save the commands in your .profile file. 
+    </p>
+    
+    <h3>
+      Macintosh
+    </h3>
+    <p>
+      Sorry, we have no experiences with Macintosh. But we are looking for people with deep 
+      knowledge of this system.
+    </p>
+    
+    <h2>
+      How to use
+    </h2>
+    <p>
+      To use the extension in your model, add a line to the top of your procedures tab:
+    </p>
+    <p>
+    <pre>extensions [r]</pre>
+    </p>
+    <p>
+      If your model already uses other extensions, then it already has an
+      <a href="dictionary.html#extensions"><tt>extensions</tt></a> line in
+      it, so just add <tt>r</tt> to the list.
+    </p>
+    <p>
+      For more information on using NetLogo extensions, see the <a href=
+      "extensions.html">Extensions Guide</a>.
+    </p>
+    <p>
+      For examples of the usage of the r-Extension, see the folder <i>examples</i> in the 
+      folder of this extension.
+    </p>
+    <p>
+      For a first description on how to use the extension in applets, see <a href="r-extension-in-applets.html">here</a>.
+    </p>
+    
+    <h3>
+      Some Tipps
+    </h3>
+    <p>
+      The well-known plot window of R is just available, if you give R some cpu time, e.g. by 
+      run an evalulation of <i>sys.sleep(0.01)</i> with a forever button. See the 
+      <i>plot-example.nlogo</i>. (Many thanks to Thomas Petzold!). The creation of plots into 
+      files is also possible. See the <i>plot-into-file-example.nlogo</i> in the examples       
+      folder. 
+    </p>
+    <p>
+      It's possible to load and save data from file directly in R via <i>r:eval  "dataname <-   
+      read.table('&lt;path to file&gt;')"</i> and <i>r:eval "write.table(dataname, 
+      file='&lt;filename&gt;')"</i>, respectively.
+    </p>
+    <p>
+      Furthermore, you can define functions in an R-Script, load it, and use the functions.     
+      Load R-files via <i>r:eval "source('&lt;path to r-file&gt;')"</i>.
+    </p>
+    <p>
+      It's also possible to load R packages via r:eval <i>library(&lt;name of package&gt;)</i>.  
+    </p>
+    <p>
+      When you compile your code containing <i>extensions [r]</i> you will create a new R 
+      workspace. Until you reload the extension, open a new model or submit the primitive 
+      <i>r:clear</i>, all R variables assigned in this session will be available like you would   
+      use R from the command line or in the R Console. 
+    </p>
+    
+    <h2>
+      Primitives
+    </h2>
+    <p>
+      <a href="#r:clear">r:clear</a>
+      <a href="#r:eval">r:eval</a>
+      <a href="#r:get">r:get</a>
+      <a href="#r:interactiveShell">r:interactiveShell</a>
+      <a href="#r:messageWindow">r:messageWindow</a>
+      <a href="#r:put">r:put</a>
+      <a href="#r:putagent">r:putagent</a>
+      <a href="#r:putagentdf">r:putagentdf</a>
+      <a href="#r:putdataframe">r:putdataframe</a>
+      <a href="#r:putlist">r:putlist</a>
+      <a href="#r:putnamedlist">r:putnamedlist</a>
+      <a href="#r:startDebug">r:startDebug</a>
+      <a href="#r:startJRIDebug">r:startJRIDebug</a>
+      <a href="#r:stopDebug">r:stopDebug</a>
+      <a href="#r:stopJRIDebug">r:stopJRIDebug</a>
+
+    <h3>
+      <a name="r:clear" id="r:clear">r:clear</a>
+    </h3>
+    <h4>
+      r:clear
+    </h4>
+    <p>
+      It clears the R-Workspace. All variables in R will be deleted. It evaluates the R command   
+      <i>rm(list=ls())</i>.
+    </p>
+    <pre><p>;; clear the R workspace
+r:clear</p></pre>
+    
+    <h3>
+      <a name="r:eval" id="r:eval">r:eval</a>
+    </h3>
+    <h4>
+      r:eval <i>R-command</i>
+    </h4>
+    <p>
+      It evaluates the submitted R command. The R command shouldn't return a value.
+    </p>
+    <pre><p>;; creates a new vector in R with a sequence from 1 to 10
+r:eval "x <- seq(1,10)"
+show r:get "x"</p></pre>
+
+    <h3>
+      <a name="r:get" id="r:get">r:get</a>
+    </h3>
+    <h4>
+      r:get <i>R-command</i>
+    </h4>
+    <p>
+      Reports the return value of the submitted R command. Return type could be a String, 
+      Number, Boolean, List or a List of Lists. R arrays and R matrices could be received, but 
+      they will be putted into one NetLogo list. It's recommended to get the values 
+      column-wise. Data-frames aren't supported directly, but you can access the values via 
+      <i>mydataframe$elem1</i>.
+    </p>
+    <pre><p>;; returns a list with 10 variables
+show r:get "rnorm(10)"</p></pre>
+
+    <h3>
+      <a name="r:interactiveShell" id="r:interactiveShell">r:interactiveShell</a>
+    </h3>
+    <h4>
+      r:interactiveShell
+    </h4>
+    <p>
+      Only available if you have started NetLogo from the console/shell, e.g. via
+    </p>
+    <p> 
+      >> java -jar NetLogo.jar
+    </p>
+    <p>
+      Otherwise you will get an error. If your Java isn't available in your console/shell check 
+      your environment variables (See <a 
+      href="http://docs.sun.com/app/docs/doc/820-2215/system-prep-proc-3?a=view">
+      http://docs.sun.com/app/docs/doc/820-2215/system-prep-proc-3?a=view</a>).
+    </p>
+    <p>
+      Creates a R console into your console/shell. You will get messages from R into your shell 
+      and you can submit R commands within this shell. It's a full function R console and all R 
+      variables created via NetLogo are available in this session. Variables created in the 
+      shell are available in NetLogo via <a href="#r:get">r:get</a> as well. This gives you the 
+      possibility to watch and check the processes. If the MessageWindow is open, it will be 
+      closed. Setting debug on could be usefull, see <a href="#r:startDebug">r:startDebug</a> 
+      and <a href="#r:startJRIDebug">r:startJRIDebug</a>.
+    </p>
+    <pre><p>;; starts interactive shell
+r:interactiveShell</p></pre>
+
+    <h3>
+      <a name="r:messageWindow" id="r:messageWindow">r:messageWindow</a>
+    </h3>
+    <h4>
+      r:messageWindow
+    </h4>
+    <p>
+      Opens a window where you can see message from R. This is useful when you want to control 
+      your submitted statements. Setting debug on could be usefull, see <a 
+      href="r:startDebug">r:startDebug</a> and <a 
+      href="r:startJRIDebug">r:startJRIDebug</a>. In contrast to the interactiveShell it's not 
+      possible to run R commands within the window but you don't need to start NetLogo from the 
+      console/shell.
+    </p>
+    <pre><p>;; opens the Message Window
+r:messageWindow</p></pre>
+
+    <h3>
+      <a name="r:put" id="r:put">r:put</a>
+    </h3>
+    <h4>
+      r:put <i>name</i> <i>value</i>
+    </h4>
+    <p>
+      Creates a new variable in R with the name <i>name</i>. The value can be a String, Number, 
+      Boolean or List.
+    </p>
+    <pre><p>;; creates an r variable "testvar" with the size of turtle 0 
+r:put "testvar" [size] of turtle 0
+show r:get "testvar"</p></pre>
+
+    <h3>
+      <a name="r:putagent" id="r:putagent">r:putagent</a>
+    </h3>
+    <h4>
+      r:putagent <i>name agent|agentset variable</i><br />
+      (r:putagent <i>name agent|agentset variable1 variabl2 ...</i>)
+    </h4>
+    <p>
+      Creates a new named list in R with the name <i>name</i>. <i>Variable</i> is repeatable 
+      and can be every variable of the agent|agentset. Names of the elements of the R list will 
+      be the same as the names of the agent variables. Turtles will be assigned in ascending 
+      order of their who-variable. Patches will be assigned in lines from upper left to lower 
+      right. Since the arguments of this primitive are repeatable, don't forget the parentheses 
+      around the statement.
+    </p>
+    <pre><p>;; creates an R-list "agentlist1" with the size and the id of turtles, don't forget the parentheses
+(r:putagent "agentlist1" turtles "size" "who")
+show r:get "agentlist1$who"
+;; creates an R-list "agentlist2" with the pcolor, pxcor and pycor of patches
+(r:putagent "agentlist2" patches "pcolor" "pxcor" "pycor")
+show r:get "agentlist2$pcolor"</p></pre>
+
+    <h3>
+      <a name="r:putagentdf" id="r:putagentdf">r:putagentdf</a>
+    </h3>
+    <h4>
+      r:putagentdf <i>name agent|agentset variable</i><br />
+      (r:putagentdf <i>name agent|agentset variable1 variable2 ...</i>)      
+    </h4>
+    <p>
+      Same as <a href="#r:putagent">r:putagent</a> but creates an R data.frame instead a list.
+    </p>
+    <pre><p>;; creates an R-list "agentlist2" with the pcolor, pxcor and pycor of patches, don't forget the parentheses
+(r:putagentdf "df1" patches "pcolor" "pxcor" "pycor")
+show r:get "class(df1)"</p></pre>
+
+    <h3>
+      <a name="r:putdataframe" id="r:putdataframe">r:putdataframe</a>
+    </h3>
+    <h4>
+      r:putdataframe <i>name varname value</i><br />
+      (r:putdataframe <i>name varname1 value1 varname2 value2 ... </i>)
+    </h4>
+    <p>
+      Same as <a href="#r:putnamedlist">r:putnamedlist</a> but creates an R data.frame instead a 
+      list.
+    </p>
+    <pre><p>;; creates an R-list "agentlist2" with the pcolor, pxcor and pycor of patches, don't forget the parentheses
+(r:putdataframe "df1" "v1" [12 13 14 15 16] "v2" ["foo1" "foo2" "foo3" "foo4" "foo5"] "v3" [1.1 2.2 3.3 4.4 5.5])
+show r:get "df1$v3"</p></pre>
+
+    <h3>
+      <a name="r:putlist" id="r:putlist">r:putlist</a>
+    </h3>
+    <h4>
+      r:putlist <i>name value</i><br />
+      (r:putlist <i>name value1 value2 ... </i>)
+    </h4>
+    <p>
+      Creates a new list in R with the name <i>name</i>. <i>Variable</i> is repeatable and can 
+      be a Number, Boolean or List. Each "Variable" will get the name of its position (1, 2, 
+      3,...). Since the arguments of this primitive are repeatable, don't forget the parentheses 
+      around the statement.
+    </p>
+    <pre><p>;; creates an R-list "list1", don't forget the parentheses
+(r:putlist "list1" 25.5 [25 43 32 53] "testvalue"  [44.3 32.32 321.2 4.2])
+show r:get "class(list1)"
+show r:get "list1[1]"</p></pre>
+
+    <h3>
+      <a name="r:putnamedlist" id="r:putnamedlist">r:putnamedlist</a>
+    </h3>
+    <h4>
+      r:putnamedlist <i>name varname value</i><br />
+      (r:putnamedlist <i>name varname1 value1 varname2 value2 ... </i>)
+    </h4>
+    <p>
+      Creates a new named list in R with the name <i>name</i>. <i>Variable</i> is repeatable 
+      and can be a Number, Boolean or List. Each <i>variable</i> will get the name 
+      <i>varname</i>. Since the arguments of this primitive are repeatable, don't forget to put the statement into 
+      parentheses.
+    </p>
+    <pre><p>;; creates an R-list "list1" , don't forget the parentheses
+(r:putnamedlist "list1" "v1" 25.5 "v2" [25 43 32 53] "v3" "testvalue" "v4" [44.3 32.32 321.2 4.2])
+show r:get "class(list1)"
+show r:get "list1[1]"</p></pre>
+
+    <h3>
+      <a name="r:startDebug" id="r:startDebug">r:startDebug</a>
+    </h3>
+    <h4>
+      r:startDebug
+    </h4>
+    <p>
+      Enables you to see the results of the eval and get primitives in the console, 
+      interactiveShell and MessageWindow. See <a href="r:stopDebug">r:stopDebug</a> to disable 
+      debugging messages.
+    </p>
+    <pre><p>;; enable debugging messages
+r:startDebug</p></pre>
+
+    <h3>
+      <a name="r:startJRIDebug" id="r:startJRIDebug">r:startJRIDebug</a>
+    </h3>
+    <h4>
+      r:startJRIDebug
+    </h4>
+    <p>
+      Enables you to see the debugging messages of the JRI library in the console, 
+      interactiveShell and MessageWindow. See <a href="#r:stopJRIDebug">r:stopJRIDebug</a> to 
+      disable debugging messages.
+    </p>
+    <pre><p>;; enable debugging messages of JRI library
+r:startJRIDebug</p></pre>
+
+    <h3>
+      <a name="r:stopDebug" id="r:stopDebug">r:stopDebug</a>
+    </h3>
+    <h4>
+      r:stopDebug
+    </h4>
+    <p>
+      Disables the debugging messages.
+    </p>
+    <pre><p>;; disable debugging messages
+r:stopDebug</p></pre>
+
+    <h3>
+      <a name="r:stopJRIDebug" id="r:stopJRIDebug">r:stopJRIDebug</a>
+    </h3>
+    <h4>
+      r:stopJRIDebug
+    </h4>
+    <p>
+      Disables the debugging messages of the JRI library.
+    </p>
+    <pre><p>;; disable debugging messages of JRI library
+r:stopJRIDebug</p></pre>
+

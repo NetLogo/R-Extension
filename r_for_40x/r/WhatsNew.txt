@@ -1,0 +1,3 @@
+Version 0.3.2
+
+- Bug fix for use with Mac OS

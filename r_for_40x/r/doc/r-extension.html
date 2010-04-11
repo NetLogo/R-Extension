@@ -36,7 +36,7 @@
     Citation
   </h2>
   <p>
-    follows
+    Thiele JC, Grimm V (in press). NetLogo meets R: Linking agent-based models with a toolbox for their analysis. Environmental Modelling and Software. [DOI: 10.1016/j.envsoft.2010.02.008].
   </p>
   <h2>
     Installation/Configuration of the r-Extension
@@ -95,7 +95,7 @@
                 Variable Name: <i>PATH</i>
               </li>
               <li>
-                Variable Value: <i>...;  %R_HOME%\bin</i>
+                Variable Value: <i>...;%R_HOME%\bin</i>
               </li>
             </ul>
           <li>
@@ -154,13 +154,33 @@
     </p>
     
     <h3>
-      Macintosh
+      Macintosh (many thanks to Enrico R. Crema)
     </h3>
     <p>
-      Sorry, we have no experiences with Macintosh. But we are looking for people with deep 
-      knowledge of this system.
+	Setting the environment variables on MacOS is relatively simple, you need to edit the file environment.plist inside ~/.MacOSX as follows:
     </p>
-    
+    <p>
+      <dl>
+        <dt>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</dt>
+	  <dt>&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;</dt>
+	  <dt>&lt;plist version="1.0"&gt;</dt>
+	  <dt>&lt;dict&gt;</dt>
+	  <dt>&lt;key&gt;JRI_HOME&lt;/key&gt;</dt>
+	  <dt>&lt;string&gt;/Library/Frameworks/R.framework/Resources/library/rJava/jri&lt;/string&gt;</dt>
+	  <dt>&lt;key&gt;R_HOME&lt;/key&gt;</dt>
+	  <dt>&lt;string&gt;/Library/Frameworks/R.framework/Resources&lt;/string&gt;</dt>
+	  <dt>&lt;/dict&gt;</dt>
+	  <dt>&lt;/plist&gt;</dt>
+	</dl>
+    </p>
+    <p>
+	If you don't want to use the terminal for editing (and actually creating the environment.plist file) you can use this package:
+	<a href="http://www.rubicode.com/Software/RCEnvironment/">http://www.rubicode.com/Software/RCEnvironment/</a> which allows the creation and the management of the environment.plist file. See the figure for an example of the file with the settings for R-NetLogo extension. 
+	The path to R_HOME and JRI_HOME should be the same for any user and if this works editing manually the environment.plist file should perfectly work.
+    </p>
+    <p class="screenshot">
+            <img alt="screen shot" src="images/environmentMac.jpg">
+    </p>  
     <h2>
       How to use
     </h2>

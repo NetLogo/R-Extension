@@ -257,7 +257,7 @@ public class HoldRengineX implements org.nlogo.api.ExtensionManager
 			        	{
 			        		rname = (String)key;
 			        		inlong = putRNI(value);
-				        	rConnection.rniAssign(rname, inlong, 0); 
+				        	boolean ret = rConnection.rniAssign(rname, inlong, 0); 
 			        	}
 			        }
 				}
@@ -292,7 +292,7 @@ public class HoldRengineX implements org.nlogo.api.ExtensionManager
 	                }    
 		       	}
 		       	long vec = rConnection.rniPutVector(inlist);        		
-	        	rConnection.rniAssign(rname, vec, 0);
+	        	boolean ret = rConnection.rniAssign(rname, vec, 0);
 			}
 			*/
 			
@@ -322,7 +322,7 @@ public class HoldRengineX implements org.nlogo.api.ExtensionManager
 	        	long names = rConnection.rniPutStringArray(instring);
 	        		
 	        	rConnection.rniSetAttr(vec, "names", names);
-	        	rConnection.rniAssign(rname, vec, 0);	        	
+	        	boolean ret = rConnection.rniAssign(rname, vec, 0);	        	
 			}
 			
 			if (inhash.containsKey("putdataframe"))
@@ -366,7 +366,7 @@ public class HoldRengineX implements org.nlogo.api.ExtensionManager
 	        	long type = rConnection.rniPutString("data.frame");
 	        	rConnection.rniSetAttr(vec, "class", type);
 	        	
-	        	rConnection.rniAssign(rname, vec, 0);        	
+	        	boolean ret = rConnection.rniAssign(rname, vec, 0);        	
 			}		
 		}
 		catch (Exception ex)

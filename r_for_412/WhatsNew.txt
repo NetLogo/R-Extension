@@ -1,0 +1,10 @@
+Version 0.3.3
+
+- added functionality to send nested LogoLists (like [[1 2 3][4 5 6]]) to R
+- Adaption to NetLogo API of 4.1.2
+- Bug fix in putagentdataframe: LogoList caused an error
+
+
+Version 0.3.2
+
+- Bug fix for use with Mac OS

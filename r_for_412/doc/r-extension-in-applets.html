@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<title>
+      R-Extension in Applets
+</title>
+  <link rel="stylesheet" href="../../../docs/netlogo.css" type="text/css">
+  <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
+  <h1>
+    How to use the R extension within an Applet
+  </h1>
+  <p>
+    Warning: For advanced users only! Not tested on web servers, just local!
+  </p>
+  <p>
+    Advise: You should have Java JDK/SDK installed. JRE isn't enough. Java should be available     
+    from the command line (on Windows systems there should be an environment variable 
+    <i>JAVA_HOME</i> and the variable <i>PATH</i> should contain an entry 
+    <i>%JAVA_HOME%\bin</i>, see <a 
+    href="http://docs.sun.com/app/docs/doc/820-2215/system-prep-proc-3?a=view">
+    http://docs.sun.com/app/docs/doc/820-2215/system-prep-proc-3?a=view</a> for details).
+  </p>
+  <p>
+    Preprocessing:
+    Create a folder, which contains the NetLogoLite.jar, the NetLogo model file (*.nlogo), the     
+    html-file and the folder of the R extension (without the parent folder "extensions").
+  </p>
+
+  <ol>
+    <li>
+      <p>
+        Create a digital signature with the command:
+      </p>
+      <p>
+        >>keytool -genkey -alias jct79 -dname "CN=JC Thiele, O=Univeristy of Goettingen, C=de" 
+        -storepass rextension -keypass rextension -validity 200 -keystore "C:\Documents and 
+        Settings\jthiele\.keystore"
+      </p>
+      <p>
+        where <i>jct79</i> is the name of the signature, <i>JC Thiele</i> is the name of the 
+        publisher, <i>University of Goettingen</i> is the institution and <i>de</i> is the 
+        country code and <i>rextension</i> is the password for the key and the storage (you 
+        will need to know this password later again!) and <i>200</i> is the validity duration 
+        (in days) of the signature. <i>"C:\Documents and Settings\jthiele\.keystore"</i> is the 
+        path and filename to store the digital signature (you will need this path later!). You 
+        can change all these entries as you like.
+      </p>
+    </li>
+    <li>
+      <p>
+        If you want to run the Applet on another computer you have to export the signature and 
+        to import it on the other computer.
+      </p>
+      <p>
+        Export:
+      </p>
+      <p>
+        >>keytool -export -alias jct79 -file jct79.cert
+      </p>
+      <p>
+        Import:
+      </p>
+      <p>
+        >>keytool -import -alias jct79 -file jct79.cert
+      </p>
+    </li>
+    <li>
+      <p>
+        Sign all necessary jar-Archives. If you use more extensions it could be necessary to 
+        sign them too. At least these files as to been signed:
+      </p>
+      <ol type="a">
+        <li>
+          <p>
+            NetLogoLite.jar which runs the applet:
+          </p>
+          <p>
+            >>jarsigner NetLogoLite.jar jct79
+          </p>
+        </li>
+        <li>
+          <p>
+            The R extension in the applet folder:
+          </p>
+          <p>
+            >>jarsigner r.jar jct79 
+          </p>
+        </li>
+        <li>
+          <p>
+            The jri.jar, which can be found in the path specified in the environment variable 
+            <i>JRI_HOME</i>:
+          </p>
+          <p>
+            >>jarsigner JRI.jar jct79
+          </p>
+        </li>
+      </ol>
+    </li>
+
+    <li>
+      <p>
+        The last step is to create a policy file named <i>.java.policy</i> which should be     
+        placed in a folder where java is searching for. On Win XP it is <i>"C:/Documents and 
+        Settings/<username></i>. The File should have the following content (Please change the 
+        paths and the name of the signature):
+      </p>
+      <p>
+        keystore "file:/C:/Documents and Settings/jthiele/.keystore", "JKS";
+      </p>
+      <p>
+        grant signedBy "jct79" {<br />	
+          &nbsp;&nbsp;permission java.io.FilePermission "C:/Program Files/R/R-2.7.1/library/rJava/-", "read";<br />
+        	&nbsp;&nbsp;permission java.lang.RuntimePermission "getenv.JRI_HOME";<br />
+        	&nbsp;&nbsp;permission java.lang.RuntimePermission "loadLibrary.jri";<br />
+        	&nbsp;&nbsp;permission java.lang.RuntimePermission "getClassLoader";<br />
+        	&nbsp;&nbsp;permission java.lang.RuntimePermission "accessDeclaredMembers";<br />
+        	&nbsp;&nbsp;permission java.lang.reflect.ReflectPermission "suppressAccessChecks";<br />
+        	&nbsp;&nbsp;permission java.util.PropertyPermission "java.library.path", "read";<br />
+        };
+      </p>
+    </li>
+
+</ol>
+  
+  

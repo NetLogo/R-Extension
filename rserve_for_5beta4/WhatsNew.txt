@@ -1,0 +1,6 @@
+
+
+Version 0.1beta
+
+- initial release for NetLogo 5.0beta4
+- based on R-Extension using JRI v1.0beta

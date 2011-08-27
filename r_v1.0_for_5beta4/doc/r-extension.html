@@ -1,0 +1,687 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<title>
+      R-Extension, Version 1.0beta 
+</title>
+  <link rel="stylesheet" href="../../../docs/netlogo.css" type="text/css">
+  <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
+  <h1>
+      R-Extension, Version 1.0beta (July 2011)
+  </h1>
+  <p>
+  by Jan C. Thiele<sup>1</sup> and Volker Grimm<sup>2</sup>
+  </p>
+  <p>
+  <sup>1</sup> Department Ecoinformatics, Biometrics and Forest Growth<br />
+  University of G&ouml;ttingen<br />
+  Buesgenweg 4<br />
+  37077 Göttingen, Germany<br />
+  Contact: jthiele@gwdg.de
+  </p>
+  <p>  
+  <sup>2</sup> Helmholtz Centre of Environmental Research - UFZ<br />
+  Department of Ecological Modelling<br />
+  Permoserstr. 15<br />
+  04318 Leipzig, Germany<br />
+  Contact: volker.grimm@ufz.de
+  </p>
+  <p>
+    The R-Extension of NetLogo provides primitives to use the statistical software                
+    GNU  R  (see <a href="http://www.r-project.org/">http://www.r-project.org/</a>) 
+    within a NetLogo model. There are primitives to  create R-Variables with values 
+    from NetLogo variables or agents and others to evaluate commands in R with and 
+    without return values. 
+  </p>
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#citation">Citation</a></li>
+    <li><a href="#installation">Installation</a>
+      <ol>
+        <li><a href="#windows">Windows</a></li>
+        <li><a href="#linux">Linux</a></li>
+        <li><a href="#macintosh">Macintosh</a></li>
+        <li><a href="#troubleshooting">Troubleshooting</a></li>
+      </ol>
+    </li>
+    <li><a href="#howToUse">How to use</a>
+      <ol>
+        <li><a href="#someTips">Some Tips</a>
+          <ol>
+            <li><a href="#plotting">Plotting</a></li>
+            <li><a href="#loadSaveData">Load and Save data from/into file</a></li>
+            <li><a href="#dataframe">Data.frame with vector in cells</a></li>
+            <li><a href="#loadScript">Load an R-Script</a></li>    
+            <li><a href="#loadPackages">Load a Package</a></li>
+            <li><a href="#interactiveShell">Interactive Shell</a></li>
+            <li><a href="renvironments">R Environments</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>    
+    <li><a href="#primitives">Primitives</a>
+      <ol>
+        <li><a href="#r:clear">r:clear</a></li>
+        <li><a href="#r:clear">r:clearLocal</a></li>
+        <li><a href="#r:eval">r:eval</a></li>
+        <li><a href="#r:get">r:get</a></li>
+        <li><a href="#r:interactiveShell">r:interactiveShell</a></li>
+        <li><a href="#r:put">r:put</a></li>
+        <li><a href="#r:putagent">r:putagent</a></li>
+        <li><a href="#r:putagentdf">r:putagentdf</a></li>
+        <li><a href="#r:putdataframe">r:putdataframe</a></li>
+        <li><a href="#r:putlist">r:putlist</a></li>
+        <li><a href="#r:putnamedlist">r:putnamedlist</a></li>
+        <li><a href="#r:setPlotDevice">r:setPlotDevice</a></li>
+      </ol>
+    </li>
+  </ol>
+  <h2>
+    <a name="citation" id="citation">Citation</a>
+  </h2>
+  <p>
+    Thiele, JC; Grimm, V (2010). NetLogo meets R: Linking agent-based models with a toolbox for 
+    their analysis. Environmental Modelling and Software, Volume 25, Issue 8: 972 - 974 [DOI: 
+    10.1016/j.envsoft.2010.02.008]
+  </p>
+  <h2>
+    <a name="installation" id="installation">Installation/Configuration of the R-Extension</a>
+  </h2>
+  <p>
+    Please follow the instructions here. If you have problems please see "Troubleshooting" and 
+    also the <a 
+    href="http://openfacts2.berlios.de/wikien/index.php/BerliosProject:NetLogo-R-Extension:FAQ">
+    FAQ</a> web page.<br /><br />
+    To use this extension you will need this extension, NetLogo 5.x, R (>=2.12), Java (>=1.5), 
+    rJava package and, if you want to use the plot device, JavaGD package. 
+  </p>
+  <p>
+  Attention: The environment variable names (R_HOME, JRI_HOME) are case-sensitive!
+  </p>
+  <p>
+    First, system-independent step:<br />
+    Copy the folder of the R-Extension (name is <i>r</i>) into the extensions folder of your 
+    NetLogo installation.
+  </p>
+    <h3>
+      <a name="windows" id="windows">Windows</a>
+    </h3>
+    <p>
+    <ol>	
+      <li>
+        Download and install R (see <a href="http://www.r-project.org/">
+        http://www.r-project.org/</a>).
+      </li>
+      <li>
+        Install the rJava package (and the JavaGD package if you want to use the included plot 
+        device) in R: There are two different ways to do this: 
+        <ol type="a">
+          <li>
+            Start the RGui from your program list, click on the item <i>Packages</i> in the 
+            menu bar and then on <i>Install Package(s)</i>. Select your favorite server and 
+            find <i>rJava</i> in the list of packages.
+          </li>
+          <li>
+            Open console, type <i>R</i> (Environment variable <i>PATH</i> has to contain R for 
+            this, see 3.). Then type <i>install.packages("rJava")</i> and follow the 
+            instructions (for further information see <a         
+            href="http://www.rforge.net/rJava/index.html">
+            http://www.rforge.net/rJava/index.html</a>). 
+          </li>
+        </ol>
+      </li>
+      <li>
+        Set Environment Variables of the operation system: <i>Control Panel</i> &rarr; 
+        <i>System</i> &rarr; <i>Advanced Environment Variables</i> &rarr; <i>System 
+        Variables</i>:
+        <ol type="a">
+          <li>
+            Create a new entry: 
+            <ul>
+              <li>
+                Variable Name: <i>R_HOME</i>
+              </li>
+              <li>
+                Variable Value: &lt;Path to folder of your R-Installation, e.g. <i>C:\Program 
+                Files\R\R-2.13.0\</i>&gt;
+              </li>
+            </ul>
+          </li>
+          <li>
+            Add a value to variable <i>PATH</i>:
+            <ul>
+              <li>
+                Variable Name: <i>PATH</i>
+              </li>
+              <li>
+                for 32-bit:<br />
+                Variable Value: <i>...;%R_HOME%\bin\i386</i><br />
+                for 64-bit:<br />
+                Variable Value: <i>...;%R_HOME%\bin\x64</i><br />
+                Go to the path and look if there is a R.dll file!
+              </li>
+            </ul>
+          <li>
+            Create a new entry:
+            <ul> 
+              <li>Variable Name: <i>JRI_HOME</i></li>
+              <li>Variable Value: &lt;Path to folder of <i>jri</i> in <i>rJava</i> in your 
+                  R-library-Path, e.g. <i>C:\Program Files\R\R2.13.0\library\rJava/jri</i> or 
+                  for Windows Vista maybe something like 
+                  <i>C:\Users\myusername\Documents\R\win-library\2.13.0\rJava\jri</i>&gt;<br />
+                  Hint: If you don't know where the rJava package is installed, you can start R 
+                  and type <i>library(rJava)</i> to load rJava and then type 
+                  <i>.path.package("rJava")</i> to get installation path. Now append /jri and use 
+                  this path for setting the JRI_HOME environment variable.
+              </li>
+            </ul>
+          </li>
+        </ol>
+      </li>
+    </ol>
+    </p>
+    <p class="screenshot">
+            <img alt="screen shot" src="images/environment.jpg">
+    </p>
+    <p>
+      If you use a 64-bit Windows and your configuration failed, see 
+      <a href="#troubleshooting">Troubleshooting</a>. 
+    </p>    
+
+    <h3>
+      <a name="linux" id="linux">Linux</a>
+    </h3>
+    <p>
+      Java (JRE or JDK) and R must be installed. If you have installed it via a package manager, 
+      it should be callable after installation in the console when typing <i>R</i>. 
+    </p>
+    <p>
+      If R is running, install the R-package rJava (and JavaGD if you want to use the included 
+      plot device), type <i>install.packages("rJava")</i> and 
+      follow the instructions (for further information see <a 
+      href="http://www.rforge.net/rJava/index.html">
+      http://www.rforge.net/rJava/index.html</a>). 
+    </p>
+      Then you have to set two global environment variables by typing:
+    </p>
+    <p>
+      <ol type="a">
+        <li>
+          export R_HOME= &lt;path to your R installation, e.g. <i>/usr/lib/R</i>&gt;
+        </li>
+        <li>
+          export JRI_HOME= &lt;path to the <i>jri</i>-folder of the rJava library, e.g. 
+          <i>/usr/lib/R/library/rJava/jri or /usr/local/lib/R/site-packages/jri</i>&gt;<br />
+          Hint: If you don't know where the rJava package is installed, you can start R 
+          and type <i>library(rJava)</i> to load rJava and then type 
+          <i>.path.package("rJava")</i> to get installation path. Now append /jri and use this 
+          path for setting the JRI_HOME environment variable.  
+        </li>
+      </ol>
+    </p>
+    <p>
+      Then start NetLogo from this shell. If you won't set the variables after a restart 
+      again, you can save the commands in your .profile file. 
+    </p>
+    
+    <h3>
+      <a name="macintosh" id="macintosh">Macintosh (many thanks to Enrico R. Crema)</a>
+    </h3>
+    <p>
+      First install R and the rJava package (and JavaGD package if you want to use the included 
+      plot device) in R. Next, set the environment variables R_HOME and JRI_HOME. You need to edit 
+      the file environment.plist inside ~/.MacOSX as follows:
+    </p>
+    <p>
+      <dl>
+        <dt>&lt;?xml version="1.0" encoding="UTF-8"?&gt;</dt>
+	      <dt>&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" 
+        "http://www.apple.com/DTDs/PropertyList-1.0.dtd"&gt;</dt>
+	      <dt>&lt;plist version="1.0"&gt;</dt>
+	      <dt>&lt;dict&gt;</dt>
+	      <dt>&lt;key&gt;JRI_HOME&lt;/key&gt;</dt>
+        <dt>&lt;string&gt;/Library/Frameworks/R.framework/Resources/library/
+        rJava/jri&lt;/string&gt;</dt>
+	      <dt>&lt;key&gt;R_HOME&lt;/key&gt;</dt>
+	      <dt>&lt;string&gt;/Library/Frameworks/R.framework/Resources&lt;/string&gt;</dt>
+	      <dt>&lt;/dict&gt;</dt>
+	      <dt>&lt;/plist&gt;</dt>
+	    </dl>
+    </p>
+    <p>
+    	If you don't want to use the terminal for editing (and actually creating the 
+      environment.plist file) you can use this package:
+    	<a href="http://www.rubicode.com/Software/RCEnvironment/">
+      http://www.rubicode.com/Software/RCEnvironment/</a> which allows the creation and the 
+      management of the environment.plist file. See the figure for an example of the file with the 
+      settings for R-NetLogo extension. 
+    	The path to R_HOME and JRI_HOME should be the same for any user and if this works editing 
+      manually the environment.plist file should perfectly work.<br />
+      Hint: If you don't know where the rJava package is installed, you can start R and type 
+      <i>library(rJava)</i> to load rJava and then type <i>.path.package("rJava")</i> to get 
+      installation path. Now append /jri and use this path for setting the JRI_HOME environment   
+      variable.
+    </p>
+    <p class="screenshot">
+            <img alt="screen shot" src="images/environmentMac.jpg">
+    </p>  
+    <h3>
+    <a name="troubleshooting" id="troubleshooting">Troubleshooting</a>
+    </h3>
+    <p>
+      In the R-Extension folder you can find a folder "rsystemcheck". Just copy this folder to 
+      your NetLogo extensions directory. Then, you can open the NetLogo model "Systemcheck.nlogo", 
+      which is inside the "rsystemcheck" folder. <br />
+      This model enables you to check the requirements of the R-Extension. Things to check are the 
+      Java version (used for NetLogo and R: yes, they can differ, since NetLogo comes with its own 
+      Java, e.g. on Windows), the availability of R from a terminal/shell, the availability of the 
+      rJava/JRI package and the availability of the JavaGD package (just in case you want to use 
+      the included plotting device). <br /><br />
+      Some notes on common errors:<br />
+    <ol>
+      <li>NetLogo closes immediatly after leaving the Code Tab or pressing the check button:<br />
+          This indicates, that the extension was not able to start R. Please check, if you can   
+          start R from a terminal/shell. Please use the RSystemCheck-Extension!
+      </li>
+      <li>You get a java.lang.NoClassDefFoundError: org/rosuda/REngine/REngine at 
+          org.nlogo.extension.r.Entry.runOnce error:<br />
+          The extension was not able to connect to the JRI-library. Please check, if you are able 
+          to load the rJava package within an R shell (<i>library(rJava)</i>) and have a look to 
+          your JRI_HOME environment variable. Please use the RSystemCheck-Extension!
+      </li>
+      <li>You're a Windows 64-bit user:<br />
+          Please note, that R (since version 2.12) will be installed as dual 32-/64-bit version, 
+          while NetLogo comes with it's own Java (JRE, Java Runtime Environment) with 32-bit. You 
+          have to harmonize your NetLogo, Java in terminal/shell and R in terminal/shell and your 
+          R packages (rJava, JavaGD) to 32- or to 64-bit. Please use the RSystemCheck-Extension to 
+          get information about and test your configuration. You can configure your R to a 32-bit 
+          version (since R version 2.12) by change the entry in your PATH environment variable 
+          from %R_HOME%/bin to %R_HOME%/bin/i386. To start NetLogo directly from a terminal/shell 
+          could enable you to run NetLogo with the same Java version as R do (and enables you to 
+          use 64-bit Java). Just open a terminal/shell/ms-dos prompt, navigate to your NetLogo 
+          installation folder and type <i>java -jar NetLogo.jar</i>.  
+      </li>
+    </ol>
+    
+    </p>
+    <h2>
+      <a name="howToUse" id="howToUse">How to use</a>
+    </h2>
+    <p>
+      To use the extension in your model, add a line to the top of your procedures tab:
+    </p>
+    <p>
+    <pre>extensions [r]</pre>
+    </p>
+    <p>
+      If your model already uses other extensions, then it already has an
+      <a href="dictionary.html#extensions"><tt>extensions</tt></a> line in
+      it, so just add <tt>r</tt> to the list.
+    </p>
+    <p>
+      For more information on using NetLogo extensions, see the <a href=
+      "extensions.html">Extensions Guide</a>.
+    </p>
+    <p>
+      For examples of the usage of the R-Extension, see the folder <i>examples</i> in the 
+      folder of this extension.
+    </p>
+    <p>
+      For a first description on how to use the extension in applets, see 
+      <a href="r-extension-in-applets.html">here</a>.
+    </p>
+    
+    <h3>
+      <a name="someTips" id="someTips">Some Tips</a>
+    </h3>
+    <h4>
+      <a name="plotting" id="plotting">Plotting</a>
+    </h4>
+    <p>
+      If you want to use the plot function of R, you could activate the JavaGD plot device via 
+      <i><a href="#r:setPlotDevice">r:setPlotDevice</a></i>, see <i>plot-example1.nlogo</i>. This 
+      is the prefered method!<br />
+      But you can also use the standard R device, but then, you have to give R some cpu time, e.g.   
+      by run an evalulation of <i>sys.sleep(0.01)</i> with a forever button. See the 
+      <i>plot-example2.nlogo</i>. (Many thanks to Thomas Petzold!). The creation of plots into 
+      files is also possible. See the <i>plot-into-file-example.nlogo</i> in the examples       
+      folder. 
+    </p>
+    <h4>
+      <a name="loadSaveData" id="loadSaveData">Load and Save data from/into file</a>
+    </h4>
+    <p>
+      It's possible to load and save data from file directly in R via <i>r:eval  "dataname <-   
+      read.table('&lt;path to file&gt;')"</i> and <i>r:eval "write.table(dataname, 
+      file='&lt;filename&gt;')"</i>, respectively.
+    </p>
+    <h4>
+      <a name="dataframe" id="dataframe">Data.frame with vector in cells</a>
+    </h4>
+    <p>
+      Normally, a data.frame cell contains only a single value. Each column is represented as a 
+      vector and if you would put a vector of vectors to a data.frame, it would be splitted into 
+      several columns. With the R-Extension it is possible to put a vector into a data.frame cell, 
+      when you assign a NetLogo List to a column which contains nested NetLogo Lists for each row. 
+      If you want, for example, to use write.table on this data.frame, you have to mark this 
+      column as <i>class="AsIs"</i>. You can do this by using the <i>I(x)</i>-function.<br />
+      Example: If the column of interest has the name "col1" of the data.frame "df1" you could 
+      execute <i>r:eval "df1$col1 <- I(df1$col1)"</i>. Call <i>help(I)</i> from within an R 
+      terminal for further details.        
+    </p>
+    <h4>
+      <a name="loadScript" id="loadScript">Load an R-Script</a>
+    </h4>
+    <p>
+      Furthermore, you can define functions in an R-Script, load it, and use the functions.     
+      Load R-files via <i>r:eval "source('&lt;path to r-file&gt;')"</i>.
+    </p>
+    <h4>
+      <a name="loadPackages" id="loadPackages">Load a Package</a>
+    </h4>
+    <p>
+      It's also possible to load R packages via <i>r:eval library(&lt;name of package&gt;)</i>.  
+    </p>
+    <p>
+      When you compile your code containing <i>extensions [r]</i> you will create a new R 
+      workspace. Until you reload the extension, open a new model or submit the primitive 
+      <i><a href="#r:clear">r:clear</a></i>, all R variables assigned in this session will be available like you would   
+      use R from the command line or in the R Console. 
+    </p>
+    <h4>
+      <a name="interactiveShell" id="interactiveShell">Interactive Shell</a>
+    </h4>
+    <p>
+      You can open an Interactive R Shell via <i><a href="#r:interactiveShell">
+      r:interactiveShell</a></i>. This shell is a port to 
+      the underlaying R instance. This shell works on the global environment (see <a 
+      href="#renvironments">R environments</a>) while the extension itself work on a custom local 
+      environment. But there is one automatic variable "nl.env" in the global environment, which 
+      is a reference to the local environment of the extension. Don't delete this variable!<br />
+      You can access a variable created by the extension via get("&lt;variable 
+      name&gt;",nl.env), for example <i>myvar <- get("myvar",nl.env)</i>.
+      If you want to plot from the Interactive Shell you should use the included JavaGD plot 
+      device (see <a href="#r:setPlotDevice">r:setPlotDevice</a>).  
+      You can save and load the history of entered R commands via a right-mouse button context   
+      menu.<br />
+      Please read the notes at the top of the output text area after opening the shell!
+      On Linux OS it can happen that you see an error message from X11. Please check, if 
+      everything worked correcly. If so, you can ignore these messages. If not, please write a 
+      report to jthiele @ gwdg.de.
+    </p>
+    <h4>
+      <a name="renvironments" id="renvironments">R Environments</a>
+    </h4>    
+    <p>
+      When you load a model the R-Extension creates a new R environment. When you create an R   
+      variable using the R-Extension, this variable is created in the local R environment. 
+      Furthermore, all calls from the R-Extension work on this local environment. This new 
+      environment concept enables you to use the extension in BehaviorSpace Experiments. 
+      Therefore, you don't have to care about the environment while you're not using the 
+      Interactive Shell or other tools, which work on the global environment. You can explicitly 
+      assign a variable to the global environment by using the "<i><<-</i>" operator or by executing 
+      "<i>assign(&lt;name&gt;,&lt;value&gt;,envir=.GlobalEnv)</i>". If you work with the Interactive Shell, 
+      see the notes at the top of the output text area after opening the shell.<br />
+      Type <i>help(environment)</i> in an R shell to learn more about environments.<br />
+      You can/should clear (i.e. remove all variable and free memory) the local environment via 
+      "<a href="#r:clearLocal">r:clearLocal</a>". If you want to clear also the global environment (the whole workspace), call 
+      "<a href="#r:clear">r:clear</a>".
+    </p>
+    
+    <h2>
+      <a name="primitives" id="primitives">Primitives</a>
+    </h2>
+    <p>
+      <a href="#r:clear">r:clear</a>
+      <a href="#r:clear">r:clearLocal</a>
+      <a href="#r:eval">r:eval</a>
+      <a href="#r:get">r:get</a>
+      <a href="#r:interactiveShell">r:interactiveShell</a>
+      <a href="#r:put">r:put</a>
+      <a href="#r:putagent">r:putagent</a>
+      <a href="#r:putagentdf">r:putagentdf</a>
+      <a href="#r:putdataframe">r:putdataframe</a>
+      <a href="#r:putlist">r:putlist</a>
+      <a href="#r:putnamedlist">r:putnamedlist</a>
+      <a href="#r:setPlotDevice">r:setPlotDevice</a>
+    <h3>
+      <a name="r:clear" id="r:clear">r:clear</a>
+    </h3>
+    <h4>
+      r:clear
+    </h4>
+    <p>
+      It clears the R-Workspace. All variables in R will be deleted. It evaluates the R command   
+      <i>rm(list=ls()) and rm(list=ls(nl.env))</i>.<br />
+      Therefore, it deletes variables created in global as well as local environment 
+      (see <a href="#renvironments">R Environments</a> for details about environments).<br />
+      It's always a good idea to add this command to your setup procedure under your "clear-all" 
+      call. 
+    </p>
+    <pre><p>;; clear the R workspace
+r:clear</p></pre>
+
+    <h3>
+      <a name="r:clearLocal" id="r:clearLocal">r:clearLocal</a>
+    </h3>
+    <h4>
+      r:clearLocal
+    </h4>
+    <p>
+      It clears the local R environment, which is used by the extension. All variables which have 
+      been created in the local environment will be deleted. It evaluates the R command   
+      <i>rm(list=ls(nl.env))</i>.<br />
+      See <a href="#renvironments">R Environments</a> for details about environments.<br />
+      See <a href="#r:clear">r:clear</a> for deleting all variables, i.e. the globals as well.
+    </p>
+    <pre><p>;; delete the local variables
+r:clearLocal</p></pre>
+    
+    <h3>
+      <a name="r:eval" id="r:eval">r:eval</a>
+    </h3>
+    <h4>
+      r:eval <i>R-command</i>
+    </h4>
+    <p>
+      It evaluates the submitted R command. The R command shouldn't return a value.
+    </p>
+    <pre><p>;; creates a new vector in R with a sequence from 1 to 10
+r:eval "x <- seq(1,10)"
+show r:get "x"</p></pre>
+
+    <h3>
+      <a name="r:get" id="r:get">r:get</a>
+    </h3>
+    <h4>
+      r:get <i>R-command</i>
+    </h4>
+    <p>
+      Reports the return value of the submitted R command. Return type could be a String, 
+      Number, Boolean, NetLogo List or a NetLogo List of Lists.<br />
+      R lists will be converted into a NetLogo List. If the R list itself contains further lists, 
+      it will be converted into a NetLogo List with nested NetLogo lists. Lists containing values 
+      of different data types are also supported (e.g. mixed Strings, Numbers and 
+      Booleans/Logicals).<br />
+      Data.frames will be converted into a NetLogo List with nested List for each column, but the       
+      column names will be lost (same for named R lists).<br /> 
+      R matrices can be received, but they are converted into one NetLogo list.<br /> 
+      NULL and NA values are not convertred and will throw an error, because NetLogo has no 
+      corresponding value.
+    </p>
+    <pre><p>;; returns a list with 10 variables
+show r:get "rnorm(10)"</p></pre>
+
+    <h3>
+      <a name="r:interactiveShell" id="r:interactiveShell">r:interactiveShell</a>
+    </h3>
+    <h4>
+      r:interactiveShell
+    </h4>
+    <p>
+      Opens a window with two textareas. The upper one is the R output stream and in the lower one 
+      you can type R commands. This is the access to the underlaying R session. You can type 
+      multi-line commands. To submitt commands press Ctrl+Enter. With "PageUp" and "PageDown" in 
+      the input area you can browse through the histroy of submitted commands. With 
+      right-mouseclick context menu, you can save and load an RHistory (interchangeable with R 
+      terminal and other R GUIs).<br /><br />
+      Please note, that the Interactive Shell works on the global environment, while commands 
+      submitted from NetLogo lives in an local environment. A reference to this local environment 
+      is automatically added to the global environment (named nl.env, please do not delete this 
+      variable. With a call of <a href="#r:clear">r:clear</a> you can restore it but this will 
+      empty your workspace). You can use this to have access to variables which you have created 
+      from NetLogo by <i>get("&lt;variable name&gt;",nl.env)</i>. To copy for example an variable 
+      with the name "var1" from the local environment to the global environment, type <i>var <- 
+      get("var",nl.env)</i>. See section <a href="#renvironments">R Environments</a> for details.
+      If you just want to see the contents of a variable which lives in the local environment, you 
+      could submitt your command, for example in the NetLogo Command Center, and the result will 
+      be shown in the output area of the Interactive Shell. For example:<br />
+      <pre><p>r:put "test" (list world-width world-height)
+r:interactiveShell
+r:eval "print(test)"
+r:eval "str(test)"</p></pre>
+      Variables which have been created in the Interactive Shell are available from NetLogo, even 
+      if they are created in the global environment. But if there is a variable with the same name 
+      in the local environment, you will get this variable in NetLogo instead the one from the 
+      global environment.<br /><br />
+      If you want to execute plot commands from the Interactive Shell you should activate the 
+      integrated JavaGD plot device via <a href="#r:setPlotDevice">r:setPlotDevice</a> first.<br />
+    </p>
+    <pre><p>;; opens Interactive Shell
+r:interactiveShell</p></pre>
+
+    <h3>
+      <a name="r:put" id="r:put">r:put</a>
+    </h3>
+    <h4>
+      r:put <i>name</i> <i>value</i>
+    </h4>
+    <p>
+      Creates a new variable in R with the name <i>name</i>. The value can be a String, Number, 
+      Boolean or List.<br />
+      NetLogo Lists are converted to R vectors, if all entries are of the same data type. If a 
+      NetLogo list contains different data types (mixed Strings, Numbers of Booleans), it will be 
+      converted into an R list. If a NetLogo List contains other/nested NetLogo Lists it will be 
+      converted into an R list and the nested Lists are handled by the same rule (Vectors if all 
+      items are of the same data type, ...).
+    </p>
+    <pre><p>;; creates an R variable "testvar" with the size of turtle 0 
+r:put "testvar" [size] of turtle 0
+show r:get "testvar"</p></pre>
+
+    <h3>
+      <a name="r:putagent" id="r:putagent">r:putagent</a>
+    </h3>
+    <h4>
+      r:putagent <i>name agent|agentset variable</i><br />
+      (r:putagent <i>name agent|agentset variable1 variabl2 ...</i>)
+    </h4>
+    <p>
+      Creates a new named list in R with the name <i>name</i>. <i>Variable</i> is repeatable 
+      and can be every variable of the agent|agentset. Names of the elements of the R list will 
+      be the same as the names of the agent variables. Turtles will be assigned in ascending 
+      order of their who-variable. Patches will be assigned in lines from upper left to lower 
+      right. Since the arguments of this primitive are repeatable, don't forget the parentheses 
+      around the statement.
+    </p>
+    <pre><p>;; creates an R-list "agentlist1" with the size and the id of turtles, don't forget the parentheses
+(r:putagent "agentlist1" turtles "size" "who")
+show r:get "agentlist1$who"
+;; creates an R-list "agentlist2" with the pcolor, pxcor and pycor of patches
+(r:putagent "agentlist2" patches "pcolor" "pxcor" "pycor")
+show r:get "agentlist2$pcolor"</p></pre>
+
+    <h3>
+      <a name="r:putagentdf" id="r:putagentdf">r:putagentdf</a>
+    </h3>
+    <h4>
+      r:putagentdf <i>name agent|agentset variable</i><br />
+      (r:putagentdf <i>name agent|agentset variable1 variable2 ...</i>)      
+    </h4>
+    <p>
+      Same as <a href="#r:putagent">r:putagent</a> but creates an R data.frame instead a list.
+      Please read the notes about <a href="#dataframe">data.frames</a>, if one of your agent variables contains NetLogo Lists.
+    </p>
+    <pre><p>;; creates an R-list "agentlist2" with the pcolor, pxcor and pycor of patches, don't forget the parentheses
+(r:putagentdf "df1" patches "pcolor" "pxcor" "pycor")
+show r:get "class(df1)"</p></pre>
+
+    <h3>
+      <a name="r:putdataframe" id="r:putdataframe">r:putdataframe</a>
+    </h3>
+    <h4>
+      r:putdataframe <i>name varname value</i><br />
+      (r:putdataframe <i>name varname1 value1 varname2 value2 ... </i>)
+    </h4>
+    <p>
+      Same as <a href="#r:putnamedlist">r:putnamedlist</a> but creates an R data.frame instead a 
+      list. If you send more than one list to NetLogo and the list are of different length, the 
+      smaller ones will be filled with NA values.<br />
+      If you send nested LogoLists (e.g. of type: [ [ ] [ ] ... ]) to one column please read the 
+      notes about <a href="#dataframe">data.frames with vectors in  cells</a>.
+    </p>
+    <pre><p>;; creates an R-list "agentlist2" with the pcolor, pxcor and pycor of patches, don't forget the parentheses
+(r:putdataframe "df1" "v1" [12 13 14 15 16] "v2" ["foo1" "foo2" "foo3" "foo4" "foo5"] "v3" [1.1 2.2 3.3 4.4 5.5])
+show r:get "df1$v3"</p></pre>
+
+    <h3>
+      <a name="r:putlist" id="r:putlist">r:putlist</a>
+    </h3>
+    <h4>
+      r:putlist <i>name value</i><br />
+      (r:putlist <i>name value1 value2 ... </i>)
+    </h4>
+    <p>
+      Creates a new list in R with the name <i>name</i>. <i>Variable</i> is repeatable and can 
+      be a Number, Boolean or List. Each "Variable" will get the name of its position (1, 2, 
+      3,...). Since the arguments of this primitive are repeatable, don't forget the parentheses 
+      around the statement.
+    </p>
+    <pre><p>;; creates an R-list "list1", don't forget the parentheses
+(r:putlist "list1" 25.5 [25 43 32 53] "testvalue"  [44.3 32.32 321.2 4.2])
+show r:get "class(list1)"
+show r:get "list1[[1]]"
+show r:get "list1$'0'"
+show r:get "list1[[2]]"</p></pre>
+
+    <h3>
+      <a name="r:putnamedlist" id="r:putnamedlist">r:putnamedlist</a>
+    </h3>
+    <h4>
+      r:putnamedlist <i>name varname value</i><br />
+      (r:putnamedlist <i>name varname1 value1 varname2 value2 ... </i>)
+    </h4>
+    <p>
+      Creates a new named list in R with the name <i>name</i>. <i>Variable</i> is repeatable 
+      and can be a Number, Boolean or List. Each <i>variable</i> will get the name 
+      <i>varname</i>. Since the arguments of this primitive are repeatable, don't forget to put the statement into 
+      parentheses.
+    </p>
+    <pre><p>;; creates an R-list "list1" , don't forget the parentheses
+(r:putnamedlist "list1" "v1" 25.5 "v2" [25 43 32 53] "v3" "testvalue" "v4" [44.3 32.32 321.2 4.2])
+show r:get "class(list1)"
+show r:get "list1[[1]]"
+show r:get "list1$v1"</p></pre>
+
+    <h3>
+      <a name="r:setPlotDevice" id="r:setPlotDevice">r:setPlotDevice</a>
+    </h3>
+    <h4>
+      r:setPlotDevice
+    </h4>
+    <p>
+      To open an R plot in a window you can use the JavaGD plot device. With this primitive you 
+      can activate this device and all following calls of R plots will be printed with this     
+      device.<br /> 
+      To use this device, you have to install the JavaGD package in R. Open an R terminal or the 
+      InteractiveShell (see <a href="#r:interactiveShell">r:interactiveShell</a>) and type 
+      <i>install.packages("JavaGD")</i>.<br />
+      With this plot window you can save the plot to an file of different graphic type and you can 
+      copy the plot to the clipboard. Please note, that on Linux OS it can be necessary to allow 
+      to add images to the clipboard (e.g. in KDE you have to configure KLIPPER to allow images).  
+      The resolution for raster images depends on the size of the plot window. If you need high 
+      resolution maximaze the window (and don't use jpeg, because the driver is bad) or better use       
+      a vector image format.<br />
+      Please see the <a href="#plotting">notes about plotting</a> for other details.
+    </p>
+    <pre><p>;; activate the JavaGD plot device
+r:setPlotDevice</p></pre>

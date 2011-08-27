@@ -1,0 +1,414 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<title>
+      Rserve-Extension, Version 0.1beta 
+</title>
+  <link rel="stylesheet" href="../../../docs/netlogo.css" type="text/css">
+  <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
+  <h1>
+      Rserve-Extension, Version 0.1beta (August 2011)
+  </h1>
+  <p>
+  by Jan C. Thiele<sup>1</sup> and Volker Grimm<sup>2</sup>
+  </p>
+  <p>
+  <sup>1</sup> Department Ecoinformatics, Biometrics and Forest Growth<br />
+  University of G&ouml;ttingen<br />
+  Buesgenweg 4<br />
+  37077 Göttingen, Germany<br />
+  Contact: jthiele@gwdg.de
+  </p>
+  <p>  
+  <sup>2</sup> Helmholtz Centre of Environmental Research - UFZ<br />
+  Department of Ecological Modelling<br />
+  Permoserstr. 15<br />
+  04318 Leipzig, Germany<br />
+  Contact: volker.grimm@ufz.de
+  </p>
+  <p>
+    The Rserve-Extension of NetLogo provides primitives to use the statistical software                
+    GNU  R  (see <a href="http://www.r-project.org/">http://www.r-project.org/</a>) via the Rserve 
+    package (based on TCP/IP connection) within a NetLogo model. There are primitives to  create 
+    R-Variables with values from NetLogo variables or agents and others to evaluate commands in R 
+    with and without return values.<br /><br />
+    This extension is designed to work <b>together with the RNetLogo package</b>. If you don't want to use RNetLogo and just look for an extension to call R code from NetLogo without using a remote server we recommend to use the R-Extension based on rJava/JRI instead of this Rserve-Extension.
+  </p>
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#citation">Citation</a></li>
+    <li><a href="#installation">Installation</a>
+    </li>
+    <li><a href="#howToUse">How to use</a>
+      <ol>
+        <li><a href="#someTips">Some Tips</a>
+          <ol>
+            <li><a href="#plotting">Plotting</a></li>
+            <li><a href="#loadSaveData">Load and Save data from/into file</a></li>
+            <li><a href="#dataframe">Data.frame with vector in cells</a></li>
+            <li><a href="#loadScript">Load an R-Script</a></li>    
+            <li><a href="#loadPackages">Load a Package</a></li>
+            <li><a href="renvironments">R Environments</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>    
+    <li><a href="#primitives">Primitives</a>
+      <ol>
+        <li><a href="#rserve:clear">rserve:clear</a></li>
+        <li><a href="#rserve:eval">rserve:eval</a></li>
+        <li><a href="#rserve:get">rserve:get</a></li>
+        <li><a href="#rserve:put">rserve:put</a></li>
+        <li><a href="#rserve:putagent">rserve:putagent</a></li>
+        <li><a href="#rserve:putagentdf">rserve:putagentdf</a></li>
+        <li><a href="#rserve:putdataframe">rserve:putdataframe</a></li>
+        <li><a href="#rserve:putlist">rserve:putlist</a></li>
+        <li><a href="#rserve:putnamedlist">rserve:putnamedlist</a></li>
+      </ol>
+    </li>
+  </ol>
+  <h2>
+    <a name="citation" id="citation">Citation</a>
+  </h2>
+  <p>
+    Thiele, JC; Grimm, V (2010). NetLogo meets rserve: Linking agent-based models with a toolbox for 
+    their analysis. Environmental Modelling and Software, Volume 25, Issue 8: 972 - 974 [DOI: 
+    10.1016/j.envsoft.2010.02.008]
+  </p>
+  <h2>
+    <a name="installation" id="installation">Installation/Configuration of the R-Extension</a>
+  </h2>
+  <p>
+    To use this extension you will need this extension, NetLogo 5.x, R (>=2.12), Java (>=1.5) and 
+    Rserve package >= 0.6-5 (lower versions are untested)</p>
+>. 
+  </p>
+  <p>
+    All you have to do is to install NetLogo, R and the Rserve package (available on CRAN) from within R.
+  </p>    
+  <p>
+    If you have problems please see also the <a 
+    href="http://openfacts2.berlios.de/wikien/index.php/BerliosProject:NetLogo-R-Extension:FAQ">
+    FAQ</a> web page for latest information.<br /><br />
+  </p>
+    <h2>
+      <a name="howToUse" id="howToUse">How to use</a>
+    </h2>
+    <p>
+    First, start the Rserve TCP/IP server (Note, that it is possible to start the Rserve server in debug mode.). Make sure, that no firewall is blocking the port. For information how to do this on your operation system please see the <a href="http://www.rforge.net/Rserve/doc.html">Rserve documentation</a>.
+     If you have not changed the default settings and run it on the same machine as your NetLogo program, the server will run on "localhost" on port 6311.
+    </p>
+    <p>
+      To use the extension in your model, add a line to the top of your procedures tab:
+    </p>
+    <p>
+    <pre>extensions [rserve]</pre>
+    </p>
+    <p>
+      If your model already uses other extensions, then it already has an
+      <a href="dictionary.html#extensions"><tt>extensions</tt></a> line in
+      it, so just add <tt>rserve</tt> to the list.
+    </p>
+    <p>
+      For more information on using NetLogo extensions, see the <a href=
+      "extensions.html">Extensions Guide</a>.
+    </p>
+    <p>
+      For examples of the usage of the Rserve-Extension, see the folder <i>examples</i> in the 
+      folder of this extension.
+    </p>
+    <p>
+      For a first description on how to use the extension in applets, see 
+      <a href="r-extension-in-applets.html">here</a>.
+    </p>
+    
+    <h3>
+      <a name="someTips" id="someTips">Some Tips</a>
+    </h3>
+    <h4>
+      <a name="plotting" id="plotting">Plotting</a>
+    </h4>
+    <p>
+      If the server supports plotting, you can open plot devices. But, depending on your operation   
+      system, you have to give some cpu time to R by executing <i>rserve:eval "Sys.sleep(0.01)"</i> with 
+      a forever button. Otherwise the plot frame will be locked. 
+      Plots from packages such as ggplot2 are not supported by Rserve and therefore not available.
+    </p>
+    <h4>
+      <a name="loadSaveData" id="loadSaveData">Load and Save data from/into file</a>
+    </h4>
+    <p>
+      It's possible to load and save data from file directly in R via <i>rserve:eval  "dataname <-   
+      read.table('&lt;path to file&gt;')"</i> and <i>rserve:eval "write.table(dataname, 
+      file='&lt;filename&gt;')"</i>, respectively. Please note, that if you use a remote connection to R, the file has to be on the server and the Rserve server must support file operations.
+    </p>
+    <h4>
+      <a name="dataframe" id="dataframe">Data.frame with vector in cells</a>
+    </h4>
+    <p>
+      Normally, a data.frame cell contains only a single value. Each column is represented as a 
+      vector and if you would put a vector of vectors to a data.frame, it would be splitted into 
+      several columns. With the R-Extension it is possible to put a vector into a data.frame cell, 
+      when you assign a NetLogo List to a column which contains nested NetLogo Lists for each row. 
+      If you want, for example, to use write.table on this data.frame, you have to mark this 
+      column as <i>class="AsIs"</i>. You can do this by using the <i>I(x)</i>-function.<br />
+      Example: If the column of interest has the name "col1" of the data.frame "df1" you could 
+      execute <i>rserve:eval "df1$col1 <- I(df1$col1)"</i>. Call <i>help(I)</i> from within an R 
+      terminal for further details.        
+    </p>
+    <h4>
+      <a name="loadScript" id="loadScript">Load an R-Script</a>
+    </h4>
+    <p>
+      Furthermore, you can define functions in an R-Script, load it, and use the functions.     
+      Load R-files via <i>rserve:eval "source('&lt;path to r-file&gt;')"</i>. Please note, that if you use a remote connection to R, the file has to be on the server and the Rserve server must support file operations.
+    </p>
+    <h4>
+      <a name="loadPackages" id="loadPackages">Load a Package</a>
+    </h4>
+    <p>
+      It's also possible to load R packages via <i>rserve:eval library(&lt;name of package&gt;)</i>. Please note, that the library must be installed in the R used by Rserve.  
+    </p>
+    <h4>
+      <a name="renvironments" id="renvironments">R Environments</a>
+    </h4>    
+    <p>
+      All calls of rserve:init will create a new local environment. This should enable you to use the extension in BehaviorSpace Experiments. But, as the Rserve developer mentioned on their project website, this <b>concept doesn't work on Windows operation systems</b>. Furthermore, on Windows, it isn't possible to connect more than one NetLogo process to Rserve in parallel. You have to close one connection first before you can establish another. Otherwise, your NetLogo will crash. 
+On Linux, using several connections in parallel work without problems. Currently, there are no experiences on Mac OS.
+Until you close the connection or execute
+      <i><a href="#rserve:clear">rserve:clear</a></i>, all R variables assigned in this session will be available like you would use R from the command line. 
+    </p>
+    
+    <h2>
+      <a name="primitives" id="primitives">Primitives</a>
+    </h2>
+    <p>
+      <a href="#rserve:clear">rserve:clear</a>
+      <a href="#rserve:close">rserve:close</a>
+      <a href="#rserve:eval">rserve:eval</a>
+      <a href="#rserve:get">rserve:get</a>
+      <a href="#rserve:init">rserve:init</a>
+      <a href="#rserve:isConnected">rserve:isConnected</a>
+      <a href="#rserve:put">rserve:put</a>
+      <a href="#rserve:putagent">rserve:putagent</a>
+      <a href="#rserve:putagentdf">rserve:putagentdf</a>
+      <a href="#rserve:putdataframe">rserve:putdataframe</a>
+      <a href="#rserve:putlist">rserve:putlist</a>
+      <a href="#rserve:putnamedlist">rserve:putnamedlist</a>
+      <a href="#rserve:setSendBufferSize">rserve:setSendBufferSize</a>
+    <h3>
+      <a name="rserve:clear" id="rserve:clear">rserve:clear</a>
+    </h3>
+    <h4>
+      rserve:clear
+    </h4>
+    <p>
+      It clears the R-Workspace. All variables in R will be deleted. It evaluates the R command   
+      <i>rm(list=ls()) and rm(list=ls(nl.env))</i>.<br />
+      Therefore, it deletes variables created in global as well as local environment 
+      (see <a href="#renvironments">R Environments</a> for details about environments).<br />
+      It's always a good idea to add this command to your setup procedure under your "clear-all" 
+      call. 
+    </p>
+    <pre><p>;; clear the R workspace
+rserve:clear</p></pre>
+
+    <h3>
+      <a name="rserve:close" id="rserve:close">rserve:close</a>
+    </h3>
+    <h4>
+      rserve:close
+    </h4>
+    <p>
+      It closes the connection to Rserve server, if there is one.
+    </p>
+    <pre><p>;; close the connection/disconnect
+rserve:close</p></pre>
+    
+    <h3>
+      <a name="rserve:eval" id="rserve:eval">rserve:eval</a>
+    </h3>
+    <h4>
+      rserve:eval <i>R-command</i>
+    </h4>
+    <p>
+      It evaluates the submitted R command. The R command shouldn't return a value.
+    </p>
+    <pre><p>;; creates a new vector in R with a sequence from 1 to 10
+rserve:eval "x <- seq(1,10)"
+show rserve:get "x"</p></pre>
+
+    <h3>
+      <a name="rserve:get" id="rserve:get">rserve:get</a>
+    </h3>
+    <h4>
+      rserve:get <i>R-command</i>
+    </h4>
+    <p>
+      Reports the return value of the submitted R command. Return type could be a String, 
+      Number, Boolean, NetLogo List or a NetLogo List of Lists.<br />
+      R lists will be converted into a NetLogo List. If the R list itself contains further lists, 
+      it will be converted into a NetLogo List with nested NetLogo lists. Lists containing values 
+      of different data types are also supported (e.g. mixed Strings, Numbers and 
+      Booleans/Logicals).<br />
+      Data.frames will be converted into a NetLogo List with nested List for each column, but the       
+      column names will be lost (same for named R lists).<br /> 
+      R matrices can be received, but they are converted into one NetLogo list.<br /> 
+      NULL and NA values are not convertred and will throw an error, because NetLogo has no 
+      corresponding value.
+    </p>
+    <pre><p>;; returns a list with 10 variables
+show rserve:get "rnorm(10)"</p></pre>
+
+    <h3>
+      <a name="rserve:init" id="rserve:init">rserve:init</a>
+    </h3>
+    <h4>
+      rserve:init <i>port</i> <i>host</i> <i>&lt;username&gt;</i> <i>&lt;password&gt;</i>
+    </h4>
+    <p>
+      Initializes a connection to an Rserve server. There can only one connection at a time. Close the active connection first (via rserve:close) before initializing another.
+      The first argument is the port number. The default port of Rserve is 6311. 
+      The second argument is the host name. If you run the server locally, i.e. on the same machine as your NetLogo, than it is "localhost". The username and password are optional parameters. If the server you try to connect needs authentification, you can submit the required login information with this two last parameters. Don't forget parentheses around the hole primitve if you use this two optional parameters.
+      Please note, that Windows OS doesn't support more than one connection at a time, i.e. you cannot connect two NetLogo models at the same time. See Rserve documentation for details. 
+    </p>
+    <pre><p>;; example for initialization without login
+rserve:init 6311 "localhost"
+;; example for initialization with login
+(rserve:init 6311 "localhost" "myname" "secret")</p></pre>
+
+    <h3>
+      <a name="rserve:isConnected" id="rserve:isConnected">rserve:isConnected</a>
+    </h3>
+    <h4>
+      rserve:isConnected
+    </h4>
+    <p>
+      Reports if there is a connection established.
+    </p>
+    <pre><p>;; is there a connection to an Rserve serve established?
+print rserve:isConnected</p></pre>
+
+    <h3>
+      <a name="rserve:put" id="rserve:put">rserve:put</a>
+    </h3>
+    <h4>
+      rserve:put <i>name</i> <i>value</i>
+    </h4>
+    <p>
+      Creates a new variable in R with the name <i>name</i>. The value can be a String, Number, 
+      Boolean or List.<br />
+      NetLogo Lists are converted to R vectors, if all entries are of the same data type. If a 
+      NetLogo list contains different data types (mixed Strings, Numbers of Booleans), it will be 
+      converted into an R list. If a NetLogo List contains other/nested NetLogo Lists it will be 
+      converted into an R list and the nested Lists are handled by the same rule (Vectors if all 
+      items are of the same data type, ...).
+    </p>
+    <pre><p>;; creates an R variable "testvar" with the size of turtle 0 
+rserve:put "testvar" [size] of turtle 0
+show rserve:get "testvar"</p></pre>
+
+    <h3>
+      <a name="rserve:putagent" id="rserve:putagent">rserve:putagent</a>
+    </h3>
+    <h4>
+      rserve:putagent <i>name agent|agentset variable</i><br />
+      (rserve:putagent <i>name agent|agentset variable1 variabl2 ...</i>)
+    </h4>
+    <p>
+      Creates a new named list in R with the name <i>name</i>. <i>Variable</i> is repeatable 
+      and can be every variable of the agent|agentset. Names of the elements of the R list will 
+      be the same as the names of the agent variables. Turtles will be assigned in ascending 
+      order of their who-variable. Patches will be assigned in lines from upper left to lower 
+      right. Since the arguments of this primitive are repeatable, don't forget the parentheses 
+      around the statement.
+    </p>
+    <pre><p>;; creates an R-list "agentlist1" with the size and the id of turtles, don't forget the parentheses
+(rserve:putagent "agentlist1" turtles "size" "who")
+show rserve:get "agentlist1$who"
+;; creates an R-list "agentlist2" with the pcolor, pxcor and pycor of patches
+(rserve:putagent "agentlist2" patches "pcolor" "pxcor" "pycor")
+show rserve:get "agentlist2$pcolor"</p></pre>
+
+    <h3>
+      <a name="rserve:putagentdf" id="rserve:putagentdf">rserve:putagentdf</a>
+    </h3>
+    <h4>
+      rserve:putagentdf <i>name agent|agentset variable</i><br />
+      (rserve:putagentdf <i>name agent|agentset variable1 variable2 ...</i>)      
+    </h4>
+    <p>
+      Same as <a href="#rserve:putagent">rserve:putagent</a> but creates an R data.frame instead a list.
+      Please read the notes about <a href="#dataframe">data.frames</a>, if one of your agent variables contains NetLogo Lists.
+    </p>
+    <pre><p>;; creates an R-list "agentlist2" with the pcolor, pxcor and pycor of patches, don't forget the parentheses
+(rserve:putagentdf "df1" patches "pcolor" "pxcor" "pycor")
+show rserve:get "class(df1)"</p></pre>
+
+    <h3>
+      <a name="rserve:putdataframe" id="rserve:putdataframe">rserve:putdataframe</a>
+    </h3>
+    <h4>
+      rserve:putdataframe <i>name varname value</i><br />
+      (rserve:putdataframe <i>name varname1 value1 varname2 value2 ... </i>)
+    </h4>
+    <p>
+      Same as <a href="#rserve:putnamedlist">rserve:putnamedlist</a> but creates an R data.frame instead a 
+      list. If you send more than one list to NetLogo and the list are of different length, the 
+      smaller ones will be filled with NA values.<br />
+      If you send nested LogoLists (e.g. of type: [ [ ] [ ] ... ]) to one column please read the 
+      notes about <a href="#dataframe">data.frames with vectors in  cells</a>.
+    </p>
+    <pre><p>;; creates an R-list "agentlist2" with the pcolor, pxcor and pycor of patches, don't forget the parentheses
+(rserve:putdataframe "df1" "v1" [12 13 14 15 16] "v2" ["foo1" "foo2" "foo3" "foo4" "foo5"] "v3" [1.1 2.2 3.3 4.4 5.5])
+show rserve:get "df1$v3"</p></pre>
+
+    <h3>
+      <a name="rserve:putlist" id="rserve:putlist">rserve:putlist</a>
+    </h3>
+    <h4>
+      rserve:putlist <i>name value</i><br />
+      (rserve:putlist <i>name value1 value2 ... </i>)
+    </h4>
+    <p>
+      Creates a new list in R with the name <i>name</i>. <i>Variable</i> is repeatable and can 
+      be a Number, Boolean or List. Each "Variable" will get the name of its position (1, 2, 
+      3,...). Since the arguments of this primitive are repeatable, don't forget the parentheses 
+      around the statement.
+    </p>
+    <pre><p>;; creates an R-list "list1", don't forget the parentheses
+(rserve:putlist "list1" 25.5 [25 43 32 53] "testvalue"  [44.3 32.32 321.2 4.2])
+show rserve:get "class(list1)"
+show rserve:get "list1[[1]]"
+show rserve:get "list1$'0'"
+show rserve:get "list1[[2]]"</p></pre>
+
+    <h3>
+      <a name="rserve:putnamedlist" id="rserve:putnamedlist">rserve:putnamedlist</a>
+    </h3>
+    <h4>
+      rserve:putnamedlist <i>name varname value</i><br />
+      (rserve:putnamedlist <i>name varname1 value1 varname2 value2 ... </i>)
+    </h4>
+    <p>
+      Creates a new named list in R with the name <i>name</i>. <i>Variable</i> is repeatable 
+      and can be a Number, Boolean or List. Each <i>variable</i> will get the name 
+      <i>varname</i>. Since the arguments of this primitive are repeatable, don't forget to put the statement into 
+      parentheses.
+    </p>
+    <pre><p>;; creates an R-list "list1" , don't forget the parentheses
+(rserve:putnamedlist "list1" "v1" 25.5 "v2" [25 43 32 53] "v3" "testvalue" "v4" [44.3 32.32 321.2 4.2])
+show rserve:get "class(list1)"
+show rserve:get "list1[[1]]"
+show rserve:get "list1$v1"</p></pre>
+
+    <h3>
+      <a name="rserve:setSendBufferSize" id="rserve:setSendBufferSize">rserve:setSendBufferSize</a>
+    </h3>
+    <h4>
+      rserve:setSendBufferSize
+    </h4>
+    <p>
+      Primitive to set the maximum buffer size for submissions (in bytes, min=32k, max=1GB). See Rserve documentation for details.
+    </p>
+    <pre><p>;; change maximum buffer size
+print rserve:setSendBufferSize 2052</p></pre>

@@ -1,0 +1,35 @@
+Version 1.0beta build3
+
+- adaption to NetLogo API of 5.0beta4
+- bug fix in rsystemcheck extension in rJava1Check. Empty spaces in JRI_HOME path are supported now. 
+
+Version 1.0beta build 2
+
+- undocumented and experimental primitive __directeval added. This primitive evaluates a submitted command in the attached shell and not via JRI.
+  This opens the possiblity to call functions of package ggplot2, which are not supported by JRI.
+
+Version 1.0beta build 1
+
+- complete rewrite using new REngine high-level API (more robust - but slower! sorry!) instead of JRI low-level API
+- memory leak fixed, which caused a crash after submitting to much data to R without a workspace clean up
+- adaptation to NetLogo API of 5.0beta3
+- error report in NetLogo when the submitted R code result in an error
+- support of empty NetLogo lists
+- support of NetLogo lists containing different data types
+- support of 64-bit R
+- support of new R/JRI versions
+- new full-integrated interactiveShell window without the need to start NetLogo from a shell
+- plot support using JavaGD
+- local environments: support for Behavior Space with multi-processors
+- additional extension (RSystemCheck) to check the requirements for running the R-Extension
+
+Version 0.3.3
+
+- added functionality to send nested LogoLists (like [[1 2 3][4 5 6]]) to R
+- Adaptation to NetLogo API of 4.1.2
+- Bug fix in putagentdataframe: LogoList caused an error
+
+
+Version 0.3.2
+
+- Bug fix for use with Mac OS

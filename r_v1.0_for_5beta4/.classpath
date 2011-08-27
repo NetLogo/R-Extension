@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/Programme/R/R-2.13.0/library/rJava/jri/REngine.jar"/>
+	<classpathentry kind="lib" path="C:/Programme/R/R-2.13.0/library/rJava/jri/JRIEngine.jar"/>
+	<classpathentry kind="lib" path="C:/Programme/R/R-2.13.0/library/rJava/jri/JRI.jar"/>
+	<classpathentry kind="lib" path="C:/Programme/R/R-2.13.0/library/JavaGD/java/javaGD.jar"/>
+	<classpathentry kind="lib" path="C:/Programme/NetLogo 5.0beta4/NetLogo.jar"/>
+	<classpathentry kind="output" path="build"/>
+</classpath>

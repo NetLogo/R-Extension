@@ -1,0 +1,31 @@
+Contact: Jan C. Thiele
+Mail: jthiele@gwdg.de
+
+
+This is a NetLogo Extension to check the requirements for the R-Extension.
+Copy the whole folder (rystemcheck) to the NetLogo extensions folder. Then
+open the Systemcheck.nlogo file in NetLogo.
+
+
+When to use it is described in the documentation of the R-Extension, section Troubleshooting.
+
+For building the extension (jar) from source, use the Ant-file "build.xml". 
+
+The home of the Extension is "http://netlogo-r-ext.berlios.de". 
+Please post bug reports there.
+
+Contact: jthiele at gwdg.de
+Copyright (C) 2009-2011 Jan C. Thiele
+
+NetLogo-RSystemCheck-Extension is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with NetLogo-RSystemCheck-Extension.  If not, see <http://www.gnu.org/licenses/>.

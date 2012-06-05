@@ -1,11 +1,12 @@
-<project name="rExtension for NL 5.0" default="dist" basedir=".">
-<!-- project name="rExtension for NL 5.0" default="clear" basedir="." -->
+<project name="rExtension for NL 5.0.1" default="dist" basedir=".">
+<!-- project name="rExtension for NL 5.0.1" default="clear" basedir="." -->
   
   <!-- set global properties for this build -->
   <!-- property file="version.properties" / -->
   <property environment="env" />
   <property name="jri.path"  value="${env.JRI_HOME}" />
-  <property name="netlogo.path"  value="..\..\"/>
+  <property name="netlogo.path"  value="C:\Programme\NetLogo 5.0.1\"/>
+  <property name="javagd.path"  value="C:\Programme\R\R-2.15.0\library\JavaGD\"/>
 
   <property name="src" value="src"/>
   <property name="build" value="build"/>
@@ -13,7 +14,7 @@
 
   <property name="main.class" value="org.nlogo.extension.r.Entry"/>
   <property name="extension.name" value="r"/>  
-  <property name="extension.version" value="1.0beta"/>  
+  <property name="extension.version" value="1.1"/>  
 
   <property name="ant.build.javac.target" value="1.5"/> 
   <property name="ant.build.javac.source" value="1.5"/> 
@@ -26,7 +27,7 @@
     <mkdir dir="${build}"/>
 
     <exec executable="java">
-	<arg line="-jar ${netlogo.path}NetLogo.jar --extension-api-version"/>
+	<arg line="-jar '${netlogo.path}NetLogo.jar' --extension-api-version"/>
 	<redirector outputproperty="api.version">
 	</redirector>
     </exec>
@@ -53,6 +54,15 @@
       		<pathelement path="${classpath}"/>
       		<fileset dir="${jri.path}">
         		<include name="JRI.jar"/>
+      		</fileset>
+      		<fileset dir="${jri.path}">
+        		<include name="REngine.jar"/>
+      		</fileset>
+      		<fileset dir="${jri.path}">
+        		<include name="JRIEngine.jar"/>
+      		</fileset>
+      		<fileset dir="${javagd.path}/java">
+        		<include name="javaGD.jar"/>
       		</fileset>
       		<fileset dir="${netlogo.path}">
         		<include name="NetLogo.jar"/>

@@ -1,3 +1,7 @@
+Version 1.1
+
+- support added for headless run (new primitve stop added, which must be called finally) 
+
 Version 1.0beta build3
 
 - adaption to NetLogo API of 5.0beta4

@@ -4,7 +4,7 @@ package org.nlogo.extension.r;
 This file is part of NetLogo-R-Extension.
 
 Contact: jthiele at gwdg.de
-Copyright (C) 2009-2011 Jan C. Thiele
+Copyright (C) 2009-2012 Jan C. Thiele
 
 NetLogo-R-Extension is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -153,40 +153,57 @@ public class Entry extends org.nlogo.api.DefaultClassManager
 	  		
 	  		org.rosuda.REngine.REngine lastEngine = org.rosuda.REngine.REngine.getLastEngine();
         	// if no further REnginer was initialized
-        	if (lastEngine == null)
-        	{
-    			Class iashell_class = Class.forName("org.nlogo.extension.r.ShellWindow");
-    			Class partypes1[] = new Class[1];
-    	        partypes1[0] = ConsoleSync.class;
-    	        Constructor ct_is = iashell_class.getConstructor(partypes1);  
-    	        Object arglist1[] = new Object[1];
-    	        arglist1[0] = rSync;
-    	        Object intershellObj = ct_is.newInstance(arglist1);				
-    	        org.nlogo.api.ExtensionManager tc = (org.nlogo.api.ExtensionManager)intershellObj;
-    			shellwin = tc;
+
+	  		// Check for headless mode
+	  		// if NetLogo running headless, do not create interactiveShell and REngineCallbacks
+	  		// Don't forget to call "stop" in the model!
+	  		if (System.getProperty("java.awt.headless") == "true")
+	  	    {
     			Class rengineClass = Class.forName("org.rosuda.REngine.JRI.JRIEngine");    			
-    			Class callbacks_class = Class.forName("org.rosuda.REngine.REngineCallbacks");
-				Class partypes[] = new Class[3];
-		        partypes[0] = String[].class;
-		        partypes[1] = callbacks_class; 
-		        partypes[2] = boolean.class;
-		        Object arglist[] = new Object[3];
-	            arglist[0] = new String[] {"--no-save"};
-	            arglist[1] = tc;
-	            arglist[2] = true;	            
-    			Method thisMethod = rengineClass.getDeclaredMethod("createEngine", partypes);	            
-	            REngine rToStore = (REngine)thisMethod.invoke(rengineClass, arglist);
+    			Class callbacks_class = Class.forName("org.rosuda.REngine.REngineCallbacks");            
+    			Method thisMethod = rengineClass.getDeclaredMethod("createEngine");	            
+	            REngine rToStore = (REngine)thisMethod.invoke(rengineClass); 
     	  		rConn = new HoldRengineX(rToStore);
-    	  		em.storeObject(tc);
-        	}
-        	// otherwise, reload the last REngine object and retrieve the stored ShellWindow object
-        	else
-        	{
-    	  		// this will also create a new Environment
-    	  		rConn = new HoldRengineX(lastEngine);    	  		
-    	  		Object temp = em.retrieveObject();
-    	  		shellwin = (org.nlogo.api.ExtensionManager)temp; 
-        	}
+	  	    }
+	  	    else
+	  	     
+	  	    {
+		  	    // NetLogo running in GUI mode
+	        	if (lastEngine == null)
+	        	{
+	    			Class iashell_class = Class.forName("org.nlogo.extension.r.ShellWindow");
+	    			Class partypes1[] = new Class[1];
+	    	        partypes1[0] = ConsoleSync.class;
+	    	        Constructor ct_is = iashell_class.getConstructor(partypes1);  
+	    	        Object arglist1[] = new Object[1];
+	    	        arglist1[0] = rSync;
+	    	        Object intershellObj = ct_is.newInstance(arglist1);				
+	    	        org.nlogo.api.ExtensionManager tc = (org.nlogo.api.ExtensionManager)intershellObj;
+	    			shellwin = tc;
+	    			Class rengineClass = Class.forName("org.rosuda.REngine.JRI.JRIEngine");    			
+	    			Class callbacks_class = Class.forName("org.rosuda.REngine.REngineCallbacks");
+					Class partypes[] = new Class[3];
+			        partypes[0] = String[].class;
+			        partypes[1] = callbacks_class; 
+			        partypes[2] = boolean.class;
+			        Object arglist[] = new Object[3];
+		            arglist[0] = new String[] {"--no-save"};
+		            arglist[1] = tc;
+		            arglist[2] = true;	            
+	    			Method thisMethod = rengineClass.getDeclaredMethod("createEngine", partypes);	            
+		            REngine rToStore = (REngine)thisMethod.invoke(rengineClass, arglist);
+	    	  		rConn = new HoldRengineX(rToStore);
+	    	  		em.storeObject(tc);
+	        	}
+	        	// otherwise, reload the last REngine object and retrieve the stored ShellWindow object
+	        	else
+	        	{
+	    	  		// this will also create a new Environment
+	    	  		rConn = new HoldRengineX(lastEngine);    	  		
+	    	  		Object temp = em.retrieveObject();
+	    	  		shellwin = (org.nlogo.api.ExtensionManager)temp; 
+	        	}
+	  	    }
         }
         catch (InvocationTargetException ex)
         {
@@ -217,9 +234,40 @@ public class Entry extends org.nlogo.api.DefaultClassManager
 		primManager.addPrimitive( "clear", new ClearWorkspace() );
 		primManager.addPrimitive( "clearLocal", new ClearLocalWorkspace() );
 		primManager.addPrimitive( "interactiveShell", new interactiveShell() );
-		primManager.addPrimitive( "setPlotDevice", new SetPlotDevice() );
+		primManager.addPrimitive( "setPlotDevice", new SetPlotDevice() );		
+		primManager.addPrimitive( "stop", new Stop() );
     }
 
+	
+	/**
+	 * Class to stop the R connection. Needed for (true) headless runs ("java.awt.headless" == "true"). 
+	 * (Implementation of the primitive stop) 
+	 * @since new in Version 1.1
+	 */	
+	public static class Stop extends DefaultCommand
+	{
+		public Syntax getSyntax() {
+			return Syntax.commandSyntax(new int[] {});
+		}
+		public String getAgentClassString()
+		{
+			return "OTPL" ;
+		}    	
+	    public void perform(Argument args[], Context context) throws ExtensionException, LogoException
+	    { 
+	    	try
+	    	{
+				if (System.getProperty("java.awt.headless") == "true") {
+		    		  rConn.rConnection.close();
+				}
+	    	}
+	    	catch (Exception ex)
+			{
+				throw new ExtensionException("Error in R-Extension: Error in stop: \n"+ex);
+			}
+	    }
+	}
+	
 	
 	/**
 	 * Class to setup the JavaGD plot device. (Implementation of the primitive setPlotDevice) 
@@ -238,7 +286,9 @@ public class Entry extends org.nlogo.api.DefaultClassManager
 	    { 
 	    	try
 	    	{
-	        	shellwin.storeObject(null);
+	    		if (System.getProperty("java.awt.headless") != "true") {
+	    			shellwin.storeObject(null);
+				}
 	    	}
 	    	catch (Exception ex)
 			{
@@ -264,9 +314,11 @@ public class Entry extends org.nlogo.api.DefaultClassManager
 	    { 
 	    	try
 	    	{
-	    		if (!Entry.shellwin.anyExtensionsLoaded()){
-	    			Entry.shellwin.finishFullCompilation();
-	    		}
+	    		if (System.getProperty("java.awt.headless") != "true") {
+		    		if (!Entry.shellwin.anyExtensionsLoaded()){
+		    			Entry.shellwin.finishFullCompilation();
+		    		}
+				}
 	    	}
 	    	catch (Exception ex)
 			{
@@ -609,30 +661,34 @@ public class Entry extends org.nlogo.api.DefaultClassManager
 	 */
     public void unload() throws ExtensionException
     {
-    	// clear workspace
-    	try
-    	{
-    		// clear workspace
-    		REXP returnVal =  rConn.execute(rConn.rConnection, "rm(list=ls())", rConn.WorkingEnvironment, true);
-    		rConn.rConnection.parseAndEval("rm(list=ls())");
-    		rConn.rConnection.parseAndEval("gc()");
-      	}
-    	catch (Exception ex)
-    	{
-    		throw new ExtensionException("Error in R-Extension: Error in unload: \n"+ex);
-    	}
-    	try
-    	{
-    		// check if ShellWindow is open - if so, close it...
-    		if (Entry.shellwin.anyExtensionsLoaded())
-    		{
-    			Entry.shellwin.reset();
-    		}
-      	}
-    	catch (Exception ex)
-    	{
-    		throw new ExtensionException("Error in R-Extension: Error in making interactiveShell invisible: \n"+ex);
-    	}
+    	// run unload only when NetLogo is runnning in GUI mode
+    	if (System.getProperty("java.awt.headless") != "true")
+  	    {
+	    	// clear workspace
+	    	try
+	    	{
+	    		// clear workspace
+	    		REXP returnVal =  rConn.execute(rConn.rConnection, "rm(list=ls())", rConn.WorkingEnvironment, true);
+	    		rConn.rConnection.parseAndEval("rm(list=ls())");
+	    		rConn.rConnection.parseAndEval("gc()");
+	      	}
+	    	catch (Exception ex)
+	    	{
+	    		throw new ExtensionException("Error in R-Extension: Error in unload: \n"+ex);
+	    	}
+	    	try
+	    	{
+	    		// check if ShellWindow is open - if so, close it...
+	    		if (Entry.shellwin.anyExtensionsLoaded())
+	    		{
+	    			Entry.shellwin.reset();
+	    		}
+	      	}
+	    	catch (Exception ex)
+	    	{
+	    		throw new ExtensionException("Error in R-Extension: Error in making interactiveShell invisible: \n"+ex);
+	    	}
+  	    }
     }
 	
 }

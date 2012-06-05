@@ -9,7 +9,7 @@ Markus Helbig/ Simon Urbanek (RoSuDa 2003 - 2005).
 //--- for licensing information see LICENSE file in the original JGR distribution ---
 
 Contact: jthiele at gwdg.de
-Copyright (C) 2009-2011 Jan C. Thiele
+Copyright (C) 2009-2012 Jan C. Thiele
 
 NetLogo-R-Extension is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License

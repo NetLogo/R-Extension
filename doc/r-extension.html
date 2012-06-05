@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="../../../docs/netlogo.css" type="text/css">
   <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
   <h1>
-      R-Extension, Version 1.0beta (July 2011)
+      R-Extension, Version 1.1 (June 2012)
   </h1>
   <p>
   by Jan C. Thiele<sup>1</sup> and Volker Grimm<sup>2</sup>
@@ -54,6 +54,7 @@
             <li><a href="#loadPackages">Load a Package</a></li>
             <li><a href="#interactiveShell">Interactive Shell</a></li>
             <li><a href="renvironments">R Environments</a></li>
+            <li><a href="headless">Headless</a></li>
           </ol>
         </li>
       </ol>
@@ -72,6 +73,7 @@
         <li><a href="#r:putlist">r:putlist</a></li>
         <li><a href="#r:putnamedlist">r:putnamedlist</a></li>
         <li><a href="#r:setPlotDevice">r:setPlotDevice</a></li>
+        <li><a href="#r:stop">r:stop</a></li>
       </ol>
     </li>
   </ol>
@@ -426,7 +428,21 @@
       "<a href="#r:clearLocal">r:clearLocal</a>". If you want to clear also the global environment (the whole workspace), call 
       "<a href="#r:clear">r:clear</a>".
     </p>
+    <h4>
+      <a name="headless" id="headless">Headless</a>
+    </h4>    
+    <p>
+      Since R-Extension version 1.1 it is possible use the extension when NetLogo is running in headless mode.
+      This is for example the case, when you run BehaviorSpace experiments from the command line (see <a href="http://ccl.northwestern.edu/netlogo/docs/behaviorspace.html#advanced">here</a>.
+      The difference is, that the interactiveShell is not initialized/instanciated.
+      You can use the extension as you know it from GUI mode, but it is not possible to open the interactiveShell (<a href="#r:interactiveShell">r:interactiveShell</a>) and to set the plot device (<a href="#r:setPlotDevice">r:setPlotDevice</a>).
+      But one additional things has to be done: You have to call "<a href="#r:stop">r:stop</a>" finally when running NetLogo headless to stop the R engine. Otherwise NetLogo will not be closed and you will not getting back your command line prompt.
+      When setting up a BehaviorSpace experiment, there is the option to set final commands. This is a good place to add the r:stop command (see image). 
+    <p class="screenshot">
+            <img alt="screen shot" src="images/rstop.jpg">
+    </p>  
     
+    </p>
     <h2>
       <a name="primitives" id="primitives">Primitives</a>
     </h2>
@@ -443,6 +459,7 @@
       <a href="#r:putlist">r:putlist</a>
       <a href="#r:putnamedlist">r:putnamedlist</a>
       <a href="#r:setPlotDevice">r:setPlotDevice</a>
+      <a href="#r:stop">r:stop</a>
     <h3>
       <a name="r:clear" id="r:clear">r:clear</a>
     </h3>
@@ -685,3 +702,14 @@ show r:get "list1$v1"</p></pre>
     </p>
     <pre><p>;; activate the JavaGD plot device
 r:setPlotDevice</p></pre>
+
+    <h3>
+      <a name="r:stop" id="r:stop">r:stop</a>
+    </h3>
+    <h4>
+      r:stop<br />
+    </h4>
+    <p>
+      Stops the R engine. This is needed (only) if NetLogo is running in headless mode, for example when running BehaviorSpace experiments from the command line with something like this: <i>java -cp NetLogo.jar org.nlogo.headless.Main --model mymodel.nlogo --experiment exp1 --table outtab1.csv</i>. Should be the last call in headless simulation. See usage notes above for details.
+    </p>
+    <pre><p>r:stop</p></pre>

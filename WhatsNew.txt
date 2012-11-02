@@ -1,3 +1,9 @@
+Version 1.2
+
+- fixing memory leaks
+- adding Garbage collector primitive r:gc
+- update of documentation
+
 Version 1.1
 
 - support added for headless run (new primitve stop added, which must be called finally) 

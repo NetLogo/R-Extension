@@ -231,6 +231,7 @@ public class Entry extends org.nlogo.api.DefaultClassManager
 		primManager.addPrimitive( "eval", new Eval() );	
 		primManager.addPrimitive( "__evalDirect", new EvalDirect() );	
 		primManager.addPrimitive( "get", new Get() );			
+		primManager.addPrimitive( "gc", new GC() );
 		primManager.addPrimitive( "clear", new ClearWorkspace() );
 		primManager.addPrimitive( "clearLocal", new ClearLocalWorkspace() );
 		primManager.addPrimitive( "interactiveShell", new interactiveShell() );
@@ -405,6 +406,10 @@ public class Entry extends org.nlogo.api.DefaultClassManager
 		    	}
 				rlist.names = names;
 				rConn.rConnection.assign(args[0].getString(), org.rosuda.REngine.REXP.createDataFrame(rlist), rConn.WorkingEnvironment);;
+				// clean up
+				names.clear();
+				names = null;
+				rlist = null;
 				//System.gc();
 	    		//System.gc();	    		
 	    	}
@@ -440,6 +445,10 @@ public class Entry extends org.nlogo.api.DefaultClassManager
 			    }
 				rlist.names = names;
 				rConn.rConnection.assign(args[0].getString(), new REXPGenericVector(rlist), rConn.WorkingEnvironment);
+				// clean up
+				names.clear();
+				names = null;
+				rlist = null;
 				//System.gc();
 	    		//System.gc();
 	    	}
@@ -476,7 +485,11 @@ public class Entry extends org.nlogo.api.DefaultClassManager
 		    	}
 				rlist.names = names;
 				rConn.rConnection.assign(args[0].getString(), new REXPGenericVector(rlist), rConn.WorkingEnvironment);
-		    	//System.gc();
+		    	// clean up
+				names.clear();
+				names = null;
+				rlist = null;
+				//System.gc();
 	    		//System.gc();
 	    	}
 	    	catch (Exception ex)
@@ -504,7 +517,9 @@ public class Entry extends org.nlogo.api.DefaultClassManager
 	    {   	    	
 	    	try
 	    	{
-	    		rConn.rConnection.assign(args[0].getString(), rConn.resolveNLObject(args[1].get()), rConn.WorkingEnvironment);
+	    		REXP val = rConn.resolveNLObject(args[1].get());
+	    		rConn.rConnection.assign(args[0].getString(), val, rConn.WorkingEnvironment);
+	    		val = null;
 	    		//System.gc();
 	    		//System.gc();
 	    	}
@@ -534,6 +549,7 @@ public class Entry extends org.nlogo.api.DefaultClassManager
 	    	try
 	    	{
 	    		REXP returnVal =  rConn.execute(rConn.rConnection, args[0].getString(), rConn.WorkingEnvironment, true);
+	    		returnVal = null;
 	    	}
 		catch (Exception ex)
 		{
@@ -566,8 +582,12 @@ public class Entry extends org.nlogo.api.DefaultClassManager
 	    		for (int i = 0; i < cmdArray.length; i++) {
 	    			c = cmdArray[i];
 	    			Entry.rSync.triggerNotification(c.trim());
+	    			// clean up
+	    			c = null;
 	    		}
 	    		//REXP returnVal =  rConn.execute(rConn.rConnection, args[0].getString(), rConn.WorkingEnvironment, true);
+	    		// clean up
+	    		cmdArray = null;
 	    	}
 		catch (Exception ex)
 		{
@@ -590,7 +610,11 @@ public class Entry extends org.nlogo.api.DefaultClassManager
 	    	try
 	    	{
 	    		REXP returnVal =  rConn.execute(rConn.rConnection, args[0].getString(), rConn.WorkingEnvironment, true);
-	    		return rConn.returnObject(returnVal);
+	    		Object retObj = rConn.returnObject(returnVal);
+	    		// clean up
+	    		returnVal = null;
+	    		return retObj;
+	    		//return rConn.returnObject(returnVal);
 	    	}
 	    	catch (Exception ex)
 	    	{
@@ -599,6 +623,38 @@ public class Entry extends org.nlogo.api.DefaultClassManager
 	    } 
     }
     
+    
+    
+	/**
+	 * Class to perform Java and R Garbage Collection. (Implementation of the primitive javagc)
+	 * @since new in version 1.2 
+	 */	  
+	public static class GC extends DefaultCommand
+    {
+	    public Syntax getSyntax() {
+	        return Syntax.commandSyntax(new int[] {});
+	    }  
+		public String getAgentClassString()
+		{
+			return "OTPL" ;
+		}    	
+	    public void perform(Argument args[], Context context) throws ExtensionException, LogoException
+	    { 
+	    	try
+	    	{
+	    		System.gc();
+	    		rConn.execute(rConn.rConnection, "gc(reset=T)", rConn.WorkingEnvironment, true);
+	    		rConn.rConnection.parseAndEval("gc(reset=T)");
+	    	}
+		catch (Exception ex)
+		{
+			throw new ExtensionException("Error in R-Extension: Error in GC: \n"+ex);
+		}
+	    }
+    }
+	
+
+ 
 	 
 	/**
 	 * Class to clear R workspace. (Implementation of the primitive clear) 
@@ -616,9 +672,12 @@ public class Entry extends org.nlogo.api.DefaultClassManager
 	    { 
 	    	try
 	    	{
+	    		System.gc();
 	    		REXP returnVal =  rConn.execute(rConn.rConnection, "rm(list=ls())", rConn.WorkingEnvironment, true);
+	    		returnVal = null;
 	    		rConn.rConnection.parseAndEval("rm(list=ls())");
-	    		rConn.rConnection.parseAndEval("gc()");
+	    		rConn.rConnection.parseAndEval("gc(reset=T)");
+	    		System.gc();
 	    		rConn.sendEnvironmentToGlobal();
 	    	}
 		catch (Exception ex)
@@ -644,8 +703,12 @@ public class Entry extends org.nlogo.api.DefaultClassManager
 	    { 
 	    	try
 	    	{
+	    		System.gc();
 	    		REXP returnVal =  rConn.execute(rConn.rConnection, "rm(list=ls())", rConn.WorkingEnvironment, true);
-	    		REXP returnVal2 =  rConn.execute(rConn.rConnection, "gc()", rConn.WorkingEnvironment, true);
+	    		returnVal = null;
+	    		REXP returnVal2 =  rConn.execute(rConn.rConnection, "gc(reset=T)", rConn.WorkingEnvironment, true);
+	    		returnVal2 = null;
+	    		System.gc();
 	    	}
 		catch (Exception ex)
 		{
@@ -668,9 +731,12 @@ public class Entry extends org.nlogo.api.DefaultClassManager
 	    	try
 	    	{
 	    		// clear workspace
+	    		System.gc();
 	    		REXP returnVal =  rConn.execute(rConn.rConnection, "rm(list=ls())", rConn.WorkingEnvironment, true);
+	    		returnVal = null;
 	    		rConn.rConnection.parseAndEval("rm(list=ls())");
-	    		rConn.rConnection.parseAndEval("gc()");
+	    		rConn.rConnection.parseAndEval("gc(reset=T)");
+	    		System.gc();
 	      	}
 	    	catch (Exception ex)
 	    	{

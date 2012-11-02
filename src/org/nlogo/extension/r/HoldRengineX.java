@@ -116,7 +116,11 @@ public class HoldRengineX
 			// if it is an empty NetLogo List
 			if (logoli.size() == 0)
 			{
-				return new REXPNull();
+				REXP ret = new REXPNull();
+				// clean up
+				logoli = null;
+				return ret;
+				//return new REXPNull(); 
 			}
 			try
 		    {
@@ -129,8 +133,14 @@ public class HoldRengineX
 			    	{
 			    		array[i] = ((String)it.next());
 			    		i++;
-			    	}		           		
-			    	return new REXPString(array);
+			    	}	
+			    	REXP ret = new REXPString(array);
+			    	// clean up
+			    	array = null;
+			    	it = null;
+			    	logoli = null;
+			    	return ret;
+			    	//return new REXPString(array);
 			    }		
 			    // create an R-variable with Double[]-Value
 			    if (logoli.get(0) instanceof java.lang.Double)
@@ -143,7 +153,13 @@ public class HoldRengineX
 			    		array[i] = ((Double)it.next()).doubleValue();
 			    		i++;
 			    	}		           		
-			    	return new REXPDouble(array);
+			    	REXP ret = new REXPDouble(array);
+			    	// clean up
+			    	array = null;
+			    	it = null;
+			    	logoli = null;
+			    	return ret;
+			    	//return new REXPDouble(array);
 			    }   		    	   
 			   // create an R-variable with Boolean[]-Value
 			   if (logoli.get(0) instanceof java.lang.Boolean)
@@ -155,8 +171,14 @@ public class HoldRengineX
 			    	{
 			    		array[i] = ((Boolean)it.next()).booleanValue();
 			    		i++;
-			    	}		           		
-			    	return new REXPLogical(array);
+			    	}		
+			    	REXP ret = new REXPLogical(array);
+			    	// clean up
+			    	array = null;
+			    	it = null;
+			    	logoli = null;
+			    	return ret;
+			    	//return new REXPLogical(array);
 			   }
 			   if (logoli.get(0) instanceof org.nlogo.api.LogoList)
 			   {
@@ -165,7 +187,12 @@ public class HoldRengineX
 				   {
 					   rlistxx.add(resolveNLObject(logoli.get(i)));
 				   }
-				   return new REXPGenericVector(rlistxx);
+				   REXP ret = new REXPGenericVector(rlistxx);
+				   // clean up
+				   rlistxx = null;
+				   logoli = null;
+				   return ret;
+				   //return new REXPGenericVector(rlistxx);
 			   }
 		    }
 			// if there is an error in casting the list, than we assume that
@@ -199,8 +226,18 @@ public class HoldRengineX
 			    			rexparray[i] = resolveNLObject(ob);
 			    		}
 			    		i++;
+			    		// clean up
+			    		ob = null;
 			    	}
-			    	return new REXPGenericVector(new RList(rexparray));
+			    	RList rlist = new RList(rexparray);
+			    	REXP ret = new REXPGenericVector(rlist);
+			    	// clean up
+			    	rlist = null;
+			    	rexparray = null;
+			    	it = null;
+			    	logoli = null;
+			    	return ret;
+			    	//return new REXPGenericVector(new RList(rexparray));
 		    	}
 		    	catch (Exception ex2)
 		    	{ 
@@ -210,7 +247,10 @@ public class HoldRengineX
 		}
 		else
 		{
-			return(rConnection.wrap(obj));				
+			REXP ret = rConnection.wrap(obj);
+			obj = null;
+			return ret;
+			//return(rConnection.wrap(obj));				
 		}
 		return null;
 	}
@@ -274,12 +314,18 @@ public class HoldRengineX
 		    				int varindex = agent.world().indexOfVariable(agent, names.get(j).toUpperCase());	
 		    				logoliarr[j].add(agent.getPatchVariable(varindex));
 		    			}
-	    			}	    			
+	    			}
+	    			// clean up
+	    			agent = null;
 	    		}	    	
 		    	for (int i=0; i<names.size(); i++)
 		    	{
 		    		rlist_base.add(resolveNLObject(logoliarr[i].toLogoList()));
-		    	}	    		
+		    	}	  
+		    	// clean up
+		    	logoliarr = null;
+		    	agentset = null;
+		    	it = null;
 			}
 			/* if input isn't an agentset but agent */
 			else if (ag instanceof org.nlogo.agent.Agent)
@@ -304,7 +350,11 @@ public class HoldRengineX
     					rlist.add(resolveNLObject(agent.getPatchVariable(varindex)));
 	    			}
 	    			rlist_base.add(new REXPGenericVector(rlist));
+	    			// clean up
+	    			rlist = null;
 				}
+		    	// clean up
+		    	agent = null;
 			}  							
 			rlist_base.names = names;
 			if (as_dataframe)
@@ -315,6 +365,12 @@ public class HoldRengineX
 			{ 
 				rConnection.assign(args[0].getString(), new REXPGenericVector(rlist_base), this.WorkingEnvironment);
 			}
+			
+			// release the variable contents (for cleaning up)
+			rlist_base = null;
+			ag = null;
+			names.clear();
+			names = null;
 			//System.gc();
     		//System.gc();
 		}
@@ -341,6 +397,9 @@ public class HoldRengineX
     		{
     			llist.add((Double)dbarray[i]);
     		}
+    		// clean up
+    		dbarray = null;
+    		result = null;
     		return llist.toLogoList();
 		}
 		if (result.isInteger())
@@ -352,6 +411,9 @@ public class HoldRengineX
     		{
     			llist.add( new Double(((Integer)intarray[i]).doubleValue()) );
     		}
+    		// clean up
+    		intarray = null;
+    		result = null;
     		return llist.toLogoList();	    			
 		}
 		if (result.isString())
@@ -362,6 +424,9 @@ public class HoldRengineX
     		{
     			llist.add(strarray[i]);
     		}
+    		// clean up
+    		strarray = null;
+    		result = null;
     		return llist.toLogoList();
 		}
 		if (result.isLogical())
@@ -375,8 +440,12 @@ public class HoldRengineX
 				else
     			{ llist.add(false); }
     		}
+    		// clean up
+    		boolarray = null;
+    		result = null;
     		return llist.toLogoList();
 		}
+		result = null;
 		return null;
     }
    
@@ -414,7 +483,12 @@ public class HoldRengineX
     		{
 	    		REXP val = (REXP)li.next();
 	    		llist.add(returnObject(val));
+	    		// clean up
+	    		val = null;
     		}
+    		// clean up
+    		li = null;
+    		result = null;
     		return llist.toLogoList();
     	}
     	if (result.isVector())

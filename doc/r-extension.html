@@ -1,12 +1,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
 "http://www.w3.org/TR/html4/strict.dtd">
 <title>
-      R-Extension, Version 1.0beta 
+      R-Extension, Version 1.2
 </title>
   <link rel="stylesheet" href="../../../docs/netlogo.css" type="text/css">
   <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
   <h1>
-      R-Extension, Version 1.1 (June 2012)
+      R-Extension, Version 1.2 (November 2012)
   </h1>
   <p>
   by Jan C. Thiele<sup>1</sup> and Volker Grimm<sup>2</sup>
@@ -27,7 +27,7 @@
   </p>
   <p>
     The R-Extension of NetLogo provides primitives to use the statistical software                
-    GNU  R  (see <a href="http://www.r-project.org/">http://www.r-project.org/</a>) 
+    R (Gnu S)  (see <a href="http://www.r-project.org/">http://www.r-project.org/</a>) 
     within a NetLogo model. There are primitives to  create R-Variables with values 
     from NetLogo variables or agents and others to evaluate commands in R with and 
     without return values. 
@@ -53,8 +53,9 @@
             <li><a href="#loadScript">Load an R-Script</a></li>    
             <li><a href="#loadPackages">Load a Package</a></li>
             <li><a href="#interactiveShell">Interactive Shell</a></li>
-            <li><a href="renvironments">R Environments</a></li>
-            <li><a href="headless">Headless</a></li>
+            <li><a href="#renvironments">R Environments</a></li>
+            <li><a href="#memory">Memory</a></li>
+            <li><a href="#headless">Headless</a></li>
           </ol>
         </li>
       </ol>
@@ -64,6 +65,8 @@
         <li><a href="#r:clear">r:clear</a></li>
         <li><a href="#r:clear">r:clearLocal</a></li>
         <li><a href="#r:eval">r:eval</a></li>
+        <li><a href="#r:__evaldirect">r:__evalcirect</a></li>
+        <li><a href="#r:gc">r:gc</a></li>
         <li><a href="#r:get">r:get</a></li>
         <li><a href="#r:interactiveShell">r:interactiveShell</a></li>
         <li><a href="#r:put">r:put</a></li>
@@ -108,6 +111,7 @@
       <a name="windows" id="windows">Windows</a>
     </h3>
     <p>
+    Note: There are two addition pdf files with detailed step-by-step guides for Vista/Win7 (Win8 ?) <b>64-bit</b> users. One, explaining how to setup NetLogo and the R-Extenson running with <a href="Install_R-Extension_on_Win7_64bit_r1.0_with32bit.pdf">32-bit</a> (the easy way) and another one showing how to run both in <a href="Install_R-Extension_on_Win7_64bit_r1.0_with64bit.pdf">64-bit</a> mode (the slightly more tricky way).
     <ol>	
       <li>
         Download and install R (see <a href="http://www.r-project.org/">
@@ -144,7 +148,7 @@
               </li>
               <li>
                 Variable Value: &lt;Path to folder of your R-Installation, e.g. <i>C:\Program 
-                Files\R\R-2.13.0\</i>&gt;
+                Files\R\R-2.15.1\</i>&gt;
               </li>
             </ul>
           </li>
@@ -167,9 +171,9 @@
             <ul> 
               <li>Variable Name: <i>JRI_HOME</i></li>
               <li>Variable Value: &lt;Path to folder of <i>jri</i> in <i>rJava</i> in your 
-                  R-library-Path, e.g. <i>C:\Program Files\R\R2.13.0\library\rJava/jri</i> or 
+                  R-library-Path, e.g. <i>C:\Program Files\R\R2.15.1\library\rJava/jri</i> or 
                   for Windows Vista maybe something like 
-                  <i>C:\Users\myusername\Documents\R\win-library\2.13.0\rJava\jri</i>&gt;<br />
+                  <i>C:\Users\myusername\Documents\R\win-library\2.15.1\rJava\jri</i>&gt;<br />
                   Hint: If you don't know where the rJava package is installed, you can start R 
                   and type <i>library(rJava)</i> to load rJava and then type 
                   <i>.path.package("rJava")</i> to get installation path. Now append /jri and use 
@@ -226,9 +230,10 @@
     </p>
     
     <h3>
-      <a name="macintosh" id="macintosh">Macintosh (many thanks to Enrico R. Crema)</a>
+      <a name="macintosh" id="macintosh">Macintosh (many thanks to Enrico R. Crema, Erich Neuwirth and Simone Gabbriellini)</a>
     </h3>
     <p>
+      <u>For Mac OS until Mountain Lion (submitted by Enrico R. Crema):</u><br /><br />
       First install R and the rJava package (and JavaGD package if you want to use the included 
       plot device) in R. Next, set the environment variables R_HOME and JRI_HOME. You need to edit 
       the file environment.plist inside ~/.MacOSX as follows:
@@ -266,6 +271,67 @@
     <p class="screenshot">
             <img alt="screen shot" src="images/environmentMac.jpg">
     </p>  
+    <p>
+          <u>Since Mountain Lion (reported by Simone Gabbriellini):</u><br /><br />
+    Open a Terminal Window.<br />
+    Use the command <i>sudo nano /etc/launchd.conf</i>.<br />
+    Enter your password.<br />
+    Add the environment variables (R_HOME and JRI_HOME, see above) using the following syntax:<br /><br />
+
+    setenv NAME_OF_VARIABLE valueOfTheVariable<br /><br />
+
+    Press <i>Ctrl + o</i> to save the file.<br />
+    Press <i>enter</i> to accept the name of the file.<br />
+    Press <i>Ctrl + x</i> to exit the editor.<br /><br />
+    Based on: <a href="http://david-martinez.tumblr.com/post/28083831730/environment-variables-and-mountain-lion">http://david-martinez.tumblr.com/post/28083831730/environment-variables-and-mountain-lion</a>.
+    </p>
+    <br />
+    <u>Other Solutions (by Erich Neuwirth):</u><br /><br />
+
+    <i>Ctrl-Click</i> on the Netlogo Application and select <i>Show Package Contens</i>.<br />
+    In the directory <i>Contents</i> you will find a file <i>info.plist</i> with the following last few lines:<br /><br />
+    <pre><code>
+    &lt;key&gt;NSJavaRoot&lt;/key&gt;
+    &lt;string&gt;..&lt;/string&gt;
+    &lt;/dict&gt;
+    &lt;/plist&gt;
+    </code></pre>
+    <br /><br />
+    </pre>
+    
+    Add a view lines so that the last lines now are:<br /><br />
+
+    <pre><code>
+    &lt;key&gt;NSJavaRoot&lt;/key&gt;
+    &lt;string&gt;..&lt;/string&gt;
+    &lt;key&gt;LSEnvironment&lt;/key&gt;
+    &lt;dict&gt;
+    &lt;key&gt;JRI_HOME&lt;/key&gt;
+    &lt;string&gt;/Library/Frameworks/R.framework/Resources/library/rJava/jri&lt;/string&gt;
+    &lt;key&gt;R_HOME&lt;/key&gt;
+    &lt;string&gt;/Library/Frameworks/R.framework/Resources&lt;/string&gt;
+    &lt;/dict&gt;
+    &lt;/dict&gt;
+    &lt;/plist&gt;
+    </code></pre>
+    
+    
+    <br /><br />
+    If <i>XCode</i> is installed on your machine, there is another way of adding the environment variables:<br /><br />
+
+    <i>Ctrl-Click</i> on the Netlogo Application and select <i>Show Package Contens</i>.<br />
+    In the directory <i>Contents</i> you will find a file <i>info.plist</i>.<br />
+    Double-click it, it will open with the <i>PList</i> editor of <i>Xcode</i>.<br />
+    On the Editor dropdown menu, check the <i>Show Raw Keys & Values</i> item.<br /><br />
+
+    Select the list line in the editor window and select <i>Add Item</i> on the Editor dropdown menu.<br />
+    A new line will appear; on the dropdown of this line, select <i>LSEnvironment</i>.<br />
+    The editor then will set the type to dictionary.<br />
+    When the line is selected, you will see a <i>+</i> sign.<br />
+    Pressing it will allow you to define the two environment variables you need (R_HOME and JRI_HOME, see above).<br /><br />
+    
+    Based on: <a href="http://groups.yahoo.com/group/netlogo-users/message/15188">http://groups.yahoo.com/group/netlogo-users/message/15188</a>.
+
     <h3>
     <a name="troubleshooting" id="troubleshooting">Troubleshooting</a>
     </h3>
@@ -429,6 +495,24 @@
       "<a href="#r:clear">r:clear</a>".
     </p>
     <h4>
+      <a name="memory" id="memory">Memory</a>
+    </h4>
+    <p>
+      With the R-Extension you can load R into the process of NetLogo. Because of the architecture of R, both software share one system process and therefore the memory given to NetLogo.<br /> 
+      In some circumstances it can happen that you receive an out of memory error due to Java's heap space. You can increase the heap space before starting NetLogo by adapting the <i>-Xmx</i> JVM-parameter (see also <a href="http://ccl.northwestern.edu/netlogo/docs/faq.html#windowsmemory">http://ccl.northwestern.edu/netlogo/docs/faq.html#windowsmemory</a>). But on 32-bit systems, this is very limited. Therefore, it is a good idea to use a 64-bit system if you want/need to use high amount of RAM. 
+     You can see the memory usage of R by starting the interactive shell (<i></i>r:interactiveShell</i>) and type there:
+     <i>memory.size(max=F)</i> and <i>memory.size(max=T)</i>. Furthermore, you can check the memory limit by typing: <i>memory.limit()</i>.<br /> 
+     See also:<br />
+     <a href="http://stat.ethz.ch/R-manual/R-patched/library/base/html/memory.profile.html">http://stat.ethz.ch/R-manual/R-patched/library/base/html/memory.profile.html</a><br />
+     <a href="http://stat.ethz.ch/R-manual/R-patched/library/utils/html/object.size.html">http://stat.ethz.ch/R-manual/R-patched/library/utils/html/object.size.html</a><br />
+     <a href="http://stat.ethz.ch/R-manual/R-devel/library/utils/html/memory.size.html">http://stat.ethz.ch/R-manual/R-devel/library/utils/html/memory.size.html</a><br />
+     If you call the garbage collector in the interactive shell by typing gc(), you will get some information about the current memory usage (see also <a href="http://stat.ethz.ch/R-manual/R-patched/library/base/html/gc.html">http://stat.ethz.ch/R-manual/R-patched/library/base/html/gc.html</a>).<br />
+    If you type <i>gc(nl.env)</i> you will see the percentage of memory used for cons cells and vectors.<br /> 
+    Don't forget to call the <i>r:gc</i> primitive after removing an R variable and don't forget to remove R variable you don't need anymore! See how the memory usage changes after removing variable and calling <i>r:gc</i>.<br /> 
+    If you use too much memory, it can happen, that NetLogo will close abruptly. In such a case, check if there is a way to reduce the memory used. If not, try to switch over to the <a href="http://rserve-ext.sourceforge.net/">Rserve-Extension</a>. With the Rserve-Extension both software, NetLogo and R, run independently. There is, of cause, also a limit of transferable data amount with one request, but it is less restrictive.<br />
+    One last note to this toppic: Keep in mind that R is a vector-oriented language. Prevent mass calls with single values whenever possible and replace them by vector operations. This is much faster and more stable.    
+    </p>
+    <h4>
       <a name="headless" id="headless">Headless</a>
     </h4>    
     <p>
@@ -450,6 +534,8 @@
       <a href="#r:clear">r:clear</a>
       <a href="#r:clear">r:clearLocal</a>
       <a href="#r:eval">r:eval</a>
+      <a href="#r:__evaldirect">r:__evaldirect</a>
+      <a href="#r:gc">r:gc</a>
       <a href="#r:get">r:get</a>
       <a href="#r:interactiveShell">r:interactiveShell</a>
       <a href="#r:put">r:put</a>
@@ -505,6 +591,42 @@ r:clearLocal</p></pre>
     <pre><p>;; creates a new vector in R with a sequence from 1 to 10
 r:eval "x <- seq(1,10)"
 show r:get "x"</p></pre>
+
+    <h3>
+      <a name="r:__evaldirect" id="r:__evaldirect">r:__evaldirect</a>
+    </h3>
+    <h4>
+      r:__evaldirect <i>R-command</i>
+    </h4>
+    <p>
+      It evaluates the submitted R command in the global environment (not in the local environment like r:eval does) and   
+      without a check (not using try-function internally).
+      This can be necessary for some R packages, like <i>gglopt2</i>.
+      Please note, that you can produce name clashes when creating new variables using this primitive. The variable will be created into the global environment and will not overwrite variable with the same name that have been created into the local environment. If you request a variable with r:get it will search in the local environment first. Therefore, if there are variables with the same name in the local and the global environment, it will report the variable from the local environment and not the variable created via r:__evaldirect. If there is only a variable with the requested name in the global environment, everything will be fine - r:get will report the value of this variable. If you want to remove a variable created via r:__evaldirect, i.e. in the global environment, call <i>r:eval "rm(myvar, envir=.GlobalEnv)"</i>, replace myvar by the name of your variable. 
+      The R command shouldn't return a value.
+      This primitive is experimental.
+    </p>
+    <pre><p>;; creates a new vector in R with a sequence from 1 to 10
+r:__evaldirect "x <- seq(1,10)"
+show r:get "x"</p></pre>
+
+    <h3>
+      <a name="r:gc" id="r:gc">r:gc</a>
+    </h3>
+    <h4>
+      r:gc
+    </h4>
+    <p>
+      Calls the garbage collector of Java (i.e. the R-Extension) and R. 
+      Call this primitive after removing an R variable to free the memory.
+    </p>
+    <pre><p>;; create a variable
+    r:eval "x <- 1:10"
+    ;; remove the variable
+    r:eval "rm(x)"
+    ;; call the garbage collector
+    r:gc
+    </pre>
 
     <h3>
       <a name="r:get" id="r:get">r:get</a>

@@ -1,29 +1,22 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
 "http://www.w3.org/TR/html4/strict.dtd">
 <title>
-      R-Extension, Version 1.2
+      R-Extension, Version 1.3
 </title>
   <link rel="stylesheet" href="../../../docs/netlogo.css" type="text/css">
   <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
   <h1>
-      R-Extension, Version 1.2 (November 2012)
+      R-Extension, Version 1.3 (August 2013)
   </h1>
   <p>
-  by Jan C. Thiele<sup>1</sup> and Volker Grimm<sup>2</sup>
+  by Jan C. Thiele
   </p>
   <p>
-  <sup>1</sup> Department Ecoinformatics, Biometrics and Forest Growth<br />
+  Department Ecoinformatics, Biometrics and Forest Growth<br />
   University of G&ouml;ttingen<br />
   Buesgenweg 4<br />
   37077 Göttingen, Germany<br />
   Contact: jthiele@gwdg.de
-  </p>
-  <p>  
-  <sup>2</sup> Helmholtz Centre of Environmental Research - UFZ<br />
-  Department of Ecological Modelling<br />
-  Permoserstr. 15<br />
-  04318 Leipzig, Germany<br />
-  Contact: volker.grimm@ufz.de
   </p>
   <p>
     The R-Extension of NetLogo provides primitives to use the statistical software                
@@ -94,7 +87,7 @@
   <p>
     Please follow the instructions here. If you have problems please see "Troubleshooting" and 
     also the <a 
-    href="http://openfacts2.berlios.de/wikien/index.php/BerliosProject:NetLogo-R-Extension:FAQ">
+    href="http://sourceforge.net/apps/mediawiki/r-ext/index.php?title=FAQ">
     FAQ</a> web page.<br /><br />
     To use this extension you will need this extension, NetLogo 5.x, R (>=2.12), Java (>=1.5), 
     rJava package and, if you want to use the plot device, JavaGD package. 
@@ -106,6 +99,10 @@
     First, system-independent step:<br />
     Copy the folder of the R-Extension (name is <i>r</i>) into the extensions folder of your 
     NetLogo installation.
+    Since rJava 0.9.4, two jar-Files, needed by the R-Extension, have been removed from the rJava-Package and have to 
+    be downloaded manually.
+    Go to <a href="http://www.rforge.net/JRI/files/">http://www.rforge.net/JRI/files/</a> and download the files JRIEngine.jar and        
+    REngine.jar and put them into the jri subfolder of the rJava package. 
   </p>
     <h3>
       <a name="windows" id="windows">Windows</a>
@@ -119,19 +116,19 @@
       </li>
       <li>
         Install the rJava package (and the JavaGD package if you want to use the included plot 
-        device) in R: There are two different ways to do this: 
+        device) and the CommonJavaJars package in R: There are two different ways to do this: 
         <ol type="a">
           <li>
             Start the RGui from your program list, click on the item <i>Packages</i> in the 
             menu bar and then on <i>Install Package(s)</i>. Select your favorite server and 
-            find <i>rJava</i> in the list of packages.
+            find <i>rJava</i> and <i>CommonJavaJars</i> in the list of packages.
           </li>
           <li>
             Open console, type <i>R</i> (Environment variable <i>PATH</i> has to contain R for 
             this, see 3.). Then type <i>install.packages("rJava")</i> and follow the 
             instructions (for further information see <a         
             href="http://www.rforge.net/rJava/index.html">
-            http://www.rforge.net/rJava/index.html</a>). 
+            http://www.rforge.net/rJava/index.html</a>). Afterwards type <i>install.packages("CommonJavaJars")</i>.
           </li>
         </ol>
       </li>

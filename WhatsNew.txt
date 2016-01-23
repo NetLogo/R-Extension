@@ -1,3 +1,18 @@
+Version 1.4
+
+- documentation update to NetLogo 5.3
+
+Version 1.3
+
+- updates in documentation
+- updates of examples (especially update of homerange-example to adehabitatHR)
+- some small updates in rsystemcheck-extension 
+   - rJava1-Test removed from Systemcheck.nlogo
+   - .path.package replaced by path.package
+   - additional note to rJavaTest1 --> fails without writing permission
+   - quotation marks around the environment variable paths for leading and trailing whitespace detection
+- includes JRIEngine.jar and REngine.jar (which have been removed from rJava since 0.9.4)
+
 Version 1.2
 
 - fixing memory leaks

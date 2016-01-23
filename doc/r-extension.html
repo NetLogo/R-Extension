@@ -1,12 +1,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
 "http://www.w3.org/TR/html4/strict.dtd">
 <title>
-      R-Extension, Version 1.3
+      R-Extension, Version 1.4
 </title>
   <link rel="stylesheet" href="../../../docs/netlogo.css" type="text/css">
   <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
   <h1>
-      R-Extension, Version 1.3 (August 2013)
+      R-Extension, Version 1.4 (January 2016)
   </h1>
   <p>
   by Jan C. Thiele
@@ -16,7 +16,7 @@
   University of G&ouml;ttingen<br />
   Buesgenweg 4<br />
   37077 Göttingen, Germany<br />
-  Contact: jthiele@gwdg.de
+  Contact: rnetlogo@gmx.de
   </p>
   <p>
     The R-Extension of NetLogo provides primitives to use the statistical software                
@@ -99,16 +99,13 @@
     First, system-independent step:<br />
     Copy the folder of the R-Extension (name is <i>r</i>) into the extensions folder of your 
     NetLogo installation.
-    Since rJava 0.9.4, two jar-Files, needed by the R-Extension, have been removed from the rJava-Package and have to 
-    be downloaded manually.
-    Go to <a href="http://www.rforge.net/JRI/files/">http://www.rforge.net/JRI/files/</a> and download the files JRIEngine.jar and        
-    REngine.jar and put them into the jri subfolder of the rJava package. 
   </p>
     <h3>
       <a name="windows" id="windows">Windows</a>
     </h3>
     <p>
-    Note: There are two addition pdf files with detailed step-by-step guides for Vista/Win7 (Win8 ?) <b>64-bit</b> users. One, explaining how to setup NetLogo and the R-Extenson running with <a href="Install_R-Extension_on_Win7_64bit_r1.0_with32bit.pdf">32-bit</a> (the easy way) and another one showing how to run both in <a href="Install_R-Extension_on_Win7_64bit_r1.0_with64bit.pdf">64-bit</a> mode (the slightly more tricky way).
+    Note: There is an additional <a href="Install_R-Extension_on_Win_with64bit.pdf">pdf file</a> with detailed step-by-step guide how to setup 
+	NetLogo and the R-Extension.
     <ol>	
       <li>
         Download and install R (see <a href="http://www.r-project.org/">
@@ -145,7 +142,7 @@
               </li>
               <li>
                 Variable Value: &lt;Path to folder of your R-Installation, e.g. <i>C:\Program 
-                Files\R\R-2.15.1\</i>&gt;
+                Files\R\R-3.2.3\</i>&gt;
               </li>
             </ul>
           </li>
@@ -167,14 +164,13 @@
             Create a new entry:
             <ul> 
               <li>Variable Name: <i>JRI_HOME</i></li>
-              <li>Variable Value: &lt;Path to folder of <i>jri</i> in <i>rJava</i> in your 
-                  R-library-Path, e.g. <i>C:\Program Files\R\R2.15.1\library\rJava/jri</i> or 
-                  for Windows Vista maybe something like 
-                  <i>C:\Users\myusername\Documents\R\win-library\2.15.1\rJava\jri</i>&gt;<br />
+              <li>Variable Value: &lt;Path to folder of <i>jri</i> in <i>rJava</i>, e.g. 
+			      <i>C:\Users\myusername\Documents\R\win-library\3.2\rJava\jri</i>&gt;<br />
                   Hint: If you don't know where the rJava package is installed, you can start R 
                   and type <i>library(rJava)</i> to load rJava and then type 
                   <i>.path.package("rJava")</i> to get installation path. Now append /jri and use 
                   this path for setting the JRI_HOME environment variable.
+				  Make sure you installed rJava package under 32-bit R if you want to use NetLogo with 32-bit and vice versa.
               </li>
             </ul>
           </li>
@@ -185,10 +181,6 @@
     <p class="screenshot">
             <img alt="screen shot" src="images/environment.jpg">
     </p>
-    <p>
-      If you use a 64-bit Windows and your configuration failed, see 
-      <a href="#troubleshooting">Troubleshooting</a>. 
-    </p>    
 
     <h3>
       <a name="linux" id="linux">Linux</a>
@@ -333,37 +325,35 @@
     <a name="troubleshooting" id="troubleshooting">Troubleshooting</a>
     </h3>
     <p>
-      In the R-Extension folder you can find a folder "rsystemcheck". Just copy this folder to 
-      your NetLogo extensions directory. Then, you can open the NetLogo model "Systemcheck.nlogo", 
-      which is inside the "rsystemcheck" folder. <br />
-      This model enables you to check the requirements of the R-Extension. Things to check are the 
-      Java version (used for NetLogo and R: yes, they can differ, since NetLogo comes with its own 
-      Java, e.g. on Windows), the availability of R from a terminal/shell, the availability of the 
-      rJava/JRI package and the availability of the JavaGD package (just in case you want to use 
-      the included plotting device). <br /><br />
       Some notes on common errors:<br />
     <ol>
-      <li>NetLogo closes immediatly after leaving the Code Tab or pressing the check button:<br />
+      <li>NetLogo closes immediately after leaving the Code Tab or pressing the check button:<br />
           This indicates, that the extension was not able to start R. Please check, if you can   
-          start R from a terminal/shell. Please use the RSystemCheck-Extension!
+          start R from a terminal/shell.
       </li>
       <li>You get a java.lang.NoClassDefFoundError: org/rosuda/REngine/REngine at 
           org.nlogo.extension.r.Entry.runOnce error:<br />
           The extension was not able to connect to the JRI-library. Please check, if you are able 
           to load the rJava package within an R shell (<i>library(rJava)</i>) and have a look to 
-          your JRI_HOME environment variable. Please use the RSystemCheck-Extension!
+          your JRI_HOME environment variable.
       </li>
       <li>You're a Windows 64-bit user:<br />
           Please note, that R (since version 2.12) will be installed as dual 32-/64-bit version, 
           while NetLogo comes with it's own Java (JRE, Java Runtime Environment) with 32-bit. You 
           have to harmonize your NetLogo, Java in terminal/shell and R in terminal/shell and your 
-          R packages (rJava, JavaGD) to 32- or to 64-bit. Please use the RSystemCheck-Extension to 
-          get information about and test your configuration. You can configure your R to a 32-bit 
+          R packages (rJava, JavaGD) to 32- or to 64-bit. You can configure your R to a 32-bit 
           version (since R version 2.12) by change the entry in your PATH environment variable 
           from %R_HOME%/bin to %R_HOME%/bin/i386. To start NetLogo directly from a terminal/shell 
-          could enable you to run NetLogo with the same Java version as R do (and enables you to 
+          could enable you to run NetLogo with the same Java version as R does (and enables you to 
           use 64-bit Java). Just open a terminal/shell/ms-dos prompt, navigate to your NetLogo 
-          installation folder and type <i>java -jar NetLogo.jar</i>.  
+          installation folder, subfolder app, and type <i>java -jar NetLogo.jar</i>.  
+      </li>
+      <li>Loading R packages fails.<br /> 
+	  See, for example, <a href="https://beta.groups.yahoo.com/neo/groups/netlogo-users/conversations/topics/18786?reverse=1">this</a> post.
+      </li>
+      <li>After changing the working directory in R (e.g. with setwd()) NetLogo doesn't find the extension.<br />
+	  Changing working directory in R doesn't work because it changes also Java's library path that NetLogo needs to find its extensions.
+	  Please use absolute path to any files in R instead of changing the working directory.
       </li>
     </ol>
     
@@ -471,7 +461,7 @@
       Please read the notes at the top of the output text area after opening the shell!
       On Linux OS it can happen that you see an error message from X11. Please check, if 
       everything worked correcly. If so, you can ignore these messages. If not, please write a 
-      report to jthiele @ gwdg.de.
+      report to rnetlogo @ gmx.de.
     </p>
     <h4>
       <a name="renvironments" id="renvironments">R Environments</a>

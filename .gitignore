@@ -1,0 +1,14 @@
+/build/
+/dist/
+target/
+
+# common filenames
+.DS_Store
+
+# wildcards
+*.class
+*.tmp
+*_managed/
+*~
+.#*
+\#*

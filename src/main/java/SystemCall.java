@@ -192,7 +192,7 @@ public final class SystemCall {
       for (int i = 0; i < someParameters.length; i++) {
         final String aParameter = someParameters[i];
         if (aParameter == null || aParameter.length() == 0) {
-          throw new IllegalArgumentException("Parameter n� '" + i + "' must not be empty");
+          throw new IllegalArgumentException("Parameter # '" + i + "' must not be empty");
         }
         this.parameters.add(aParameter);
       }

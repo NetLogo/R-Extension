@@ -72,7 +72,7 @@ public class ConsoleSync {
 
     String s = null;
     if (msgs.size() > 0) {
-      s = (String) msgs.elementAt(0);
+      s = msgs.elementAt(0);
       msgs.removeElementAt(0);
     }
     if (msgs.size() == 0) notificationArrived = false;

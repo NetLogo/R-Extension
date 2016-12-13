@@ -43,14 +43,15 @@ import java.io.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.*;
-import org.nlogo.api.CompilerException;
-import org.nlogo.api.ErrorSource;
 import org.nlogo.api.ExtensionException;
-import org.nlogo.api.ExtensionObject;
-import org.nlogo.api.Primitive;
+import org.nlogo.core.ExtensionObject;
+import org.nlogo.core.CompilerException;
+import org.nlogo.core.ErrorSource;
+import org.nlogo.core.Primitive;
 import org.rosuda.REngine.REngine;
 
 /**
@@ -270,11 +271,11 @@ class ShellWindow extends javax.swing.JFrame
    */
   public static void addPath(String s) throws Exception {
     java.io.File f = new java.io.File(s);
-    java.net.URL u = f.toURL();
+    java.net.URL u = f.toURI().toURL();
     java.net.URLClassLoader urlClassLoader =
         (java.net.URLClassLoader) ClassLoader.getSystemClassLoader();
-    Class urlClass = java.net.URLClassLoader.class;
-    Method method = urlClass.getDeclaredMethod("addURL", new Class[] {java.net.URL.class});
+    Class<?> urlClass = java.net.URLClassLoader.class;
+    Method method = urlClass.getDeclaredMethod("addURL", new Class<?>[] {java.net.URL.class});
     method.setAccessible(true);
     method.invoke(urlClassLoader, new Object[] {u});
   }
@@ -470,41 +471,19 @@ class ShellWindow extends javax.swing.JFrame
 
   /** currently unused */
   @Override
-  public void addToLibraryPath(Object arg0, String arg1) {}
-
-  /** currently unused */
-  @Override
   public String dumpExtensionPrimitives() {
     return null;
   }
 
   /** currently unused */
   @Override
+  public Iterable<org.nlogo.api.ClassManager> loadedExtensions() {
+    return new ArrayList<org.nlogo.api.ClassManager>();
+  }
+
+  /** currently unused */
+  @Override
   public String dumpExtensions() {
-    return null;
-  }
-
-  /** currently unused */
-  @Override
-  public List<String> getExtensionNames() {
-    return null;
-  }
-
-  /** currently unused */
-  @Override
-  public org.nlogo.api.File getFile(String arg0) throws ExtensionException {
-    return null;
-  }
-
-  /** currently unused */
-  @Override
-  public List<String> getJarPaths() {
-    return null;
-  }
-
-  /** currently unused */
-  @Override
-  public String getSource(String arg0) throws IOException {
     return null;
   }
 
@@ -533,25 +512,7 @@ class ShellWindow extends javax.swing.JFrame
 
   /** currently unused */
   @Override
-  public String resolvePath(String arg0) {
-    return null;
-  }
-
-  /** currently unused */
-  @Override
-  public String resolvePathAsURL(String arg0) {
-    return null;
-  }
-
-  /** currently unused */
-  @Override
   public Object retrieveObject() {
     return null;
-  }
-
-  /** currently unused */
-  @Override
-  public boolean profilingEnabled() {
-    return false;
   }
 }

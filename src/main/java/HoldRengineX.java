@@ -100,8 +100,8 @@ public class HoldRengineX {
    * @return REXP object representing the NetLogo list
    */
   public REXP resolveNLObject(Object obj) throws ExtensionException {
-    if (obj instanceof org.nlogo.api.LogoList) {
-      org.nlogo.api.LogoList logoli = (org.nlogo.api.LogoList) obj;
+    if (obj instanceof org.nlogo.core.LogoList) {
+      org.nlogo.core.LogoList logoli = (org.nlogo.core.LogoList) obj;
       // if it is an empty NetLogo List
       if (logoli.size() == 0) {
         REXP ret = new REXPNull();
@@ -114,7 +114,7 @@ public class HoldRengineX {
         if (logoli.get(0) instanceof java.lang.String) {
           String[] array = new String[logoli.size()];
           int i = 0;
-          Iterator<Object> it = logoli.iterator();
+          Iterator<Object> it = logoli.javaIterator();
           while (it.hasNext()) {
             array[i] = ((String) it.next());
             i++;
@@ -131,7 +131,7 @@ public class HoldRengineX {
         if (logoli.get(0) instanceof java.lang.Double) {
           double[] array = new double[logoli.size()];
           int i = 0;
-          Iterator<Object> it = logoli.iterator();
+          Iterator<Object> it = logoli.javaIterator();
           while (it.hasNext()) {
             array[i] = ((Double) it.next()).doubleValue();
             i++;
@@ -148,7 +148,7 @@ public class HoldRengineX {
         if (logoli.get(0) instanceof java.lang.Boolean) {
           boolean[] array = new boolean[logoli.size()];
           int i = 0;
-          Iterator<Object> it = logoli.iterator();
+          Iterator<Object> it = logoli.javaIterator();
           while (it.hasNext()) {
             array[i] = ((Boolean) it.next()).booleanValue();
             i++;
@@ -161,7 +161,7 @@ public class HoldRengineX {
           return ret;
           //return new REXPLogical(array);
         }
-        if (logoli.get(0) instanceof org.nlogo.api.LogoList) {
+        if (logoli.get(0) instanceof org.nlogo.core.LogoList) {
           org.rosuda.REngine.RList rlistxx = new RList();
           for (int i = 0; i < logoli.size(); i++) {
             rlistxx.add(resolveNLObject(logoli.get(i)));
@@ -182,7 +182,7 @@ public class HoldRengineX {
           //System.out.println("error in loopOverListTest - try other way...");
           REXP[] rexparray = new REXP[logoli.size()];
           int i = 0;
-          Iterator<Object> it = logoli.iterator();
+          Iterator<Object> it = logoli.javaIterator();
           while (it.hasNext()) {
             Object ob = it.next();
             if (ob instanceof String) {
@@ -194,7 +194,7 @@ public class HoldRengineX {
             if (ob instanceof Double) {
               rexparray[i] = new REXPDouble(((Double) ob).doubleValue());
             }
-            if (ob instanceof org.nlogo.api.LogoList) {
+            if (ob instanceof org.nlogo.core.LogoList) {
               rexparray[i] = resolveNLObject(ob);
             }
             i++;
@@ -250,7 +250,7 @@ public class HoldRengineX {
           logoliarr[i] = new org.nlogo.api.LogoListBuilder();
         }
         org.nlogo.agent.AgentSet agentset = (org.nlogo.agent.AgentSet) ag;
-        org.nlogo.agent.AgentSet.Iterator it = agentset.iterator();
+        org.nlogo.agent.AgentIterator it = agentset.iterator();
         // iterate over agents
         while (it.hasNext()) {
           org.nlogo.agent.Agent agent = it.next();
@@ -341,7 +341,7 @@ public class HoldRengineX {
     if (result.isNumeric()) {
       double[] dbarray = result.asDoubles();
       org.nlogo.api.LogoListBuilder llist =
-          new org.nlogo.api.LogoListBuilder(); //new org.nlogo.api.LogoList();
+          new org.nlogo.api.LogoListBuilder(); //new org.nlogo.core.LogoList();
       for (int i = 0; i < dbarray.length; i++) {
         llist.add((Double) dbarray[i]);
       }
@@ -354,7 +354,7 @@ public class HoldRengineX {
       int[] intarray = result.asIntegers();
 
       org.nlogo.api.LogoListBuilder llist =
-          new org.nlogo.api.LogoListBuilder(); //new org.nlogo.api.LogoList();		    		
+          new org.nlogo.api.LogoListBuilder(); //new org.nlogo.core.LogoList();
       for (int i = 0; i < intarray.length; i++) {
         llist.add(new Double(((Integer) intarray[i]).doubleValue()));
       }
@@ -366,7 +366,7 @@ public class HoldRengineX {
     if (result.isString()) {
       String[] strarray = result.asStrings();
       org.nlogo.api.LogoListBuilder llist =
-          new org.nlogo.api.LogoListBuilder(); //new org.nlogo.api.LogoList();
+          new org.nlogo.api.LogoListBuilder(); //new org.nlogo.core.LogoList();
       for (int i = 0; i < strarray.length; i++) {
         llist.add(strarray[i]);
       }
@@ -378,7 +378,7 @@ public class HoldRengineX {
     if (result.isLogical()) {
       int[] boolarray = result.asIntegers();
       org.nlogo.api.LogoListBuilder llist =
-          new org.nlogo.api.LogoListBuilder(); //new org.nlogo.api.LogoList();		    		
+          new org.nlogo.api.LogoListBuilder(); //new org.nlogo.core.LogoList();
       for (int i = 0; i < boolarray.length; i++) {
         if (boolarray[i] == 1) {
           llist.add(true);
@@ -424,8 +424,8 @@ public class HoldRengineX {
     }
     if (result.isList()) {
       org.nlogo.api.LogoListBuilder llist =
-          new org.nlogo.api.LogoListBuilder(); //new org.nlogo.api.LogoList();
-      java.util.ListIterator li = result.asList().listIterator();
+          new org.nlogo.api.LogoListBuilder(); //new org.nlogo.core.LogoList();
+      java.util.ListIterator<?> li = result.asList().listIterator();
       while (li.hasNext()) {
         REXP val = (REXP) li.next();
         llist.add(returnObject(val));
@@ -457,240 +457,4 @@ public class HoldRengineX {
               + ex);
     }
   }
-
-  /**
-   * * unused
-   *
-   * @param rlist
-   * @param obj
-   */
-  /*
-  public void fillNestedList(RList rlist, Object obj)
-  {
-  if (obj instanceof org.nlogo.api.LogoList)
-  {
-  	org.nlogo.api.LogoList logoli = (org.nlogo.api.LogoList)obj;
-  	if (logoli.get(0) instanceof org.nlogo.api.LogoList)
-      {
-  		org.rosuda.REngine.RList rlistx = new RList();
-        		for (int i=0; i<logoli.size(); i++)
-  		{
-        			fillNestedList(rlistx, logoli.get(i));
-  		}
-        		//rlist.add(new REXPList(rlistx));
-        		REXPGenericVector gv = new REXPGenericVector(rlistx);
-        		rlist.add(gv);
-    	    }
-  	else
-  	{
-  		org.rosuda.REngine.RList rlistx = new RList();
-      	for (int i=0; i<logoli.size(); i++)
-  		{
-  			rlistx.add(rConnection.wrap(logoli.get(i)));
-  		}
-      	//rlist.add(new REXPList(rlistx));
-      	rlist.add(new REXPGenericVector(rlistx));
-  	}
-  	*/
-  /*
-     // create an R-variable with String[]-value
-     if (logoli.get(0) instanceof java.lang.String)
-     {
-     	org.rosuda.REngine.RList rlistx = new RList();
-     	for (int i=0; i<logoli.size(); i++)
-  	{
-  		rlistx.add(new REXPString((String)logoli.get(i)));
-  	}
-     	rlist.add(new REXPList(rlistx));
-     }
-     // create an R-variable with Double[]-Value
-     if (logoli.get(0) instanceof java.lang.Double)
-     {
-        	org.rosuda.REngine.RList rlistx = new RList();
-     	for (int i=0; i<logoli.size(); i++)
-  	{
-  		rlistx.add(new REXPDouble((Double)logoli.get(i)));
-  	}
-     	rlist.add(new REXPList(rlistx));
-     }
-    // create an R-variable with Boolean[]-Value
-    if (logoli.get(0) instanceof java.lang.Boolean)
-    {
-     org.rosuda.REngine.RList rlistx = new RList();
-  	for (int i=0; i<logoli.size(); i++)
-  	{
-  		rlistx.add(new REXPLogical((Boolean)logoli.get(i)));
-  	}
-  	rlist.add(new REXPList(rlistx));
-    }
-  */
-  /*
-  }
-  else
-  {
-  	rlist.add(rConnection.wrap(obj));
-  }
-  	*/
-  /*
-  if (obj instanceof String)
-  {
-  	rlist.add(new org.rosuda.REngine.REXPString((String)obj));
-  }
-  // create an R-variable with Double-Value
-  if (obj instanceof Double)
-  {
-  	rlist.add(new org.rosuda.REngine.REXPDouble(((Double)obj).doubleValue()));
-  }
-  // create an R-variable with Boolean-Value
-  if (obj instanceof java.lang.Boolean)
-  {
-  	rlist.add(new org.rosuda.REngine.REXPLogical((Boolean)obj));
-  }
-  if (obj instanceof org.nlogo.api.LogoList)
-  {
-  	org.nlogo.api.LogoList logoli = (org.nlogo.api.LogoList)obj;
-  	if (logoli.get(0) instanceof org.nlogo.api.LogoList)
-      {
-      	org.rosuda.REngine.RList rlistx = new RList();
-        		for (int i=0; i<logoli.size(); i++)
-  		{
-  			fillNestedList(rlistx, logoli.get(i));
-  		}
-        		rlist.add(new REXPList(rlistx));
-      }
-      // create an R-variable with String[]-value
-      if (logoli.get(0) instanceof java.lang.String)
-      {
-      	org.rosuda.REngine.RList rlistx = new RList();
-      	for (int i=0; i<logoli.size(); i++)
-  		{
-  			rlistx.add(new REXPString((String)logoli.get(i)));
-  		}
-      	rlist.add(new REXPList(rlistx));
-      }
-      // create an R-variable with Double[]-Value
-      if (logoli.get(0) instanceof java.lang.Double)
-      {
-         	org.rosuda.REngine.RList rlistx = new RList();
-      	for (int i=0; i<logoli.size(); i++)
-  		{
-  			rlistx.add(new REXPDouble((Double)logoli.get(i)));
-  		}
-      	rlist.add(new REXPList(rlistx));
-      }
-     // create an R-variable with Boolean[]-Value
-     if (logoli.get(0) instanceof java.lang.Boolean)
-     {
-  	   org.rosuda.REngine.RList rlistx = new RList();
-  		for (int i=0; i<logoli.size(); i++)
-  		{
-  			rlistx.add(new REXPLogical((Boolean)logoli.get(i)));
-  		}
-  		rlist.add(new REXPList(rlistx));
-     }
-  }
-  */
-  /*
-  }
-  */
-
-  /*
-  public void AssignAgentsetorAgent(Argument args[], boolean as_dataframe) throws ExtensionException
-  {
-  	try
-  	{
-  		// get agent set or agent
-  		Object ag = args[1].get();
-          /* get variable names */
-  /*
-  	        java.util.Vector<String> names = new java.util.Vector<String>();
-  			for (int i=0; i<args.length-2; i++)
-  	    	{
-  				names.add(args[i+2].getString());
-  	    	}
-  	        org.rosuda.REngine.RList rlist_base = new RList();
-  */
-  /* if input is an agentset */
-  /*
-  			if (ag instanceof org.nlogo.agent.AgentSet)
-  			{
-  				org.nlogo.agent.AgentSet agentset = (org.nlogo.agent.AgentSet)ag;
-
-  		    	for (int j = 0; j<names.size(); j++)
-  				{
-  			        org.rosuda.REngine.RList rlist = new RList();
-  		    		org.nlogo.agent.AgentSet.Iterator it = agentset.iterator();
-  	    			org.nlogo.agent.Agent[] ags = new org.nlogo.agent.Agent[agentset.count()];
-  	    			int i = 0;
-  	    			// iterate over agents
-  		    		while (it.hasNext())
-  		    		{
-  		    			ags[i] = (org.nlogo.agent.Agent)it.next();
-  		    			// get index of agent variables
-  			    		int varindex = ags[i].world().indexOfVariable(ags[i], names.get(j).toUpperCase());
-
-  	    				if (ags[i] instanceof org.nlogo.agent.Turtle)
-  			    		{
-  	    					rlist.add(resolveNLObject(ags[i].getTurtleVariable(varindex)));
-  	    				}
-  			    		if (ags[i] instanceof org.nlogo.agent.Link)
-  	    				{
-  	    					rlist.add(resolveNLObject(ags[i].getLinkVariable(varindex)));
-  	    				}
-  		    			if (ags[i] instanceof org.nlogo.agent.Patch)
-  		    			{
-  	    					rlist.add(resolveNLObject(ags[i].getPatchVariable(varindex)));
-  		    			}
-  		    			i++;
-  	    			}
-  		    		rlist_base.add(new REXPGenericVector(rlist));
-  				}
-  			}
-  			else
-  */
-  /* if input isn't an agentset but agent */
-  /*
-  			if (ag instanceof org.nlogo.agent.Agent)
-  			{
-  				org.nlogo.agent.Agent agent = (org.nlogo.agent.Agent)ag;
-  		    	for (int j = 0; j<names.size(); j++)
-  				{
-  		    		org.rosuda.REngine.RList rlist = new RList();
-  		    		// get index of agent variables
-  		    		int varindex = agent.world().indexOfVariable(agent, names.get(j).toUpperCase());
-
-  					if (agent instanceof org.nlogo.agent.Turtle)
-  		    		{
-      					rlist.add(resolveNLObject(agent.getTurtleVariable(varindex)));
-  					}
-  		    		if (agent instanceof org.nlogo.agent.Link)
-  					{
-      					rlist.add(resolveNLObject(agent.getLinkVariable(varindex)));
-  					}
-  	    			if (agent instanceof org.nlogo.agent.Patch)
-  	    			{
-      					rlist.add(resolveNLObject(agent.getPatchVariable(varindex)));
-  	    			}
-  		    		rlist_base.add(new REXPGenericVector(rlist));
-  				}
-  			}
-  			rlist_base.names = names;
-  			if (as_dataframe)
-  			{
-  				rConnection.assign(args[0].getString(), org.rosuda.REngine.REXP.createDataFrame(rlist_base), this.WorkingEnvironment);;
-  			}
-  			else
-  			{
-  				rConnection.assign(args[0].getString(), new REXPGenericVector(rlist_base), this.WorkingEnvironment);
-  			}
-  			//System.gc();
-      		//System.gc();
-  		}
-  		catch (Exception ex)
-  		{
-  			throw new ExtensionException("Error in AssignAgentsetorAgent: \n"+ex);
-  		}
-  	}
-  */
-
 }

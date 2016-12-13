@@ -33,11 +33,12 @@ If you do not wish to do so, delete this exception statement from your version.
 import java.lang.reflect.*;
 import org.nlogo.api.Argument;
 import org.nlogo.api.Context;
-import org.nlogo.api.DefaultCommand;
-import org.nlogo.api.DefaultReporter;
+import org.nlogo.api.Command;
+import org.nlogo.api.Reporter;
 import org.nlogo.api.ExtensionException;
 import org.nlogo.api.LogoException;
-import org.nlogo.api.Syntax;
+import org.nlogo.core.Syntax;
+import org.nlogo.core.SyntaxJ;
 import org.rosuda.REngine.*;
 
 /**
@@ -144,26 +145,26 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
       // if NetLogo running headless, do not create interactiveShell and REngineCallbacks
       // Don't forget to call "stop" in the model!
       if (System.getProperty("java.awt.headless") == "true") {
-        Class rengineClass = Class.forName("org.rosuda.REngine.JRI.JRIEngine");
-        Class callbacks_class = Class.forName("org.rosuda.REngine.REngineCallbacks");
+        Class<?> rengineClass = Class.forName("org.rosuda.REngine.JRI.JRIEngine");
+        Class<?> callbacks_class = Class.forName("org.rosuda.REngine.REngineCallbacks");
         Method thisMethod = rengineClass.getDeclaredMethod("createEngine");
         REngine rToStore = (REngine) thisMethod.invoke(rengineClass);
         rConn = new HoldRengineX(rToStore);
       } else {
         // NetLogo running in GUI mode
         if (lastEngine == null) {
-          Class iashell_class = Class.forName("org.nlogo.extension.r.ShellWindow");
-          Class partypes1[] = new Class[1];
+          Class<?> iashell_class = Class.forName("org.nlogo.extension.r.ShellWindow");
+          Class<?> partypes1[] = new Class<?>[1];
           partypes1[0] = ConsoleSync.class;
-          Constructor ct_is = iashell_class.getConstructor(partypes1);
+          Constructor<?> ct_is = iashell_class.getConstructor(partypes1);
           Object arglist1[] = new Object[1];
           arglist1[0] = rSync;
           Object intershellObj = ct_is.newInstance(arglist1);
           org.nlogo.api.ExtensionManager tc = (org.nlogo.api.ExtensionManager) intershellObj;
           shellwin = tc;
-          Class rengineClass = Class.forName("org.rosuda.REngine.JRI.JRIEngine");
-          Class callbacks_class = Class.forName("org.rosuda.REngine.REngineCallbacks");
-          Class partypes[] = new Class[3];
+          Class<?> rengineClass = Class.forName("org.rosuda.REngine.JRI.JRIEngine");
+          Class<?> callbacks_class = Class.forName("org.rosuda.REngine.REngineCallbacks");
+          Class<?> partypes[] = new Class<?>[3];
           partypes[0] = String[].class;
           partypes[1] = callbacks_class;
           partypes[2] = boolean.class;
@@ -224,9 +225,9 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
    *
    * @since new in Version 1.1
    */
-  public static class Stop extends DefaultCommand {
+  public static class Stop implements Command {
     public Syntax getSyntax() {
-      return Syntax.commandSyntax(new int[] {});
+      return SyntaxJ.commandSyntax(new int[] {});
     }
 
     public String getAgentClassString() {
@@ -249,9 +250,9 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
    *
    * @since new in Version 1.0beta
    */
-  public static class SetPlotDevice extends DefaultCommand {
+  public static class SetPlotDevice implements Command {
     public Syntax getSyntax() {
-      return Syntax.commandSyntax(new int[] {});
+      return SyntaxJ.commandSyntax(new int[] {});
     }
 
     public String getAgentClassString() {
@@ -274,9 +275,9 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
    *
    * @since new in Version 0.3
    */
-  public static class interactiveShell extends DefaultCommand {
+  public static class interactiveShell implements Command {
     public Syntax getSyntax() {
-      return Syntax.commandSyntax(new int[] {});
+      return SyntaxJ.commandSyntax(new int[] {});
     }
 
     public String getAgentClassString() {
@@ -299,9 +300,9 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
   /**
    * Class to create a new Vector from Agent-Variables. (Implementation of the primitive putAgent)
    */
-  public static class PutAgent extends DefaultCommand {
+  public static class PutAgent implements Command {
     public Syntax getSyntax() {
-      return Syntax.commandSyntax(
+      return SyntaxJ.commandSyntax(
           new int[] {
             Syntax.StringType(),
             Syntax.AgentsetType() | Syntax.AgentType(),
@@ -326,9 +327,9 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
    * Class to create a new R-DataFrame from Agent-Variables. (Implementation of the primitive
    * putAgentDf)
    */
-  public static class PutAgentDataFrame extends DefaultCommand {
+  public static class PutAgentDataFrame implements Command {
     public Syntax getSyntax() {
-      return Syntax.commandSyntax(
+      return SyntaxJ.commandSyntax(
           new int[] {
             Syntax.StringType(),
             Syntax.AgentsetType() | Syntax.AgentType(),
@@ -353,9 +354,9 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
    * Class to create a new R-DataFrame from NetLogo-Values. (Implementation of the primitive
    * putDataframe)
    */
-  public static class PutDataframe extends DefaultCommand {
+  public static class PutDataframe implements Command {
     public Syntax getSyntax() {
-      return Syntax.commandSyntax(
+      return SyntaxJ.commandSyntax(
           new int[] {Syntax.StringType(), Syntax.WildcardType() | Syntax.RepeatableType()});
     }
 
@@ -390,9 +391,9 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
   }
 
   /** Class to create a new R-List from NetLogo-Values. (Implementation of the primitive putList) */
-  public static class PutList extends DefaultCommand {
+  public static class PutList implements Command {
     public Syntax getSyntax() {
-      return Syntax.commandSyntax(
+      return SyntaxJ.commandSyntax(
           new int[] {Syntax.StringType(), Syntax.WildcardType() | Syntax.RepeatableType()});
     }
 
@@ -427,9 +428,9 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
    * Class to create a new named R-List from NetLogo-Values. (Implementation of the primitive
    * putNamedList)
    */
-  public static class PutNamedList extends DefaultCommand {
+  public static class PutNamedList implements Command {
     public Syntax getSyntax() {
-      return Syntax.commandSyntax(
+      return SyntaxJ.commandSyntax(
           new int[] {Syntax.StringType(), Syntax.WildcardType() | Syntax.RepeatableType()});
     }
 
@@ -464,9 +465,9 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
    * Class to create a new R-Variable/Array from NetLogo-Values. (Implementation of the primitive
    * put)
    */
-  public static class Put extends DefaultCommand {
+  public static class Put implements Command {
     public Syntax getSyntax() {
-      return Syntax.commandSyntax(new int[] {Syntax.StringType(), Syntax.WildcardType()});
+      return SyntaxJ.commandSyntax(new int[] {Syntax.StringType(), Syntax.WildcardType()});
     }
 
     public String getAgentClassString() {
@@ -489,9 +490,9 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
   /**
    * Class to evaluate submitted String in R without results. (Implementation of the primitive eval)
    */
-  public static class Eval extends DefaultCommand {
+  public static class Eval implements Command {
     public Syntax getSyntax() {
-      return Syntax.commandSyntax(new int[] {Syntax.StringType()});
+      return SyntaxJ.commandSyntax(new int[] {Syntax.StringType()});
     }
 
     public String getAgentClassString() {
@@ -513,9 +514,9 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
    * Class to evaluate submitted String directly in R Console without results. (Implementation of
    * the primitive evalDirect) Some packages (e.g. ggplot2) doesn't work with eval
    */
-  public static class EvalDirect extends DefaultCommand {
+  public static class EvalDirect implements Command {
     public Syntax getSyntax() {
-      return Syntax.commandSyntax(new int[] {Syntax.StringType()});
+      return SyntaxJ.commandSyntax(new int[] {Syntax.StringType()});
     }
 
     public String getAgentClassString() {
@@ -545,9 +546,9 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
    * Class to evaluate submitted String in R, and send back the results to NetLogo. (Implementation
    * of the primitive get)
    */
-  public static class Get extends DefaultReporter {
+  public static class Get implements Reporter {
     public Syntax getSyntax() {
-      return Syntax.reporterSyntax(new int[] {Syntax.StringType()}, Syntax.WildcardType());
+      return SyntaxJ.reporterSyntax(new int[] {Syntax.StringType()}, Syntax.WildcardType());
     }
 
     public Object report(Argument args[], Context context)
@@ -571,9 +572,9 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
    *
    * @since new in version 1.2
    */
-  public static class GC extends DefaultCommand {
+  public static class GC implements Command {
     public Syntax getSyntax() {
-      return Syntax.commandSyntax(new int[] {});
+      return SyntaxJ.commandSyntax(new int[] {});
     }
 
     public String getAgentClassString() {
@@ -592,9 +593,9 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
   }
 
   /** Class to clear R workspace. (Implementation of the primitive clear) */
-  public static class ClearWorkspace extends DefaultCommand {
+  public static class ClearWorkspace implements Command {
     public Syntax getSyntax() {
-      return Syntax.commandSyntax(new int[] {});
+      return SyntaxJ.commandSyntax(new int[] {});
     }
 
     public String getAgentClassString() {
@@ -618,9 +619,9 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
   }
 
   /** Class to clear local (nl.env) R workspace. (Implementation of the primitive clear) */
-  public static class ClearLocalWorkspace extends DefaultCommand {
+  public static class ClearLocalWorkspace implements Command {
     public Syntax getSyntax() {
-      return Syntax.commandSyntax(new int[] {});
+      return SyntaxJ.commandSyntax(new int[] {});
     }
 
     public String getAgentClassString() {

@@ -61,7 +61,7 @@ public class JavaLibraryPath {
     usr_pathsField.set(null, newUsr_paths);
   }
 
-  private static final Class[] parameters = new Class[] {URL.class};
+  private static final Class<?>[] parameters = new Class<?>[] {URL.class};
 
   public static void addFile(String s) throws IOException {
     File f = new File(s);
@@ -69,12 +69,12 @@ public class JavaLibraryPath {
   } //end method
 
   public static void addFile(File f) throws IOException {
-    addURL(f.toURL());
+    addURL(f.toURI().toURL());
   } //end method
 
   public static void addURL(URL u) throws IOException {
     URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-    Class sysclass = URLClassLoader.class;
+    Class<URLClassLoader> sysclass = URLClassLoader.class;
     try {
       Method method = sysclass.getDeclaredMethod("addURL", parameters);
       method.setAccessible(true);

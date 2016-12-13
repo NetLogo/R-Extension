@@ -172,42 +172,42 @@ public class MenuBar extends JMenuBar implements ActionListener, ItemListener {
         try {
           str3 = escapeStr(str3);
           if (str2.equals("pdf")) {
-            jgd.engine.parseAndEval(
+            JavaGDFrame.engine.parseAndEval(
                 ".javaGD.copy.device(devNr="
                     + (jgd.getDeviceNumber() + 1)
                     + ", device=pdf, file=\""
                     + str3
                     + "\",onefile=TRUE, paper=\"special\")");
           } else if (str2.equals("eps")) {
-            jgd.engine.parseAndEval(
+            JavaGDFrame.engine.parseAndEval(
                 ".javaGD.copy.device(devNr="
                     + (jgd.getDeviceNumber() + 1)
                     + ", device=postscript, file=\""
                     + str3
                     + "\",onefile=FALSE, paper=\"special\")");
           } else if (str2.equals("png")) {
-            jgd.engine.parseAndEval(
+            JavaGDFrame.engine.parseAndEval(
                 ".javaGD.copy.device(devNr="
                     + (jgd.getDeviceNumber() + 1)
                     + ", device=png, file=\""
                     + str3
                     + "\",units=\"in\",res=244)");
           } else if (str2.equals("jpeg")) {
-            jgd.engine.parseAndEval(
+            JavaGDFrame.engine.parseAndEval(
                 ".javaGD.copy.device(devNr="
                     + (jgd.getDeviceNumber() + 1)
                     + ", device=jpeg, file=\""
                     + str3
                     + "\",units=\"in\",res=72)");
           } else if (str2.equals("bmp")) {
-            jgd.engine.parseAndEval(
+            JavaGDFrame.engine.parseAndEval(
                 ".javaGD.copy.device(devNr="
                     + (jgd.getDeviceNumber() + 1)
                     + ", device=bmp, file=\""
                     + str3
                     + "\",units=\"in\",res=244)");
           } else if (str2.equals("tiff")) {
-            jgd.engine.parseAndEval(
+            JavaGDFrame.engine.parseAndEval(
                 ".javaGD.copy.device(devNr="
                     + (jgd.getDeviceNumber() + 1)
                     + ", device=tiff, file=\""

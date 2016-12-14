@@ -44,13 +44,11 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Vector;
 import javax.swing.*;
-import org.nlogo.api.ExtensionException;
-import org.nlogo.core.ExtensionObject;
 import org.nlogo.core.CompilerException;
 import org.nlogo.core.ErrorSource;
+import org.nlogo.core.ExtensionObject;
 import org.nlogo.core.Primitive;
 import org.rosuda.REngine.REngine;
 
@@ -432,20 +430,12 @@ class ShellWindow extends javax.swing.JFrame
   @Override
   public void storeObject(Object arg0) {
     try {
-      /*
-      // old way with environment variable JAVAGD_HOME
-      final String filesep = System.getProperty("file.separator");
-      String filepath = System.getenv("JAVAGD_HOME");
-           	JavaLibraryPath.addFile(filepath+filesep+"/java/javaGD.jar");
-      JavaLibraryPath.addFile("extensions/r/rplot.jar");
-      org.nlogo.extension.r.plot.JavaGDFrame.engine = Entry.rConn.rConnection;
-            */
       Entry.rConn.execute(
           Entry.rConn.rConnection, "require(JavaGD)", Entry.rConn.WorkingEnvironment, true);
       // new way: first load JavaGD package, then get path to the package and load the javaGD.jar
       String filepath =
           Entry.rConn
-              .execute(Entry.rConn.rConnection, ".path.package(\"JavaGD\")", null, true)
+              .execute(Entry.rConn.rConnection, "path.package(\"JavaGD\")", null, true)
               .asString();
       final String filesep = System.getProperty("file.separator");
       JavaLibraryPath.addFile(filepath + filesep + "/java/javaGD.jar");

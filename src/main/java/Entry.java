@@ -30,13 +30,23 @@ If you modify this library, you may extend this exception to your version of the
 If you do not wish to do so, delete this exception statement from your version.
 */
 
+import com.sun.jna.Library;
+import com.sun.jna.Native;
+import java.io.IOException;
 import java.lang.reflect.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.security.Permission;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import org.nlogo.api.Argument;
-import org.nlogo.api.Context;
 import org.nlogo.api.Command;
-import org.nlogo.api.Reporter;
+import org.nlogo.api.Context;
 import org.nlogo.api.ExtensionException;
 import org.nlogo.api.LogoException;
+import org.nlogo.api.Reporter;
 import org.nlogo.core.Syntax;
 import org.nlogo.core.SyntaxJ;
 import org.rosuda.REngine.*;
@@ -62,6 +72,42 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
 	 * Object to synchronize console input/execution
 	 *//*private*/ public static ConsoleSync rSync = new ConsoleSync();
 
+  static String osName = System.getProperty("os.name").toLowerCase();
+
+  public interface LibC extends Library {
+    public int setenv(String name, String value, int overwrite);
+  }
+
+  public interface WinLibC extends Library {
+    public int _putenv_s(String key, String value);
+  }
+
+  public interface WinLib32 extends Library {
+    public int SetDllDirectoryA(String directory);
+  }
+
+  static LibC libc = null;
+  static WinLibC winLibc = null;
+  static WinLib32 winLib32 = null;
+
+  static {
+    try {
+      if (osName.startsWith("windows", 0)) {
+        String msvcrLibName =
+            System.getProperty("org.nlogo.r.extension.msvcr.lib.name", "msvcr120");
+        winLibc = (WinLibC) Native.loadLibrary(msvcrLibName, WinLibC.class);
+        winLib32 = (WinLib32) Native.loadLibrary("kernel32", WinLib32.class);
+      } else {
+        libc = (LibC) Native.loadLibrary("c", LibC.class);
+      }
+    } catch (Throwable t) {
+      System.err.println("Error loading native library: " + t.getMessage());
+      t.printStackTrace();
+    }
+  }
+
+  Configuration configuration = null;
+
   /**
    * Method executed when extension is loaded and only then. Initializes the connection to R and
    * ShellWindow or loads the stored ShellWindow instance from storage.
@@ -69,74 +115,11 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
    * @param em an instance of ExtensionManager, handled by NetLogo
    */
   public void runOnce(org.nlogo.api.ExtensionManager em) throws ExtensionException {
+    configuration = Configuration.fromRExtensionProperties();
+    Path rHome = validateRHome();
     try {
-      try {
-        // dynamically load of the needed JARs from the JRI package
-        final String filesep = System.getProperty("file.separator");
-        String filepath = System.getenv("JRI_HOME");
-        JavaLibraryPath.addFile(filepath + filesep + "JRI.jar");
-        JavaLibraryPath.addFile(filepath + filesep + "REngine.jar");
-        JavaLibraryPath.addFile(filepath + filesep + "JRIEngine.jar");
-
-        boolean _64exists = false;
-        boolean _32exists = false;
-        java.io.File file = new java.io.File(filepath + "/x64/");
-        _64exists = file.exists();
-
-        file = new java.io.File(filepath + "/i386/");
-        _32exists = file.exists();
-
-        if (System.getProperty("sun.arch.data.model", "?").contains("64") && _64exists) {
-          JavaLibraryPath.addLibraryPath(new java.io.File(filepath + "/x64"));
-        } else if (System.getProperty("sun.arch.data.model", "?").contains("32") && _32exists) {
-          JavaLibraryPath.addLibraryPath(new java.io.File(filepath + "/i386"));
-        } else {
-          JavaLibraryPath.addLibraryPath(new java.io.File(filepath));
-        }
-
-        //JavaLibraryPath.addLibraryPath(new java.io.File(filepath));
-
-        /*
-        // check for 64-bit
-        String bits = System.getProperty("sun.arch.data.model", "?");
-        if (bits.equals("64"))
-        {
-        	System.out.println("found 64bit JVM...");
-        	java.io.File file = new java.io.File(filepath+"/x64/");
-        	if (file.exists())
-        	{
-        		System.out.println("found 64bit R/JRI...");
-        		JavaLibraryPath.addLibraryPath(new java.io.File(filepath+"/x64/"));
-        	}
-        	else
-        	{
-        		JOptionPane.showMessageDialog(null, "Found 64-bit Java, but just 32-bit R/JRI. I will try to load it.", "R-Extension",
-        				JOptionPane.INFORMATION_MESSAGE);
-        		JavaLibraryPath.addLibraryPath(new java.io.File(filepath));
-        	}
-        }
-        else
-        {
-        	System.out.println("found 32bit JVM...");
-        	java.io.File file = new java.io.File(filepath+"/i386/");
-        	if (file.exists())
-        	{
-        		System.out.println("found explicit i386 R/JRI...");
-        		JavaLibraryPath.addLibraryPath(new java.io.File(filepath+"/i386/"));
-        	}
-        	else
-        	{
-        		System.out.println("found standard 32bit R/JRI...");
-        		JavaLibraryPath.addLibraryPath(new java.io.File(filepath));
-        	}
-        }
-         */
-
-      } catch (UnsatisfiedLinkError localUnsatisfiedLinkError) {
-        throw new ExtensionException(
-            "Cannot load rJava/JRI. Please check your rJava installation and JRI_HOME environment variable.\n"
-                + localUnsatisfiedLinkError);
-      }
+      // dynamically load of the needed JARs from the JRI package
+      loadJRILibraries(findJRIHomePath(configuration), rHome);
 
       org.rosuda.REngine.REngine lastEngine = org.rosuda.REngine.REngine.getLastEngine();
       // if no further REnginer was initialized
@@ -144,55 +127,192 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
       // Check for headless mode
       // if NetLogo running headless, do not create interactiveShell and REngineCallbacks
       // Don't forget to call "stop" in the model!
-      if (System.getProperty("java.awt.headless") == "true") {
-        Class<?> rengineClass = Class.forName("org.rosuda.REngine.JRI.JRIEngine");
-        Class<?> callbacks_class = Class.forName("org.rosuda.REngine.REngineCallbacks");
-        Method thisMethod = rengineClass.getDeclaredMethod("createEngine");
-        REngine rToStore = (REngine) thisMethod.invoke(rengineClass);
-        rConn = new HoldRengineX(rToStore);
+      if (System.getProperty("java.awt.headless", "false") == "true"
+          || System.getProperty("org.nlogo.preferHeadless") == "true") {
+        rConn = headlessREngine();
       } else {
         // NetLogo running in GUI mode
         if (lastEngine == null) {
-          Class<?> iashell_class = Class.forName("org.nlogo.extension.r.ShellWindow");
-          Class<?> partypes1[] = new Class<?>[1];
-          partypes1[0] = ConsoleSync.class;
-          Constructor<?> ct_is = iashell_class.getConstructor(partypes1);
-          Object arglist1[] = new Object[1];
-          arglist1[0] = rSync;
-          Object intershellObj = ct_is.newInstance(arglist1);
-          org.nlogo.api.ExtensionManager tc = (org.nlogo.api.ExtensionManager) intershellObj;
-          shellwin = tc;
-          Class<?> rengineClass = Class.forName("org.rosuda.REngine.JRI.JRIEngine");
-          Class<?> callbacks_class = Class.forName("org.rosuda.REngine.REngineCallbacks");
-          Class<?> partypes[] = new Class<?>[3];
-          partypes[0] = String[].class;
-          partypes[1] = callbacks_class;
-          partypes[2] = boolean.class;
-          Object arglist[] = new Object[3];
-          arglist[0] = new String[] {"--no-save"};
-          arglist[1] = tc;
-          arglist[2] = true;
-          Method thisMethod = rengineClass.getDeclaredMethod("createEngine", partypes);
-          REngine rToStore = (REngine) thisMethod.invoke(rengineClass, arglist);
-          rConn = new HoldRengineX(rToStore);
-          em.storeObject(tc);
+          rConn = guiREngine();
+          em.storeObject(shellwin);
         }
         // otherwise, reload the last REngine object and retrieve the stored ShellWindow object
         else {
           // this will also create a new Environment
           rConn = new HoldRengineX(lastEngine);
-          Object temp = em.retrieveObject();
-          shellwin = (org.nlogo.api.ExtensionManager) temp;
+          shellwin = (org.nlogo.api.ExtensionManager) em.retrieveObject();
         }
       }
-    } catch (InvocationTargetException ex) {
-      throw new ExtensionException(
-          "Error in R-Extension: InvocationTargetException: Error in runOnce: \n"
-              + ex
-              + "\ncause: "
-              + ex.getCause());
+    } catch (UnsatisfiedLinkError ex) {
+      throw new ExtensionException("Error loading JRI library (Error #03): \n" + ex);
+    } catch (ExtensionException ex) {
+      throw ex;
     } catch (Exception ex) {
-      throw new ExtensionException("Error in R-Extension: Error in runOnce: \n" + ex);
+      throw new ExtensionException(
+          "Error in R-Extension: Error in runOnce (Error #04): \n" + ex, ex);
+    }
+  }
+
+  /** Returns the headless R engine */
+  HoldRengineX headlessREngine() throws ExtensionException {
+    try {
+      Class<?> rengineClass = Class.forName("org.rosuda.REngine.JRI.JRIEngine");
+      Class<?> callbacks_class = Class.forName("org.rosuda.REngine.REngineCallbacks");
+      Method thisMethod = rengineClass.getDeclaredMethod("createEngine");
+      REngine rToStore = (REngine) thisMethod.invoke(rengineClass);
+      return new HoldRengineX(rToStore);
+    } catch (Exception ex) {
+      throw new ExtensionException("Error Initializing Headless R Extension (Error #04).\n", ex);
+    }
+  }
+
+  private static class ExitTrappedException extends SecurityException {}
+
+  static final SecurityManager exitPreventingSecurityManager =
+      new SecurityManager() {
+        public void checkPermission(Permission permission) {
+          if (permission.getName().startsWith("exitVM")) {
+            throw new ExitTrappedException();
+          }
+        }
+      };
+
+  /** Returns the GUI R engine */
+  HoldRengineX guiREngine() throws ExtensionException {
+    // We do a bit of a song and dance here because JRIEngine.createEngine invokes
+    // a method that will perform a hard exit (System.exit(1)) if it can't find the
+    // appropriate library. This is exactly the sort of error we would like to report
+    // to the user. So we install a security manager that will prevent exiting and
+    // raise an exception if someone tries it, then we catch that exception and
+    // percolate the error to the user.
+    try {
+      Class<?> iashell_class = Class.forName("org.nlogo.extension.r.ShellWindow");
+      Class<?> partypes1[] = new Class<?>[] {ConsoleSync.class};
+      Constructor<?> shellConstructor = iashell_class.getConstructor(partypes1);
+      Object arglist1[] = new Object[] {rSync};
+      Object shell = shellConstructor.newInstance(arglist1);
+      org.nlogo.api.ExtensionManager tc = (org.nlogo.api.ExtensionManager) shell;
+      shellwin = tc;
+      Class<?> rengineClass = Class.forName("org.rosuda.REngine.JRI.JRIEngine");
+      Class<?> callbacks_class = Class.forName("org.rosuda.REngine.REngineCallbacks");
+      Class<?> partypes[] = new Class<?>[] {String[].class, callbacks_class, boolean.class};
+      Object arglist[] = new Object[] {new String[] {"--no-save"}, tc, true};
+      Method thisMethod = rengineClass.getDeclaredMethod("createEngine", partypes);
+      System.setSecurityManager(exitPreventingSecurityManager);
+      REngine rToStore = (REngine) thisMethod.invoke(rengineClass, arglist);
+      return new HoldRengineX(rToStore);
+    } catch (ExitTrappedException ex) {
+      throw new ExtensionException("Could not load R libraries. (Error #06)\n", ex);
+    } catch (ClassNotFoundException ex) {
+      throw new ExtensionException("Error initializing R extension. (Error #04)\n" + ex, ex);
+    } catch (NoSuchMethodException ex) {
+      throw new ExtensionException("Error initializing R extension. (Error #04)\n" + ex, ex);
+    } catch (IllegalAccessException ex) {
+      throw new ExtensionException("Error initializing R extension. (Error #04)\n" + ex, ex);
+    } catch (InstantiationException ex) {
+      throw new ExtensionException("Error initializing R extension. (Error #04)\n" + ex, ex);
+    } catch (InvocationTargetException ex) {
+      if (ex.getCause() instanceof ExitTrappedException) {
+        throw new ExtensionException("Could not load R libraries. (Error #06)\n", ex);
+      } else {
+        throw new ExtensionException(
+            "Error initializing R extension. (Error #04)\n" + ex + " " + ex.getCause(), ex);
+      }
+    } finally {
+      System.setSecurityManager(null);
+    }
+  }
+
+  /**
+   * Validates that R_HOME is set to a valid path, sets it from property if not set in environment.
+   */
+  public Path validateRHome() throws ExtensionException {
+    String rHomeEnv = System.getenv("R_HOME");
+    if (rHomeEnv == null || rHomeEnv.isEmpty()) {
+      if (!Files.exists(configuration.rHomePath())) {
+        throw new ExtensionException(
+            "Could not find R Home. Please set R home in the environment or in user.properties (Error #01)\n");
+      }
+      int setResult = 0;
+      try {
+        if (osName.startsWith("windows", 0) && winLibc != null) {
+          setResult =
+              winLibc._putenv_s("R_HOME", configuration.rHomePath().toAbsolutePath().toString());
+        } else {
+          setResult =
+              libc.setenv("R_HOME", configuration.rHomePath().toAbsolutePath().toString(), 1);
+        }
+      } catch (Exception e) {
+        setResult = -1;
+      }
+      if (setResult != 0) throw new ExtensionException("Error setting R_HOME (#05).\n");
+    } else {
+      Path rHomePath = Paths.get(System.getenv("R_HOME"));
+      if (!Files.exists(rHomePath)) {
+        throw new ExtensionException(
+            "Could not find R at: "
+                + System.getenv("R_HOME")
+                + " . Please set R home in the environment or in user.properties (Error #01)\n");
+      }
+      configuration.setRHomePath(rHomePath);
+    }
+    return configuration.rHomePath();
+  }
+
+  static Path findJRIHomePath(Configuration configuration) throws ExtensionException {
+    return configuration
+        .jriHomePaths()
+        .stream()
+        .filter(path -> Files.exists(path.resolve("JRI.jar")))
+        .findFirst()
+        .orElseThrow(
+            () ->
+                new ExtensionException(
+                    "Cannot locate rJava/JRI. Please check the location of your rJava installation and add a user.properties file in the r extension directory (Error #02).\n"));
+  }
+
+  /** Adds standard JRI Libraries */
+  void loadJRILibraries(Path jriHomePath, Path rHome) throws ExtensionException {
+    List<String> jarList = Arrays.asList(new String[] {"JRI.jar", "REngine.jar", "JRIEngine.jar"});
+
+    for (String jar : jarList) {
+      try {
+        JavaLibraryPath.addFile(jriHomePath.resolve(jar).toFile());
+      } catch (IOException ex) {
+        throw new ExtensionException("Error loading JRI Libraries (Error #04)\n", ex);
+      }
+    }
+
+    Path jriLib = jriHomePath;
+    Path jri64Lib = jriHomePath.resolve("x64");
+    Path jri32Lib = jriHomePath.resolve("i386");
+    Optional<Path> rLibPath = Optional.empty();
+    String dataModel = System.getProperty("sun.arch.data.model", "?");
+
+    if (Files.exists(jri64Lib) && dataModel.contains("64")) {
+      jriLib = jri64Lib;
+      if (winLib32 != null) {
+        rLibPath = Optional.of(rHome.resolve("bin/x64"));
+      }
+    } else if (Files.exists(jri32Lib) && dataModel.contains("32")) {
+      jriLib = jri32Lib;
+      if (winLib32 != null) {
+        rLibPath = Optional.of(rHome.resolve("bin/i386"));
+      }
+    }
+
+    try {
+      try {
+        JavaLibraryPath.addLibraryPath(jriLib.toFile());
+      } catch (Exception ex) {
+        throw new ExtensionException(
+            "Error Initializing R Extension: could not add JRI to library path (Error #04).\n", ex);
+      }
+      rLibPath.ifPresent(libPath -> winLib32.SetDllDirectoryA(libPath.toAbsolutePath().toString()));
+    } catch (UnsatisfiedLinkError localUnsatisfiedLinkError) {
+      throw new ExtensionException(
+          "Cannot load rJava libraries. Please check your rJava installation. (Error #03)\n"
+              + localUnsatisfiedLinkError);
     }
   }
 
@@ -217,6 +337,44 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
     primManager.addPrimitive("interactiveShell", new interactiveShell());
     primManager.addPrimitive("setPlotDevice", new SetPlotDevice());
     primManager.addPrimitive("stop", new Stop());
+    primManager.addPrimitive("r-home", new DebugPrim(new RPath()));
+    primManager.addPrimitive("jri-path", new DebugPrim(new JRIPath()));
+  }
+
+  @FunctionalInterface
+  interface DebugSupplier {
+    public String get() throws ExtensionException;
+  }
+
+  class RPath implements DebugSupplier {
+    @Override
+    public String get() throws ExtensionException {
+      return configuration.rHomePath().toString();
+    }
+  }
+
+  class JRIPath implements DebugSupplier {
+    @Override
+    public String get() throws ExtensionException {
+      return findJRIHomePath(configuration).toString();
+    }
+  }
+
+  public static class DebugPrim implements Reporter {
+    final DebugSupplier supplier;
+
+    public DebugPrim(DebugSupplier getValue) {
+      supplier = getValue;
+    }
+
+    public Syntax getSyntax() {
+      return SyntaxJ.reporterSyntax(Syntax.StringType());
+    }
+
+    public Object report(Argument args[], Context context)
+        throws ExtensionException, LogoException {
+      return supplier.get();
+    }
   }
 
   /**
@@ -236,7 +394,7 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
 
     public void perform(Argument args[], Context context) throws ExtensionException, LogoException {
       try {
-        if (System.getProperty("java.awt.headless") == "true") {
+        if (System.getProperty("java.awt.headless", "false") == "true") {
           rConn.rConnection.close();
         }
       } catch (Exception ex) {
@@ -261,11 +419,11 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
 
     public void perform(Argument args[], Context context) throws ExtensionException, LogoException {
       try {
-        if (System.getProperty("java.awt.headless") != "true") {
+        if (!System.getProperty("java.awt.headless", "false").equals("true")) {
           shellwin.storeObject(null);
         }
       } catch (Exception ex) {
-        throw new ExtensionException("Error in R-Extension: Error in setPlotDevice: \n" + ex);
+        throw new ExtensionException("Error in R-Extension: Error in setPlotDevice: \n" + ex, ex);
       }
     }
   }
@@ -286,13 +444,14 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
 
     public void perform(Argument args[], Context context) throws ExtensionException, LogoException {
       try {
-        if (System.getProperty("java.awt.headless") != "true") {
+        if (!System.getProperty("java.awt.headless", "false").equals("true")) {
           if (!Entry.shellwin.anyExtensionsLoaded()) {
             Entry.shellwin.finishFullCompilation();
           }
         }
       } catch (Exception ex) {
-        throw new ExtensionException("Error in R-Extension: Error in interactiveShell: \n" + ex);
+        throw new ExtensionException(
+            "Error in R-Extension: Error in interactiveShell: \n" + ex, ex);
       }
     }
   }
@@ -318,7 +477,7 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
       try {
         rConn.AssignAgentsetorAgent(args, false);
       } catch (Exception ex) {
-        throw new ExtensionException("Error in R-Extension: Error in PutAgent: \n" + ex);
+        throw new ExtensionException("Error in R-Extension: Error in PutAgent: \n" + ex, ex);
       }
     }
   }
@@ -345,7 +504,7 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
       try {
         rConn.AssignAgentsetorAgent(args, true);
       } catch (Exception ex) {
-        throw new ExtensionException("Error in R-Extension: Error in PutAgentDf: \n" + ex);
+        throw new ExtensionException("Error in R-Extension: Error in PutAgentDf: \n" + ex, ex);
       }
     }
   }
@@ -385,7 +544,7 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
         //System.gc();
         //System.gc();
       } catch (Exception ex) {
-        throw new ExtensionException("Error in R-Extension: Error in PutDataFrame: \n" + ex);
+        throw new ExtensionException("Error in R-Extension: Error in PutDataFrame: \n" + ex, ex);
       }
     }
   }
@@ -419,7 +578,7 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
         //System.gc();
         //System.gc();
       } catch (Exception ex) {
-        throw new ExtensionException("Error in R-Extension: Error in PutVector: \n" + ex);
+        throw new ExtensionException("Error in R-Extension: Error in PutVector: \n" + ex, ex);
       }
     }
   }
@@ -456,7 +615,7 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
         //System.gc();
         //System.gc();
       } catch (Exception ex) {
-        throw new ExtensionException("Error in R-Extension: Error in PutNamedList: \n" + ex);
+        throw new ExtensionException("Error in R-Extension: Error in PutNamedList: \n" + ex, ex);
       }
     }
   }
@@ -482,7 +641,7 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
         //System.gc();
         //System.gc();
       } catch (Exception ex) {
-        throw new ExtensionException("Error in R-Extension: Error in Put. \n" + ex);
+        throw new ExtensionException("Error in R-Extension: Error in Put. \n" + ex, ex);
       }
     }
   }
@@ -505,7 +664,7 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
             rConn.execute(rConn.rConnection, args[0].getString(), rConn.WorkingEnvironment, true);
         returnVal = null;
       } catch (Exception ex) {
-        throw new ExtensionException("Error in R-Extension: Error in Eval: \n" + ex);
+        throw new ExtensionException("Error in R-Extension: Error in Eval: \n" + ex, ex);
       }
     }
   }
@@ -537,7 +696,7 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
         // clean up
         cmdArray = null;
       } catch (Exception ex) {
-        throw new ExtensionException("Error in R-Extension: Error in Eval: \n" + ex);
+        throw new ExtensionException("Error in R-Extension: Error in Eval: \n" + ex, ex);
       }
     }
   }
@@ -562,7 +721,7 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
         return retObj;
         //return rConn.returnObject(returnVal);
       } catch (Exception ex) {
-        throw new ExtensionException("Error in R-Extension: Error in Get. \n" + ex);
+        throw new ExtensionException("Error in R-Extension: Error in Get. \n" + ex, ex);
       }
     }
   }
@@ -587,7 +746,7 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
         rConn.execute(rConn.rConnection, "gc(reset=T)", rConn.WorkingEnvironment, true);
         rConn.rConnection.parseAndEval("gc(reset=T)");
       } catch (Exception ex) {
-        throw new ExtensionException("Error in R-Extension: Error in GC: \n" + ex);
+        throw new ExtensionException("Error in R-Extension: Error in GC: \n" + ex, ex);
       }
     }
   }
@@ -613,7 +772,7 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
         System.gc();
         rConn.sendEnvironmentToGlobal();
       } catch (Exception ex) {
-        throw new ExtensionException("Error in R-Extension: Error in ClearWorkspace: \n" + ex);
+        throw new ExtensionException("Error in R-Extension: Error in ClearWorkspace: \n" + ex, ex);
       }
     }
   }
@@ -639,7 +798,8 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
         returnVal2 = null;
         System.gc();
       } catch (Exception ex) {
-        throw new ExtensionException("Error in R-Extension: Error in ClearLocalWorkspace: \n" + ex);
+        throw new ExtensionException(
+            "Error in R-Extension: Error in ClearLocalWorkspace: \n" + ex, ex);
       }
     }
   }
@@ -650,7 +810,7 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
    */
   public void unload() throws ExtensionException {
     // run unload only when NetLogo is runnning in GUI mode
-    if (System.getProperty("java.awt.headless") != "true") {
+    if (!System.getProperty("java.awt.headless", "false").equals("true")) {
       // clear workspace
       try {
         // clear workspace
@@ -662,7 +822,7 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
         rConn.rConnection.parseAndEval("gc(reset=T)");
         System.gc();
       } catch (Exception ex) {
-        throw new ExtensionException("Error in R-Extension: Error in unload: \n" + ex);
+        throw new ExtensionException("Error in R-Extension: Error in unload: \n" + ex, ex);
       }
       try {
         // check if ShellWindow is open - if so, close it...
@@ -671,7 +831,7 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
         }
       } catch (Exception ex) {
         throw new ExtensionException(
-            "Error in R-Extension: Error in making interactiveShell invisible: \n" + ex);
+            "Error in R-Extension: Error in making interactiveShell invisible: \n" + ex, ex);
       }
     }
   }

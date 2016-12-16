@@ -1,6 +1,6 @@
-import org.nlogo.build.NetLogoExtension
+import org.nlogo.build.{ ExtensionDocumentationPlugin, NetLogoExtension }
 
-enablePlugins(NetLogoExtension)
+enablePlugins(ExtensionDocumentationPlugin, NetLogoExtension)
 
 scalaVersion := "2.12.1"
 
@@ -8,8 +8,11 @@ netLogoExtName := "r"
 netLogoVersion := "6.0.0-BETA2"
 netLogoClassManager := "org.nlogo.extension.r.Entry"
 netLogoZipSources := false
-netLogoPackageExtras +=
-  (baseDirectory.value / "user.properties", "user.properties")
+netLogoPackageExtras ++=
+  Seq(
+    (baseDirectory.value / "user.properties") -> "user.properties",
+    (baseDirectory.value / "GPL.txt")         -> "GPL.txt")
+
 
 netLogoTarget :=
   NetLogoExtension.directoryTarget(baseDirectory.value)

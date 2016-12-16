@@ -15,12 +15,12 @@
 
 extensions [r]
 
-patches-own 
+patches-own
 [ food-items ]
 
-turtles-own 
+turtles-own
 [
-  memory ;; list of items-found of the last 20 days 
+  memory ;; list of items-found of the last 20 days
 ]
 
 to setup
@@ -40,7 +40,7 @@ to setup
     ]
   ]
 
-  ;; setup an R vector for the x variable  
+  ;; setup an R vector for the x variable
   r:eval "x <- seq(1,20)"
 
 end
@@ -51,7 +51,7 @@ to go
   [
     ;; send the memory to R
     r:put "y" memory
-    ;; fit a linear model 
+    ;; fit a linear model
     r:eval "fm <- lm(y ~ x)"
     ;; get the results back from R
     let b r:get "fm$coefficient[1]"
@@ -60,8 +60,8 @@ to go
     let forecast b + x * 11
     if forecast < 0
     [ set forecast 0 ]
-    show forecast 
-    
+    show forecast
+
     let items-found 0
     ; move steps, depending on forecast, i.e. motivation and nutritional condition
     repeat (forecast)
@@ -80,33 +80,33 @@ to go
     ;; add the current value to the memory
     set memory lput items-found memory
     ;; delete the oldest memory value
-    set memory remove-item 0 memory    
+    set memory remove-item 0 memory
     ;; if turtle is 20 days without food -> die!
     if (sum memory <= 0)
     [ die ]
-  ]  
-  
+  ]
+
   create-food-sources
 end
 
 to create-food-sources
-  ask n-of 30 patches 
+  ask n-of 30 patches
   [
     set food-items random 15
   ]
-  ask patches 
+  ask patches
   [
     ifelse (food-items > 0)
     [ set pcolor yellow ]
-    [ set pcolor black ] 
+    [ set pcolor black ]
   ]
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
 205
 10
-545
-371
+543
+349
 -1
 -1
 30.0
@@ -492,9 +492,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.0beta3
+NetLogo 6.0-BETA2
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -510,7 +509,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

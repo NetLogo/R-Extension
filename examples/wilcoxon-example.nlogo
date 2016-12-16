@@ -27,16 +27,16 @@ to setup
     set food random 100
     set pcolor elevation / 200
   ]
-  
+
   create-lowland_bugs 50
-  [ 
+  [
     move-to one-of patches with [elevation < 300]
-    set change_rate 0.1 
+    set change_rate 0.1
     set fitness r:get "rweibull(1,1)" * 0.8
   ]
-  
+
   create-highland_bugs 50
-  [ 
+  [
     move-to one-of patches with [elevation > 300]
     set change_rate 0.15
     set fitness r:get "rweibull(1,1)" * 0.2
@@ -48,25 +48,25 @@ to go
   [
     set fitness random-float 2.0 *  [food] of patch-here * change_rate
   ]
-    
+
   r:putagent "lowland" lowland_bugs "fitness"
   r:putagent "highland" highland_bugs "fitness"
-  
-  r:eval "w <- wilcox.test(lowland$fitness, highland$fitness, exact=FALSE)" 
+
+  r:eval "w <- wilcox.test(lowland$fitness, highland$fitness, exact=FALSE)"
   print r:get "w$p.value"
-  
+
   set-current-plot "Wilcoxon Rank Sum Test"
   plot r:get "w$p.value"
-  
+
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
 403
 10
-706
-334
-16
-16
+704
+312
+-1
+-1
 8.9
 1
 10
@@ -457,9 +457,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.0beta3
+NetLogo 6.0-BETA2
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -475,7 +474,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

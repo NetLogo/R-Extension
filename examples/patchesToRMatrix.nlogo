@@ -29,12 +29,12 @@ end
 
 to createMatrix
   ; get worlds dimension and send it to R
-  r:put "xdim" world-width 
+  r:put "xdim" world-width
   ; create matrix from data.frame column pcolor
   r:eval "m1 <- matrix(patches$pcolor, xdim)"
-  ; transpose matrix 
+  ; transpose matrix
   r:eval "m1 <- t(m1)"
-  
+
   ; open interactive shell
   r:interactiveShell
   ; print the matrix into the interactive shell output window
@@ -44,9 +44,9 @@ end
 GRAPHICS-WINDOW
 210
 10
-455
-133
-2
+372
+111
+-1
 -1
 30.8
 1
@@ -446,9 +446,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.0beta3
+NetLogo 6.0-BETA2
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -456,15 +455,14 @@ NetLogo 5.0beta3
 @#$#@#$#@
 default
 0.0
--0.2 0 1.0 0.0
+-0.2 0 0.0 1.0
 0.0 1 1.0 0.0
-0.2 0 1.0 0.0
+0.2 0 0.0 1.0
 link direction
 true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

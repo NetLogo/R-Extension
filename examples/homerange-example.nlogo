@@ -25,24 +25,24 @@ homeranges-own
 
 to setup
   clear-all
-  r:clear 
-  
+  r:clear
+
   ;; create three different animals (rabbit, cat, fox)
   create-animals 3
-  [ 
+  [
     if (who = 0)
-    [ 
-      set Name "rabbit" 
+    [
+      set Name "rabbit"
       set color 14
     ]
     if (who = 1)
-    [ 
-      set Name "cat" 
+    [
+      set Name "cat"
       set color 44
     ]
     if (who = 2)
-    [ 
-      set Name "fox" 
+    [
+      set Name "fox"
       set color 94
     ]
     set xcor random-pxcor
@@ -53,7 +53,7 @@ to setup
   ]
 
   go
-end 
+end
 
 to go
   repeat 100
@@ -76,41 +76,41 @@ to calc-homerange
 
   ;; create an empty data.frame"
   r:eval "turtles <- data.frame()"
-  
+
   ;; merge the Name, X- and Y-lists of all animals to one big data.frame
   ask animals
   [
-    (r:putdataframe "turtle" "X" X "Y" Y)     
+    (r:putdataframe "turtle" "X" X "Y" Y)
     r:eval (word "turtle <- data.frame(turtle, Name = '" Name "')")
     r:eval "turtles <- rbind(turtles, turtle)"
   ]
-   
-  ;; split the data.frame into coordinates and factor variable 
+
+  ;; split the data.frame into coordinates and factor variable
   r:eval "xy <- turtles[,c('X','Y')]"
-  r:eval "id <- turtles$Name" 
+  r:eval "id <- turtles$Name"
   ;; calculate homerange
   r:eval "homerange <- mcp(xy, id)"
 
 
   ifelse (plot-homerange)
   [ plot-into-file ]
-  [ 
-    mark-homeranges 
+  [
+    mark-homeranges
     plot-area
   ]
-end 
+end
 
 
 to plot-into-file
   ;; plot the homerange polygons (into pdf-file)
   r:eval (word "pdf('" homerange-plot ".pdf')" )
   r:eval (word "plot(homerange, xlim=c(" min-pxcor "," max-pxcor "), ylim=c(" min-pycor "," max-pycor "))")
-  r:eval "dev.off()" 
+  r:eval "dev.off()"
 
   ;; plot the homerange area depending on the homerange level (into pdf-file)
-  r:eval (word "pdf('" homerange-level-plot ".pdf')" )  
-  r:eval "mcp.area(xy, id, unout='m2')"  
-  r:eval "dev.off()" 
+  r:eval (word "pdf('" homerange-level-plot ".pdf')" )
+  r:eval "mcp.area(xy, id, unout='m2')"
+  r:eval "dev.off()"
 
 end
 
@@ -118,72 +118,72 @@ end
 
 to mark-homeranges
   clear-drawing
-  
+
   ask animals
-  [  
+  [
     pen-up
     ;; get the points of the homerange polygon for the current animal
     r:eval (word "temp <- subset(homerange, ID=='"Name"')")
     let tempX r:get "temp$X"
     let tempY r:get "temp$Y"
-    let tempXY (map [list ?1 ?2] tempX tempY)
-    
+    let tempXY (map [ [?1 ?2] -> list ?1 ?2 ] tempX tempY)
+
     ;; create a turtle, which draws the homerange boundary
     hatch-homeranges 1
-    [ 
+    [
       hide-turtle
-      set Name [Name] of myself 
+      set Name [Name] of myself
       set color [color] of myself
     ]
-    
+
     ;; draw the homerange boundary
     foreach tempXY
-    [
+    [ [?1] ->
       ask homeranges with [Name = [Name] of myself]
       [
-        move-to patch (item 0 ?) (item 1 ?)
+        move-to patch (item 0 ?1) (item 1 ?1)
         pen-down
       ]
-    ] 
-    
+    ]
+
     ;; connect the last point of the homerange with the first one, to close the polygon
     ask homeranges with [Name = [Name] of myself]
     [
       let lastpoint first tempXY
-      move-to patch (item 0 lastpoint) (item 1 lastpoint)   
+      move-to patch (item 0 lastpoint) (item 1 lastpoint)
     ]
-  ]   
+  ]
 end
 
 
 to plot-area
-  clear-all-plots 
+  clear-all-plots
   let precstart 20
   let precincre 5
-  ;; calculate the size of the homerange depending on homerange level 
+  ;; calculate the size of the homerange depending on homerange level
   r:eval (word "area <- mcp.area(xy, id,  unout='m2', percent = seq(" precstart ",100, by = " precincre "), plotit=FALSE)")
 
   ;; plot the homerange area of every animal, using temporary plot pen
   ask animals
-  [ 
-    let arealist r:get (word "area$" Name)    
+  [
+    let arealist r:get (word "area$" Name)
     set-current-plot "home range area"
     create-temporary-plot-pen Name
     set-plot-pen-color color
     let prec precstart
     foreach arealist
-    [ 
-      plotxy prec ?
-      set prec prec + precincre 
-    ]       
-  ]  
+    [ [?1] ->
+      plotxy prec ?1
+      set prec prec + precincre
+    ]
+  ]
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
 346
 10
-861
-546
+859
+524
 -1
 -1
 5.0
@@ -619,9 +619,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.0beta3
+NetLogo 6.0-BETA2
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -637,7 +636,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

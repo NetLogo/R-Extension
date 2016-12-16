@@ -22,45 +22,45 @@ end
 
 to test
   ;a new empty local list
-  let mylist [] 
-  
+  let mylist []
+
   ; fill the list with 50 random values
   repeat 50 [
     set mylist fput random-normal 10 20 mylist
   ]
-  
+
   ; show the list in the Command Center
   print mylist
-  
+
   ; send the list into a new R dataframe (with one column named v1)
   (r:putdataframe "df1" "v1" mylist)
-  
-  ; create a boxplot of the dataframe. 
+
+  ; create a boxplot of the dataframe.
   ; since the dataframe has just one column, there is just one box.
   r:eval "boxplot(df1)"
-  
+
 end
 
 
 
 to test2
   ;two new empty local lists
-  let mylist1 [] 
-  let mylist2 [] 
-  
+  let mylist1 []
+  let mylist2 []
+
   ; fill the list with 50 random values
   repeat 50 [
     set mylist1 fput random-normal 10 20 mylist1
     set mylist2 fput random-normal 15 15 mylist2
   ]
-  
+
   ; send the list into a new R dataframe (with one column named v1)
   (r:putdataframe "df1" "v1" mylist1 "v2" mylist2)
-  
-  ; create a boxplot of the dataframe. 
+
+  ; create a boxplot of the dataframe.
   ; since the dataframe has just one column, there is just one box.
   r:eval "boxplot(df1)"
-  
+
 end
 
 
@@ -79,10 +79,10 @@ end
 GRAPHICS-WINDOW
 463
 10
-708
-217
-16
-16
+647
+195
+-1
+-1
 5.333333333333333
 1
 10
@@ -555,9 +555,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.0beta3
+NetLogo 6.0-BETA2
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -565,15 +564,14 @@ NetLogo 5.0beta3
 @#$#@#$#@
 default
 0.0
--0.2 0 1.0 0.0
+-0.2 0 0.0 1.0
 0.0 1 1.0 0.0
-0.2 0 1.0 0.0
+0.2 0 0.0 1.0
 link direction
 true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

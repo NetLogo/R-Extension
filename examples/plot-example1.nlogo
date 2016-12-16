@@ -18,13 +18,13 @@ extensions [r]
 to setup
   clear-all
   r:clear
-  
+
   crt 10
   [
     set xcor random-xcor
     set ycor random-ycor
   ]
-  
+
   ; try to initialize the JavaGD plot device
   r:setPlotDevice
 end
@@ -52,10 +52,10 @@ end
 GRAPHICS-WINDOW
 204
 60
-643
-520
-16
-16
+641
+498
+-1
+-1
 13.0
 1
 10
@@ -475,9 +475,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.0beta3
+NetLogo 6.0-BETA2
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -493,7 +492,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

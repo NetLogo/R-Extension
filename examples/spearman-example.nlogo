@@ -29,21 +29,21 @@ end
 
 to go
   tick
-  ;; change weight and height of turtles randomly from weibull distribution 
+  ;; change weight and height of turtles randomly from weibull distribution
   ask turtles
   [
     set weight weight + r:get "rweibull(1,1)"
-    set height height + r:get "rweibull(1,2)" 
+    set height height + r:get "rweibull(1,2)"
   ]
-  ;; create R list from turtles 
+  ;; create R list from turtles
   (r:putagent "turtles" turtles "weight" "height")
   ;; calculate correlation between weight and height
   r:eval "c <- cor.test(turtles$weight, turtles$height, method = 'spearm', alternative = 'g')"
-  
+
   let rho r:get "c$p.value"
   let p r:get "c$estimate"
-  
-  ;; plot spearman's rho and dot, if significant 
+
+  ;; plot spearman's rho and dot, if significant
   set-current-plot "Spearman's rho"
   set-current-plot-pen "rho"
   plot rho
@@ -57,10 +57,10 @@ end
 GRAPHICS-WINDOW
 468
 10
-713
-203
-16
-16
+638
+181
+-1
+-1
 4.91
 1
 10
@@ -452,9 +452,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.0beta3
+NetLogo 6.0-BETA2
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -470,7 +469,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

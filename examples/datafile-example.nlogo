@@ -19,7 +19,7 @@ turtles-own [test]
 
 to create-and-write-data
   clear-all
-  
+
   crt 30
   [
     set xcor random-xcor
@@ -27,7 +27,7 @@ to create-and-write-data
   ]
 
   (r:putagentdf "ag" turtles "who" "xcor" "ycor")
-  
+
   let evalstring (word "write.table(ag ,file='" path "')")
   r:eval evalstring
 end
@@ -35,21 +35,21 @@ end
 
 to load-and-show-data
   clear-all
-  
+
   let evalstring (word "ag <- read.table(file='" path "')")
   r:eval evalstring
-  
+
   let xc r:get "ag$xcor"
   let yc  r:get "ag$ycor"
-  
-  let xypos (map [list ?1 ?2] xc yc)
+
+  let xypos (map [ [?1 ?2] -> list ?1 ?2 ] xc yc)
 
   foreach xypos
-  [
+  [ [?1] ->
     crt 1
     [
-      set xcor (item 0 ?) 
-      set ycor (item 1 ?)
+      set xcor (item 0 ?1)
+      set ycor (item 1 ?1)
     ]
   ]
 end
@@ -57,7 +57,7 @@ end
 
 to write-data-with-vector-dataframe
   clear-all
-  
+
   crt 30
   [
     set xcor random-xcor
@@ -69,18 +69,18 @@ to write-data-with-vector-dataframe
 
   ; mark column test as class "AsIs"
   r:eval "ag$test <- I(ag$test)"
-    
+
   let evalstring (word "write.table(ag ,file='" path "')")
-  r:eval evalstring  
+  r:eval evalstring
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
 254
 10
-693
-470
-16
-16
+691
+448
+-1
+-1
 13.0
 1
 10
@@ -491,9 +491,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.0beta3
+NetLogo 6.0-BETA2
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -509,7 +508,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

@@ -27,13 +27,13 @@ breed [maples maple]
 breed [ashs ash]
 breed [poplars poplar]
 
-patches-own 
+patches-own
 [
   beechcount
   birchcount
   hornbeamcount
   oakcount
-  maplecount  
+  maplecount
   ashcount
   poplarcount
   speccount
@@ -45,10 +45,10 @@ patches-own
 
 to setup
   clear-all
-  
+
   ;; reset the R-workspace
   r:clear
-  
+
   ;; create the forest
   set-default-shape turtles "tree"
   create-beeches random 100
@@ -86,14 +86,14 @@ to setup
     set xcor random-xcor
     set ycor random-ycor
   ]
-  
+
   let insp one-of patches with [count beeches-here > 0]
   inspect insp
 end
 
 
 to calc-diversity
-  ;; calculate the number of individuals of each species for each patch 
+  ;; calculate the number of individuals of each species for each patch
   ask patches
   [
     set beechcount count beeches-here
@@ -104,16 +104,16 @@ to calc-diversity
     set ashcount count ashs-here
     set poplarcount count poplars-here
   ]
-  
+
   ;; assign a new data.frame with patch-variables (the patches will be asigned in lines from upper left to lower right)
-  (r:putagentdf "dfpatches" patches "pxcor" "pycor" "beechcount" "birchcount" "hornbeamcount" "oakcount" "maplecount" "ashcount" "poplarcount") 
+  (r:putagentdf "dfpatches" patches "pxcor" "pycor" "beechcount" "birchcount" "hornbeamcount" "oakcount" "maplecount" "ashcount" "poplarcount")
 
   ;; create a data.frame without the coordinates
-  r:eval "df <- dfpatches[,3:7]" 
+  r:eval "df <- dfpatches[,3:7]"
 
   ;; load R-library vegan (must be installed!)
   r:eval "library(vegan)"
-  
+
   ;; calculate diversity
   r:eval "spec <- specnumber(df)"
   r:eval "shan <- diversity(df, 'shannon')"
@@ -125,23 +125,23 @@ to calc-diversity
   ;; the following section is a little bit complicated
   ;; it's done to save the calculated diversity values in the corresponding patch-variables
   ;; to get just the diversity values as a list, call: print r:get "shan"
-  
+
 
   ;; create lists with the coordinates
   let xlist r:get "dfpatches$pxcor"
-  let ylist r:get "dfpatches$pycor"   
-  let xylist (map [list ?1 ?2] xlist ylist)
-  
+  let ylist r:get "dfpatches$pycor"
+  let xylist (map [ [?1 ?2] -> list ?1 ?2 ] xlist ylist)
+
   ;; save the diversity value into the corresponding patch-variables
   let counter 1
   foreach xylist
-  [
-    ask patch (item 0 ?) (item 1 ?)
+  [ [?1] ->
+    ask patch (item 0 ?1) (item 1 ?1)
     [
       set speccount (r:get (word "spec[" counter "]"))
       set shannon (r:get (word "shan[" counter "]"))
       set simpson (r:get (word "simp[" counter "]"))
-      set pielou (r:get (word "pielou[" counter "]"))    
+      set pielou (r:get (word "pielou[" counter "]"))
     ]
     set counter counter + 1
   ]
@@ -151,8 +151,8 @@ end
 GRAPHICS-WINDOW
 371
 10
-711
-371
+709
+349
 -1
 -1
 30.0
@@ -537,9 +537,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.0beta3
+NetLogo 6.0-BETA2
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -555,7 +554,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

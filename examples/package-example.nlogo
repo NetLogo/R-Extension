@@ -16,63 +16,63 @@ extensions [r]
 
 to test-pcf1
 
-  ;; creates a plot of the pair correlation function (after Stoyan) 
+  ;; creates a plot of the pair correlation function (after Stoyan)
   ;; for the example dataset "simdat"
   r:eval "library(spatstat)"
-  
+
   r:eval "data(simdat)"
   r:eval "p <- pcf(simdat)"
   r:eval "K <- Kest(simdat)"
   r:eval "p2 <- pcf(K)"
   let pcf_r (r:get "p2$pcf")
   let r (r:get "p2$r")
-  
-  let pcf (map [list ?1 ?2] r pcf_r)
+
+  let pcf (map [ [?1 ?2] -> list ?1 ?2 ] r pcf_r)
 
   clear-plot
   foreach pcf
-  [
+  [ [?1] ->
     set-current-plot "pair correlation function"
-    plotxy (item 0 ?) (item 1 ?)
+    plotxy (item 0 ?1) (item 1 ?1)
   ]
-  
+
 end
 
 
 to test-pcf2
   clear-all
-  ;; creates 50 turtles and distribute them over the world randomly. 
+  ;; creates 50 turtles and distribute them over the world randomly.
   ;; Assigns an R-point-pattern from the locations of the turtles and calculates the pair correlation function.
   r:eval "library(spatstat)"
-  
+
   crt 50
   [
     set xcor random-xcor
     set ycor random-ycor
   ]
-  
+
   (r:putagentdf "agentset" turtles "who" "xcor" "ycor")
-  
-  let owin-x (word "c(" min-pxcor "," max-pxcor ")") 
+
+  let owin-x (word "c(" min-pxcor "," max-pxcor ")")
   let owin-y (word "c(" min-pycor "," max-pycor ")")
 
   let revalstring (word "agppp <- ppp(agentset$xcor, agentset$ycor, " owin-x "," owin-y ")")
 
   r:eval revalstring
-  
+
   r:eval "p <- pcf(agppp)"
   r:eval "K <- Kest(agppp)"
   r:eval "p2 <- pcf(K)"
   let pcf_r (r:get "p2$pcf")
   let r (r:get "p2$r")
-  
-  let pcf (map [list ?1 ?2] r pcf_r)
+
+  let pcf (map [ [?1 ?2] -> list ?1 ?2 ] r pcf_r)
 
   clear-plot
   foreach pcf
-  [
+  [ [?1] ->
     set-current-plot "pair correlation function"
-    plotxy (item 0 ?) (item 1 ?)
+    plotxy (item 0 ?1) (item 1 ?1)
   ]
 
 end
@@ -80,8 +80,8 @@ end
 GRAPHICS-WINDOW
 400
 10
-839
-470
+837
+448
 -1
 -1
 13.0
@@ -501,9 +501,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.0beta3
+NetLogo 6.0-BETA2
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -519,7 +518,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

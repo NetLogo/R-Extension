@@ -18,43 +18,43 @@ extensions [r]
 
 to test
   clear-all
-  
+
   ;; get a value from r
   print "r:eval..."
   print "rnorm(10):"
   print r:get "rnorm(10)"
-  
+
   print " "
-  
+
   ;; create a list in r from agentset
   crt 10
   [
     set xcor random-xcor
     set ycor random-ycor
   ]
-  
+
   (r:putagent "agentlist" turtles "who" "xcor" "ycor")
- 
+
   print "r-class of agentlist: "
   print r:get "class(agentlist)"
-  
+
   print " "
-  
+
   print "variable names of agentlist:"
   print r:get "names(agentlist)"
-  
+
   print " "
-  
+
   print "agentlist$xcor: "
   print r:get "agentlist$xcor"
-  
+
   print " "
-  
+
   print "agentlist$ycor: "
   print r:get "agentlist$ycor"
-  
+
   print " "
-  
+
   print "correlation coefficient between xcor and ycor: "
   print r:get "cor(agentlist$xcor, agentlist$ycor, method='spearman')"
 
@@ -63,10 +63,10 @@ end
 GRAPHICS-WINDOW
 205
 10
-644
-470
-16
-16
+642
+448
+-1
+-1
 13.0
 1
 10
@@ -422,9 +422,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.0beta3
+NetLogo 6.0-BETA2
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -440,7 +439,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

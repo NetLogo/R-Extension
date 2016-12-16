@@ -18,17 +18,17 @@ extensions [r]
 to random_setup
   clear-all
   r:clear
-  
+
   random-seed randomseed
-  
+
   ;; load R package spatstat for spatial statistics
   r:eval "library(spatstat)"
-  
-  ;; create 80 turtles at random positions  
+
+  ;; create 80 turtles at random positions
   crt 80
   [
     set xcor random-xcor
-    set ycor random-ycor  
+    set ycor random-ycor
   ]
 end
 
@@ -36,18 +36,18 @@ end
 to random_setup2
   clear-all
   r:clear
-  
+
   random-seed randomseed
 
   ;; load R package spatstat for spatial statistics
   r:eval "library(spatstat)"
-  
+
   ask n-of 400 patches
   [
     sprout random 3
     [
       right random 360
-      forward random 10 
+      forward random 10
     ]
   ]
 end
@@ -56,12 +56,12 @@ end
 to cluster_setup
   clear-all
   r:clear
-  
+
   random-seed randomseed
 
   ;; load R package spatstat for spatial statistics
   r:eval "library(spatstat)"
-  
+
   ask n-of 10 patches
   [
     ask neighbors
@@ -69,7 +69,7 @@ to cluster_setup
       sprout 3
       [
         right random 360
-        forward random 2 
+        forward random 2
       ]
     ]
   ]
@@ -79,17 +79,17 @@ end
 to regular_setup
   clear-all
   r:clear
-  
+
   random-seed randomseed
 
   ;; load R package spatstat for spatial statistics
   r:eval "library(spatstat)"
-  
-  ask patches with [pxcor mod 3 + pycor mod 2 = 0] 
+
+  ask patches with [pxcor mod 3 + pycor mod 2 = 0]
   [
       sprout 1
   ]
-  
+
   ask n-of 30 turtles
   [ die ]
 end
@@ -106,35 +106,35 @@ to go_with_L-caluclation
       forward random 10
     ]
   ]
-  
+
   ;; send agent variables into an R data-frame
   (r:putagentdf "agentset" turtles "who" "xcor" "ycor")
 
   ;; create point pattern with vectors of x- and y-coordinates of turtles and the dimension of the window/world
   let revalstring (word "agppp <- ppp(agentset$xcor, agentset$ycor, c(" min-pxcor "," max-pxcor "), c(" min-pycor "," max-pycor ") )")
   r:eval revalstring
-  
+
   ;; calculate L function
   r:eval "L <- Lest(agppp)"
-  
+
   ;; get results from R
   let ripl_l r:get "L$iso"
   let r r:get "L$r"
   let theo r:get "L$theo"
-  
+
   ;; combine results into a multidimensional list for plotting
-  let ripl (map [(list ?1 ?2 ?3)] r ripl_l theo)
-  
+  let ripl (map [ [?1 ?2 ?3] -> (list ?1 ?2 ?3) ] r ripl_l theo)
+
   ;; plot the results
   set-current-plot "L function"
   clear-plot
   foreach ripl
-  [
+  [ [?1] ->
     set-current-plot "L function"
     set-current-plot-pen "obs"
-    plotxy (item 0 ?) (item 1 ?)
+    plotxy (item 0 ?1) (item 1 ?1)
     set-current-plot-pen "theo"
-    plotxy (item 0 ?) (item 2 ?)
+    plotxy (item 0 ?1) (item 2 ?1)
   ]
 end
 
@@ -149,50 +149,50 @@ to go_with_L-confidencebands
       forward random 10
     ]
   ]
-  
+
   ;; send agent variables into an R data-frame
   (r:putagentdf "agentset" turtles "who" "xcor" "ycor")
 
   ;; create point pattern with vectors of x- and y-coordinates of turtles and the dimension of the window/world
   let revalstring (word "agppp <- ppp(agentset$xcor, agentset$ycor, c(" min-pxcor "," max-pxcor "), c(" min-pycor "," max-pycor ") )")
   r:eval revalstring
-  
+
   ;; calculate L function with confidence bands from 99 simulations
-  r:eval "Lsim <- envelope(agppp, Lest)"    
-  
+  r:eval "Lsim <- envelope(agppp, Lest)"
+
   ;; get results from R
   let r r:get "Lsim$r"
   let obs r:get "Lsim$obs"
   let theo r:get "Lsim$theo"
   let hi r:get "Lsim$hi"
   let lo r:get "Lsim$lo"
-  
+
   ;; combine results into a multidimensional list for plotting
-  let ripl (map [(list ?1 ?2 ?3 ?4 ?5)] r obs theo hi lo)
-  
+  let ripl (map [ [?1 ?2 ?3 ?4 ?5] -> (list ?1 ?2 ?3 ?4 ?5) ] r obs theo hi lo)
+
   ;; plot the results
   clear-plot
   foreach ripl
-  [
+  [ [?1] ->
     set-current-plot "L function"
     set-current-plot-pen "obs"
-    plotxy (item 0 ?) (item 1 ?)
+    plotxy (item 0 ?1) (item 1 ?1)
     set-current-plot-pen "theo"
-    plotxy (item 0 ?) (item 2 ?)
+    plotxy (item 0 ?1) (item 2 ?1)
     set-current-plot-pen "high"
-    plotxy (item 0 ?) (item 3 ?)
+    plotxy (item 0 ?1) (item 3 ?1)
     set-current-plot-pen "low"
-    plotxy (item 0 ?) (item 4 ?)
+    plotxy (item 0 ?1) (item 4 ?1)
   ]
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
 829
 10
-1320
-522
-16
-16
+1318
+500
+-1
+-1
 14.6
 1
 10
@@ -325,7 +325,7 @@ INPUTBOX
 103
 399
 randomseed
-1234567
+1234567.0
 1
 0
 Number
@@ -695,9 +695,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.0beta3
+NetLogo 6.0-BETA2
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -705,15 +704,14 @@ NetLogo 5.0beta3
 @#$#@#$#@
 default
 0.0
--0.2 0 1.0 0.0
+-0.2 0 0.0 1.0
 0.0 1 1.0 0.0
-0.2 0 1.0 0.0
+0.2 0 0.0 1.0
 link direction
 true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

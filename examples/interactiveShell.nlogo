@@ -18,14 +18,14 @@ extensions [r]
 to setup
   clear-all
   r:clear
-  
+
   crt 10
   [
     set xcor random-xcor
     set ycor random-ycor
   ]
 
-  ; send turtle variables to R 
+  ; send turtle variables to R
   (r:putagentdf "ag.df" turtles "who" "xcor" "ycor")
 end
 
@@ -34,15 +34,14 @@ to open-interactiveShell
   ; open interactiveShell
   r:interactiveshell
 end
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 354
 10
-620
-297
-16
-16
+618
+275
+-1
+-1
 7.76
 1
 10
@@ -435,9 +434,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.0beta3
+NetLogo 6.0-BETA2
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -453,7 +451,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

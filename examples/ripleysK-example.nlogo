@@ -16,15 +16,15 @@ extensions [r]
 
 to setup
   clear-all
-  
+
   ;; load R package spatstat for spatial statistics
   r:eval "library(spatstat)"
-  
-  ;; create 20 turtles at random positions  
+
+  ;; create 20 turtles at random positions
   crt 20
   [
     set xcor random-xcor
-    set ycor random-ycor  
+    set ycor random-ycor
   ]
 end
 
@@ -35,44 +35,44 @@ to go
     right random 360
     forward random 10
   ]
-  
+
   ;; send agent variables into an R data-frame
   (r:putagentdf "agentset" turtles "who" "xcor" "ycor")
 
   ;; create point pattern with vectors of x- and y-coordinates of turtles and the dimension of the window/world
   let revalstring (word "agppp <- ppp(agentset$xcor, agentset$ycor, c(" min-pxcor "," max-pxcor "), c(" min-pycor "," max-pycor ") )")
   r:eval revalstring
-  
+
   ;; calculate Ripley's K function
   r:eval "K <- Kest(agppp)"
-  
+
   ;; get results from R
   let ripl_k r:get "K$iso"
   let r r:get "K$r"
   let theo r:get "K$theo"
-  
+
   ;; combine results into a multidimensional list for plotting
-  let ripl (map [(list ?1 ?2 ?3)] r ripl_k theo)
-  
+  let ripl (map [ [?1 ?2 ?3] -> (list ?1 ?2 ?3) ] r ripl_k theo)
+
   ;; plot the results
   clear-plot
   foreach ripl
-  [
+  [ [?1] ->
     set-current-plot "Ripley's K function"
     set-current-plot-pen "K(r)"
-    plotxy (item 0 ?) (item 1 ?)
+    plotxy (item 0 ?1) (item 1 ?1)
     set-current-plot-pen "theo"
-    plotxy (item 0 ?) (item 2 ?)
+    plotxy (item 0 ?1) (item 2 ?1)
   ]
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
 434
 55
-761
-403
-16
-16
+759
+381
+-1
+-1
 9.61
 1
 10
@@ -483,9 +483,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.0beta3
+NetLogo 6.0-BETA2
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -493,15 +492,14 @@ NetLogo 5.0beta3
 @#$#@#$#@
 default
 0.0
--0.2 0 1.0 0.0
+-0.2 0 0.0 1.0
 0.0 1 1.0 0.0
-0.2 0 1.0 0.0
+0.2 0 0.0 1.0
 link direction
 true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

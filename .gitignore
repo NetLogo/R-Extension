@@ -1,6 +1,11 @@
 /build/
 /dist/
 target/
+*.jar
+
+# build components used by NetLogo
+GPL.txt
+user.properties
 
 # common filenames
 .DS_Store
@@ -12,3 +17,4 @@ target/
 *~
 .#*
 \#*
+

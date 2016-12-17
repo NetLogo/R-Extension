@@ -10,8 +10,8 @@ netLogoClassManager := "org.nlogo.extension.r.Entry"
 netLogoZipSources := false
 netLogoPackageExtras ++=
   Seq(
-    (baseDirectory.value / "user.properties") -> "user.properties",
-    (baseDirectory.value / "GPL.txt")         -> "GPL.txt")
+    (baseDirectory.value / "dist" / "user.properties") -> "user.properties",
+    (baseDirectory.value / "dist" / "GPL.txt")         -> "GPL.txt")
 
 
 netLogoTarget :=

@@ -18,6 +18,8 @@ If your model already uses other extensions, then it already has an
 For more information on using NetLogo extensions, see the [Extensions Guide](http://ccl.northwestern.edu/netlogo/extensions.html).
 
 For examples of the usage of the R-Extension, models can be downloaded [from the project repository](https://github.com/NetLogo/R-Extension/tree/master/examples).
+These models are installed with NetLogo in the "models" directory of the R extension.
+Please note that (as of NetLogo 6.0) these models are *not* included in the NetLogo models library.
 
 ### Some Tips
 

@@ -13,6 +13,9 @@ netLogoPackageExtras ++=
     (baseDirectory.value / "dist" / "user.properties") -> "user.properties",
     (baseDirectory.value / "dist" / "GPL.txt")         -> "GPL.txt")
 
+netLogoPackageExtras ++=
+  ((baseDirectory.value / "examples") ** "*.nlogo").get.map(f => f -> s"models/${f.getName}") :+
+    (baseDirectory.value / "examples" / "rfunction1.r" -> "models/rfunction1.r")
 
 netLogoTarget :=
   NetLogoExtension.directoryTarget(baseDirectory.value)

@@ -44,9 +44,9 @@ to test-plot
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-205
+230
 10
-642
+667
 448
 -1
 -1
@@ -71,21 +71,21 @@ ticks
 30.0
 
 INPUTBOX
-5
-47
+8
+74
 198
-107
+134
 plotfile
-extensions/r/examples/plottest
+plot-filename
 1
 0
 String
 
 BUTTON
 4
-113
+163
 83
-146
+196
 NIL
 test-plot
 NIL
@@ -100,12 +100,29 @@ NIL
 
 TEXTBOX
 7
-28
-199
-84
-Don't use backslashes for paths. 
+137
+222
+165
+If editing plotfile, don't use backslashes
 11
 0.0
+1
+
+BUTTON
+9
+30
+199
+63
+Choose file
+set plotfile user-new-file
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
 1
 
 @#$#@#$#@
@@ -444,5 +461,5 @@ true
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
 @#$#@#$#@
-0
+1
 @#$#@#$#@

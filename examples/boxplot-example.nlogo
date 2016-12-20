@@ -16,7 +16,11 @@
 extensions [r]
 
 to activate-JavaGD-plot-device
+  clear-all
   r:setPlotDevice
+  reset-ticks
+  ; this model doesn't use ticks, but this disables the buttons until after
+  ; this procedure has been run
 end
 
 
@@ -104,10 +108,10 @@ ticks
 30.0
 
 BUTTON
-18
-149
-81
-182
+20
+181
+83
+214
 NIL
 test
 NIL
@@ -118,7 +122,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 18
@@ -135,13 +139,13 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
-18
-68
-81
-101
+20
+100
+83
+133
 NIL
 r-idle
 T
@@ -155,20 +159,20 @@ NIL
 1
 
 TEXTBOX
-19
-23
-433
-70
+21
+55
+435
+102
 activate this button, if you want to have the R plot window active (this will create an empty loop for R, that it will stay active). If you want to save the boxplot in a file without seeing it in the R window, you don't need this button.
 11
 0.0
 1
 
 TEXTBOX
-19
-115
-440
-144
+21
+147
+442
+176
 this button will create a temp. list, send it to R and creates a boxplot (into the standard grafics output -> the R Plot Window).
 11
 0.0
@@ -185,20 +189,20 @@ this button will close the graphics device (here: the plot window). But you can 
 1
 
 TEXTBOX
-20
-196
-438
-229
+22
+228
+440
+261
 this button will create two temp. lists, put them both into one R data.frame and creates a boxplot over both columns.
 11
 0.0
 1
 
 BUTTON
-18
-230
-81
-263
+20
+262
+83
+295
 NIL
 test2
 NIL
@@ -209,13 +213,13 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
-339
-252
-528
-285
+23
+14
+212
+47
 NIL
 activate-JavaGD-plot-device
 NIL
@@ -556,7 +560,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA2
+NetLogo 6.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

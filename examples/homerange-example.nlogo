@@ -264,21 +264,21 @@ plot-homerange
 INPUTBOX
 5
 220
-242
+200
 280
 homerange-plot
-extensions/r/examples/homerange
+homerange-plot-filename
 1
 0
 String
 
 INPUTBOX
-6
-286
-261
-346
+5
+290
+200
+350
 homerange-level-plot
-extensions/r/examples/homerangearea
+homerange-level-plot-filename
 1
 0
 String
@@ -300,6 +300,40 @@ false
 "" ""
 PENS
 "default" 1.0 0 -16777216 true "" ""
+
+BUTTON
+210
+220
+340
+280
+Choose path...
+set homerange-plot user-new-file
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+210
+290
+340
+350
+Choose path...
+set homerange-level-plot user-new-file\n
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -637,5 +671,5 @@ true
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
 @#$#@#$#@
-0
+1
 @#$#@#$#@

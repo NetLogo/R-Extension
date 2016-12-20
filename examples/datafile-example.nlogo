@@ -102,10 +102,10 @@ ticks
 30.0
 
 BUTTON
-6
-76
-161
-109
+8
+150
+223
+183
 NIL
 create-and-write-data
 NIL
@@ -120,20 +120,20 @@ NIL
 
 INPUTBOX
 5
-10
+55
 221
-70
+115
 path
-extensions/R/examples/iris.txt
+datafile.txt
 1
 0
 String
 
 BUTTON
-6
-118
-149
-151
+8
+192
+223
+225
 NIL
 load-and-show-data
 NIL
@@ -147,10 +147,10 @@ NIL
 1
 
 BUTTON
-7
-270
-226
-303
+9
+344
+228
+377
 NIL
 write-data-with-vector-dataframe
 NIL
@@ -164,13 +164,30 @@ NIL
 1
 
 TEXTBOX
-9
-178
-231
-259
+11
+252
+233
+333
 Note: The R-Extension allows you to create a data.frame with a vector in each row of a column. This is not common in data.frames. Therefore, you have to mark this column as class \"AsIs\" by using the I(x) function for this column if you want to use write.table.
 11
 0.0
+1
+
+BUTTON
+5
+14
+220
+47
+select path
+set path user-new-file
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
 1
 
 @#$#@#$#@
@@ -509,5 +526,5 @@ true
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
 @#$#@#$#@
-0
+1
 @#$#@#$#@

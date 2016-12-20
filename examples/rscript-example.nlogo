@@ -54,10 +54,10 @@ ticks
 30.0
 
 BUTTON
-6
-76
-69
-109
+10
+170
+73
+203
 NIL
 test
 NIL
@@ -71,15 +71,32 @@ NIL
 1
 
 INPUTBOX
-5
-10
-221
-70
+9
+104
+245
+164
 path
 extensions/r/examples/rfunction1.r
 1
 0
 String
+
+BUTTON
+10
+46
+246
+100
+choose path to rfunction1.r in R extension
+set path user-file
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?

@@ -5,6 +5,7 @@ target/
 *.jar
 
 # build components used by NetLogo
+.bundledFiles
 GPL.txt
 user.properties
 

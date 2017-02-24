@@ -41,6 +41,7 @@ import java.security.Permission;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import javax.swing.JOptionPane;
 import org.nlogo.api.Argument;
 import org.nlogo.api.Command;
 import org.nlogo.api.Context;
@@ -131,10 +132,12 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
       if (System.getProperty("java.awt.headless", "false") == "true"
           || System.getProperty("org.nlogo.preferHeadless") == "true") {
         rConn = headlessREngine();
+        addRLibPaths(rConn, false);
       } else {
         // NetLogo running in GUI mode
         if (lastEngine == null) {
           rConn = guiREngine();
+          addRLibPaths(rConn, true);
           em.storeObject(shellwin);
         }
         // otherwise, reload the last REngine object and retrieve the stored ShellWindow object
@@ -188,9 +191,9 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
     // percolate the error to the user.
     try {
       Class<?> iashell_class = Class.forName("org.nlogo.extension.r.ShellWindow");
-      Class<?> partypes1[] = new Class<?>[] {ConsoleSync.class, String.class};
+      Class<?> partypes1[] = new Class<?>[] {ConsoleSync.class};
       Constructor<?> shellConstructor = iashell_class.getConstructor(partypes1);
-      Object arglist1[] = new Object[] {rSync, ExtensionManager$.MODULE$.extensionPath()};
+      Object arglist1[] = new Object[] {rSync};
       Object shell = shellConstructor.newInstance(arglist1);
       org.nlogo.api.ExtensionManager tc = (org.nlogo.api.ExtensionManager) shell;
       shellwin = tc;
@@ -314,6 +317,33 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
       throw new ExtensionException(
           "Cannot load rJava libraries. Please check your rJava installation. (Error #03)\n"
               + localUnsatisfiedLinkError);
+    }
+  }
+
+  private void addRLibPaths(HoldRengineX rConn, boolean guiPresent) {
+    try {
+      if (! configuration.rLibPaths().isEmpty()) {
+        StringBuilder pathsString = new StringBuilder("c(");
+        for (Path p : configuration.rLibPaths()) {
+          // if the file path has backslashes, we need to escape them. If this isn't done, we get a hard
+          // crash on Windows RG 2017-2-24
+          pathsString.append("'" + p.toString().replace("\\", "\\\\") + "',");
+        }
+        pathsString.deleteCharAt(pathsString.length() - 1);
+        pathsString.append(")");
+        rConn.execute(
+            rConn.rConnection, ".libPaths(" + pathsString.toString() + ")", rConn.WorkingEnvironment, true);
+      }
+    } catch (Exception ex) {
+      if (guiPresent) {
+        JOptionPane.showMessageDialog(
+            null,
+            "Error while configuring r library paths: " + ex,
+            "Error in R-Extension",
+            JOptionPane.INFORMATION_MESSAGE);
+      } else {
+        System.err.println("Error while configuring r library paths, continuing: " + ex);
+      }
     }
   }
 

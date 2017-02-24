@@ -42,6 +42,7 @@ import java.awt.event.WindowEvent;
 import java.io.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Vector;
@@ -50,6 +51,7 @@ import org.nlogo.core.CompilerException;
 import org.nlogo.core.ErrorSource;
 import org.nlogo.core.ExtensionObject;
 import org.nlogo.core.Primitive;
+import org.nlogo.workspace.ExtensionManager$;
 import org.rosuda.REngine.REngine;
 
 /**
@@ -98,18 +100,15 @@ class ShellWindow extends javax.swing.JFrame
   private boolean cmd_hist_first = true;
   /** An object to synchronize the execution of R commands */
   private ConsoleSync rSync = null;
-  /** path to extensions */
-  private String extensionPath = "";
 
   /**
    * Constructor of ShellWindow
    *
    * @param rSync an Object of ConsoleSync to synchronize the execution of R commands
    */
-  public ShellWindow(ConsoleSync rSync, String extensionPath) {
+  public ShellWindow(ConsoleSync rSync) {
     super("R Console");
     this.rSync = rSync;
-    this.extensionPath = extensionPath;
     fc.setFileFilter(ff);
     JScrollPane sp1 = new JScrollPane(output);
     sp1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -442,6 +441,7 @@ class ShellWindow extends javax.swing.JFrame
               .asString();
       final String filesep = System.getProperty("file.separator");
       JavaLibraryPath.addFile(filepath + filesep + "/java/javaGD.jar");
+      String extensionPath = ExtensionManager$.MODULE$.extensionPath();
       JavaLibraryPath.addFile(extensionPath + "/r/r.jar");
       org.nlogo.extension.r.plot.JavaGDFrame.engine = Entry.rConn.rConnection;
       Entry.rConn.execute(

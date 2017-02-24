@@ -103,6 +103,10 @@ public class Configuration {
     return pathsFromString(properties.getProperty("jri.home.paths", ""));
   }
 
+  public List<Path> rLibPaths() {
+    return pathsFromString(properties.getProperty("r.lib.paths", ""));
+  }
+
   public Path rHomePath() {
     return rHomePath;
   }

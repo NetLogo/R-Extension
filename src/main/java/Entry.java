@@ -49,6 +49,7 @@ import org.nlogo.api.LogoException;
 import org.nlogo.api.Reporter;
 import org.nlogo.core.Syntax;
 import org.nlogo.core.SyntaxJ;
+import org.nlogo.workspace.ExtensionManager$;
 import org.rosuda.REngine.*;
 
 /**
@@ -187,9 +188,9 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
     // percolate the error to the user.
     try {
       Class<?> iashell_class = Class.forName("org.nlogo.extension.r.ShellWindow");
-      Class<?> partypes1[] = new Class<?>[] {ConsoleSync.class};
+      Class<?> partypes1[] = new Class<?>[] {ConsoleSync.class, String.class};
       Constructor<?> shellConstructor = iashell_class.getConstructor(partypes1);
-      Object arglist1[] = new Object[] {rSync};
+      Object arglist1[] = new Object[] {rSync, ExtensionManager$.MODULE$.extensionPath()};
       Object shell = shellConstructor.newInstance(arglist1);
       org.nlogo.api.ExtensionManager tc = (org.nlogo.api.ExtensionManager) shell;
       shellwin = tc;

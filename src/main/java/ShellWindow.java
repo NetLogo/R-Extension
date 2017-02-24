@@ -98,15 +98,18 @@ class ShellWindow extends javax.swing.JFrame
   private boolean cmd_hist_first = true;
   /** An object to synchronize the execution of R commands */
   private ConsoleSync rSync = null;
+  /** path to extensions */
+  private String extensionPath = "";
 
   /**
    * Constructor of ShellWindow
    *
    * @param rSync an Object of ConsoleSync to synchronize the execution of R commands
    */
-  public ShellWindow(ConsoleSync rSync) {
+  public ShellWindow(ConsoleSync rSync, String extensionPath) {
     super("R Console");
     this.rSync = rSync;
+    this.extensionPath = extensionPath;
     fc.setFileFilter(ff);
     JScrollPane sp1 = new JScrollPane(output);
     sp1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -439,7 +442,7 @@ class ShellWindow extends javax.swing.JFrame
               .asString();
       final String filesep = System.getProperty("file.separator");
       JavaLibraryPath.addFile(filepath + filesep + "/java/javaGD.jar");
-      JavaLibraryPath.addFile("extensions/r/rplot.jar");
+      JavaLibraryPath.addFile(extensionPath + "/r/r.jar");
       org.nlogo.extension.r.plot.JavaGDFrame.engine = Entry.rConn.rConnection;
       Entry.rConn.execute(
           Entry.rConn.rConnection,

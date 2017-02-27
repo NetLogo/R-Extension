@@ -63,6 +63,20 @@ class ConfigurationTests extends FunSuite {
     assertResult(Paths.get("foo/bar"))(config.rHomePath)
   }
 
+  test("Configuration lists empty r lib paths") {
+    val props = new Properties()
+    props.setProperty("r.lib.paths", "")
+    val config = new Configuration(props)
+    assert(config.rLibPaths.isEmpty)
+  }
+
+  test("Configuration lists r lib paths") {
+    val props = new Properties()
+    props.setProperty("r.lib.paths", s"foo/bar:~/R/win-library/3.3")
+    val config = new Configuration(props)
+    assertResult(Seq(Paths.get("foo/bar"), Paths.get(System.getProperty("user.home") + s"${File.separator}/R/win-library/3.3")))(config.rLibPaths.asScala)
+  }
+
   test("Configuration has a selected JRI path") {
     val config = new Configuration(new Properties())
     assertResult(java.util.Optional.empty())(config.selectedJRIPath)

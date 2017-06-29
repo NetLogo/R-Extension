@@ -15,7 +15,7 @@ extensions [ r ]
 If your model already uses other extensions, then it already has an
 `extensions` line in it, so just add `r` to the list.
 
-For more information on using NetLogo extensions, see the [Extensions Guide](http://ccl.northwestern.edu/netlogo/extensions.html).
+For more information on using NetLogo extensions, see the [Extensions Guide](http://ccl.northwestern.edu/netlogo/docs/extensions.html).
 
 For examples of the usage of the R-Extension, models can be downloaded [from the project repository](https://github.com/NetLogo/R-Extension/tree/master/examples).
 These models are installed with NetLogo in the "models" directory of the R extension.

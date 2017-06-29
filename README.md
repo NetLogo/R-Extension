@@ -35,7 +35,7 @@ extensions [ r ]
 If your model already uses other extensions, then it already has an
 `extensions` line in it, so just add `r` to the list.
 
-For more information on using NetLogo extensions, see the [Extensions Guide](http://ccl.northwestern.edu/netlogo/extensions.html).
+For more information on using NetLogo extensions, see the [Extensions Guide](http://ccl.northwestern.edu/netlogo/docs/extensions.html).
 
 For examples of the usage of the R-Extension, models can be downloaded [from the project repository](https://github.com/NetLogo/R-Extension/tree/master/examples).
 These models are installed with NetLogo in the "models" directory of the R extension.
@@ -342,7 +342,7 @@ It evaluates the submitted R command. The R command shouldn't return a value.
 
 ```NetLogo
 ;; creates a new vector in R with a sequence from 1 to 10
-r:eval "x &lt;- seq(1,10)"
+r:eval "x <- seq(1,10)"
 show r:get "x"
 ```
 
@@ -370,7 +370,7 @@ This primitive is experimental.
 
 ```NetLogo
 ;; creates a new vector in R with a sequence from 1 to 10
-r:__evaldirect "x &lt;- seq(1,10)"
+r:__evaldirect "x <- seq(1,10)"
 show r:get "x"
 ```
 
@@ -389,7 +389,7 @@ Call this primitive after removing an R variable to free the memory.
 
 ```NetLogo
 ;; create a variable
-r:eval "x &lt;- 1:10"
+r:eval "x <- 1:10"
 ;; remove the variable
 r:eval "rm(x)"
 ;; call the garbage collector

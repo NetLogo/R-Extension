@@ -140,5 +140,5 @@ But one additional things has to be done: You have to call [`r:stop`](#rstop) fi
 When setting up a BehaviorSpace experiment, there is the option to set final commands.
 This is a good place to add the `r:stop` command (see image).
 
-![r-stop-behaviorspace](https://github.com/NetLogo/R-Extension/raw/wip-bundle-with-netlogo/doc/images/rstop.jpg "Put r:stop in the behaviorspace final commands")
+![r-stop-behaviorspace](https://raw.githubusercontent.com/NetLogo/R-Extension/hexy/doc/images/rstop.jpg "Put r:stop in the behaviorspace final commands")
 

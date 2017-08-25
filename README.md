@@ -130,7 +130,7 @@ You can/should clear (i.e. remove all variable and free memory) the local enviro
 
 With the R-Extension you can load R into the process of NetLogo. Because of the architecture of R, both software share one system process and therefore the memory given to NetLogo.
 
-In some circumstances it can happen that you receive an out of memory error due to Java's heap space. You can increase the heap space before starting NetLogo by adapting the `-Xmx` JVM-parameter (see also [the NetLogo manual section on Windows memory](http://ccl.northwestern.edu/netlogo/docs/faq.html#windowsmemory)). But on 32-bit systems, this is very limited. Therefore, it is a good idea to use a 64-bit system if you want/need to use high amount of RAM.
+In some circumstances it can happen that you receive an out of memory error due to Java's heap space. You can increase the heap space before starting NetLogo by adapting the `-Xmx` JVM-parameter (see also [the NetLogo manual section on Windows memory](http://ccl.northwestern.edu/netlogo/docs/faq.html#when-i-try-to-start-netlogo-on-windows-i-get-an-error-the-jvm-could-not-be-started-help)). But on 32-bit systems, this is very limited. Therefore, it is a good idea to use a 64-bit system if you want/need to use high amount of RAM.
 You can see the memory usage of R by starting the interactive shell (`r:interactiveShell`) and type there:
 `memory.size(max=F)` and `memory.size(max=T)`. Furthermore, you can check the memory limit by typing: `memory.limit()`.<br />
 See also:
@@ -153,14 +153,14 @@ One last note to this topic: Keep in mind that R is a vector-oriented language. 
 #### Headless
 
 Since R-Extension version 1.1 it is possible use the extension when NetLogo is running in headless mode.
-This is for example the case, when you run BehaviorSpace experiments from the command line (see [here](http://ccl.northwestern.edu/netlogo/docs/behaviorspace.html#advanced)).
+This is for example the case, when you run BehaviorSpace experiments from the command line (see [here](http://ccl.northwestern.edu/netlogo/docs/behaviorspace.html#advanced-usage)).
 The difference is, that the `interactiveShell` is not initialized/instanciated.
 You can use the extension as you know it from GUI mode, but it is not possible to open the interactiveShell ([`r:interactiveShell`](#rinteractiveshell)) and to set the plot device ([`r:setPlotDevice`](#rsetplotdevice)).
 But one additional things has to be done: You have to call [`r:stop`](#rstop) finally when running NetLogo headless to stop the R engine. Otherwise NetLogo will not be closed and you will not get back to the command line prompt.
 When setting up a BehaviorSpace experiment, there is the option to set final commands.
 This is a good place to add the `r:stop` command (see image).
 
-![r-stop-behaviorspace](https://raw.githubusercontent.com/NetLogo/R-Extension/hexy/doc/images/rstop.jpg "Put r:stop in the behaviorspace final commands")
+![Put r:stop in the behaviorspace final commands](images/rstop.jpg)
 
 
 ## Installing
@@ -299,7 +299,7 @@ Usage:
 Clears the R-Workspace. All variables in R will be deleted. It evaluates the R command
 `rm(list=ls())` and `rm(list=ls(nl.env))`.
 This deletes variables created in global as well as local environment
-(see [R Environments](#r-environments) for details about environments).
+(see [R Environments](#environments-in-the-r-extension) for details about environments).
 It's always a good idea to add this command to your setup procedure under your "clear-all" call.
 
 ```NetLogo
@@ -320,7 +320,7 @@ Usage:
 It clears the local R environment, which is used by the extension. All variables which have
 been created in the local environment will be deleted. It evaluates the R command
 `rm(list=ls(nl.env))`.
-See [R Environments](#r-environments) for details about environments.
+See [R Environments](#environments-in-the-r-extension) for details about environments.
 See [`r:clear`](#rclear) for deleting all variables, i.e. the globals as well.
 
 ```NetLogo
@@ -450,7 +450,7 @@ variable. With a call of [`r:clear`](#rclear) you can restore it but this will
 empty your workspace). You can use this to have access to variables which you have created
 from NetLogo by `get("<variable name>",nl.env)`. To copy for example an variable
 with the name `var1` from the local environment to the global environment, type `var <-
-get("var",nl.env)`. See section [R Environments](#r-environments) for details.
+get("var",nl.env)`. See section [R Environments](#environments-in-the-r-extension) for details.
 If you just want to see the contents of a variable which lives in the local environment, you
 could submit your command, for example in the NetLogo Command Center, and the result will
 be shown in the output area of the Interactive Shell. For example:

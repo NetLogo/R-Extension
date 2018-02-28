@@ -103,8 +103,8 @@ see the notes at the top of the output text area after opening the shell.
 Type `help(environment)` in an R shell to learn more about environments.
 
 You can/should clear (i.e. remove all variable and free memory) the local environment via
-`[r:clearLocal](#rclearLocal)`. If you want to clear also the global environment (the whole workspace), call
-`[r:clear](#rclear)`.
+[`r:clearLocal`](#rclearLocal). If you want to clear also the global environment (the whole workspace), call
+[`r:clear`](#rclear).
 
 #### Memory
 

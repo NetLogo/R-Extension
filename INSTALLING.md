@@ -5,9 +5,9 @@ The R Extension is bundled with NetLogo 6. To use it, you will need a compatible
 ### Installing R
 
 Standard R 3 installations should work (sometimes without configuration).
-As of NetLogo 6, the following operating system / R versions were tested:
+As of NetLogo 6.0.2, the following operating system / R versions were tested:
 
-* Mac OS X, R 3.3.2
+* Mac OS X, R 3.3.3
 * Windows 10, R 3.3.2
 * Ubuntu 14.04 (64-bit), R 3.0.2
 
@@ -44,33 +44,6 @@ Note that you will have to exit NetLogo and restart to see configuration changes
 as the configuration file is only loaded once per NetLogo instance.
 See below on how to determine the appropriate values to for `r.home` and `jri.home.paths`.
 
-#### Configuring the Windows PATH
-
-Windows requires an additional configuration step to make the R extension fully functional.
-The appropriate directory from your R installation needs to be added to your PATH.
-To do this, determine where your R installation is located (here we'll use the location C:\Program Files\R\R-<version>), then follow these steps.
-
-1. Open the System Properties dialog. You can type "Environment Variable" into Cortana or navigate there through "Control Panel" > System > "Advanced system settings".
-2. Click the "Environment variables..." button in the lower right of the dialog.
-3. Click the "Path" variable in the lower panel, then click the lower "Edit..." button.
-4. Windows 10 allows you to choose "New" and enter a separate path. If you're using Windows 7, append the value, using a semicolon to separate it from the entry before.
-  * If you're using 32-bit NetLogo, enter the location `C:\Program Files\R\R-<version>\bin\i386\`
-  * If you're using 64-bit NetLogo, enter the location `C:\Program Files\R\R-<version>\bin\x64\`
-5. Choose OK, and OK again
-6. Log out of your user and back in or restart Windows to let the setting take affect.
-
-Note that you will need to update this setting if you wish to upgrade the version of R used by NetLogo.
-
-#### Notes on editing "user.properties" on Windows
-
-"user.properties" is a newline-delimited file.
-This means if it is opened in "Notepad" it will look like all the text is on a single line.
-For this reason, it is recommended to open first in "WordPad" and resave before editing in Notepad.
-Alternatively, if you have a full-featured text editor (like Notepad++, Vim, or Emacs) installed, you can use that to edit the file.
-
-To reiterate a warning given in the "user.properties" file, the directory separator for Windows
-must be entered in user.properties as double-backslash ("\\") or single-forward-slash ("/").
-
 ### Determining `r.home` and `jri.home.paths`
 
 `r.home` is the path to the "R" installation directory which contains the "bin" directory.
@@ -103,3 +76,34 @@ jri.home.paths=C:/Users/username/Documents/R/win-library/3.3/rJava/jri
 ```
 
 Save user.properties and load a model using the R extension. You should see it start and run properly.
+
+### Windows-Specific Installation Steps
+
+Windows requires the additional configuration step of configuring the PATH environment variable.
+Additionally, editing the user.properties file on Windows is slightly more difficult than on other platforms.
+
+#### Configuring the PATH
+
+To begin, determine the appropriate directory from your R installation to add to your PATH.
+To do this, determine where your R installation is located (here we'll use the location C:\Program Files\R\R-<version>), then follow these steps.
+
+1. Open the System Properties dialog. You can type "Environment Variable" into Cortana or navigate there through "Control Panel" > System > "Advanced system settings".
+2. Click the "Environment variables..." button in the lower right of the dialog.
+3. Click the "Path" variable in the lower panel, then click the lower "Edit..." button.
+4. Windows 10 allows you to choose "New" and enter a separate path. If you're using Windows 7, append the value, using a semicolon to separate it from the entry before.
+  * If you're using 32-bit NetLogo, enter the location `C:\Program Files\R\R-<version>\bin\i386\`
+  * If you're using 64-bit NetLogo, enter the location `C:\Program Files\R\R-<version>\bin\x64\`
+5. Choose OK, and OK again
+6. Log out of your user and back in or restart Windows to let the setting take affect.
+
+Note that you will need to update this setting if you wish to upgrade the version of R used by NetLogo.
+
+#### Notes on editing "user.properties" on Windows
+
+"user.properties" is a newline-delimited file.
+This means if it is opened in "Notepad" it will look like all the text is on a single line.
+For this reason, it is recommended to open first in "WordPad" and resave before editing in Notepad.
+Alternatively, if you have a full-featured text editor (like Notepad++, Vim, or Emacs) installed, you can use that to edit the file.
+
+To reiterate a warning given in the "user.properties" file, the directory separator for Windows
+must be entered in user.properties as double-backslash ("\\") or single-forward-slash ("/").

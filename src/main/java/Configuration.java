@@ -67,7 +67,7 @@ public class Configuration {
 
       // check the R extension directory for user properties
       Path userPropertiesPath =
-          Paths.get(ExtensionManager$.MODULE$.extensionPath(), "r", "user.properties");
+          Paths.get(ExtensionManager$.MODULE$.extensionsPath(), "r", "user.properties");
       if (Files.exists(userPropertiesPath)) {
         try {
           BufferedReader userPropertiesReader = Files.newBufferedReader(userPropertiesPath);

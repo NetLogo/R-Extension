@@ -441,8 +441,8 @@ class ShellWindow extends javax.swing.JFrame
               .asString();
       final String filesep = System.getProperty("file.separator");
       JavaLibraryPath.addFile(filepath + filesep + "/java/javaGD.jar");
-      String extensionPath = ExtensionManager$.MODULE$.extensionPath();
-      JavaLibraryPath.addFile(extensionPath + "/r/r.jar");
+      String extensionsPath = ExtensionManager$.MODULE$.extensionsPath();
+      JavaLibraryPath.addFile(extensionsPath + "/r/r.jar");
       org.nlogo.extension.r.plot.JavaGDFrame.engine = Entry.rConn.rConnection;
       Entry.rConn.execute(
           Entry.rConn.rConnection,

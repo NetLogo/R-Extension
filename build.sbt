@@ -7,7 +7,7 @@ scalaVersion := "2.12.1"
 version := "1.2.0"
 
 netLogoExtName := "r"
-netLogoVersion := "6.0.4-7c9dfd9"
+netLogoVersion := "6.0.4-9328ba6"
 netLogoClassManager := "org.nlogo.extension.r.Entry"
 netLogoZipSources := false
 netLogoPackageExtras ++=

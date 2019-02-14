@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
-import org.nlogo.workspace.ExtensionManager$;
+import org.nlogo.api.ExtensionManager$;
 
 public class Configuration {
 
@@ -67,7 +67,7 @@ public class Configuration {
 
       // check the R extension directory for user properties
       Path userPropertiesPath =
-          Paths.get(ExtensionManager$.MODULE$.extensionsPath(), "r", "user.properties");
+        ExtensionManager$.MODULE$.extensionsPath().resolve("r").resolve("user.properties");
       if (Files.exists(userPropertiesPath)) {
         try {
           BufferedReader userPropertiesReader = Files.newBufferedReader(userPropertiesPath);

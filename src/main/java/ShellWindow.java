@@ -51,7 +51,7 @@ import org.nlogo.core.CompilerException;
 import org.nlogo.core.ErrorSource;
 import org.nlogo.core.ExtensionObject;
 import org.nlogo.core.Primitive;
-import org.nlogo.workspace.ExtensionManager$;
+import org.nlogo.api.ExtensionManager$;
 import org.rosuda.REngine.REngine;
 
 /**
@@ -441,7 +441,7 @@ class ShellWindow extends javax.swing.JFrame
               .asString();
       final String filesep = System.getProperty("file.separator");
       JavaLibraryPath.addFile(filepath + filesep + "/java/javaGD.jar");
-      String extensionsPath = ExtensionManager$.MODULE$.extensionsPath();
+      String extensionsPath = ExtensionManager$.MODULE$.extensionsPath().toString();
       JavaLibraryPath.addFile(extensionsPath + "/r/r.jar");
       org.nlogo.extension.r.plot.JavaGDFrame.engine = Entry.rConn.rConnection;
       Entry.rConn.execute(

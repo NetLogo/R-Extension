@@ -24,4 +24,3 @@ Please use absolute path to any files in R instead of changing the working direc
 * Error #04: Error in R-Extension. This is an unknown initialization error. Ensure that you are running R 3.0.0 or later and have the rJava extension installed (version 0.9-8 or later). Please report this error to bugs@ccl.northwestern.edu or open a new issue on [the R-Extension issue tracker](https://github.com/NetLogo/R-Extension/issues).
 * Error #05: There was an error setting `R_HOME`. Check your user.properties file to ensure that r.home specifies a valid path to the R extension. You may also be able to work around this error by setting the `R_HOME` environment variable. If this error persists, please report it!
 * Error #06: Cannot load R libraries. This may indicate a corrupted or improperly configured R installation. If you're certain that your R installation is fine, please report this as an issue.
-

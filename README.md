@@ -199,7 +199,15 @@ perform any further configuration.
 An easy way to determine whether you need to configure the extension it to open a new NetLogo model,
 add `extensions [ r ]` to the code tab and press "Check."
 If you see an error, you need to configure the `R` extension.
-The R extension can be configured by editing the "user.properties" file in a text editor ("user.properties" is located in the r extension directory as part of the NetLogo installation).
+The R extension can be configured by editing the "user.properties" file in a text editor.
+You should place the "user.properties" file in your user folder as indicated by the error message you get when `R` is not configured.
+
+The per-system user folders are typically:
+
+* On Mac OS X: `/Users/YOUR_USERNAME/Library/Application Support/NetLogo/6.1/r/`
+* On Windows: `C:\Users\YOUR_USERNAME\AppData\NetLogo\6.1\r\`
+* On Linux: `/home/YOUR_USERNAME/.netlogo/6.1/r/`
+
 The following keys are used to configure the extension:
 
 * `r.home`: Controls which installation of r is used.
@@ -708,7 +716,6 @@ Please use absolute path to any files in R instead of changing the working direc
 * Error #04: Error in R-Extension. This is an unknown initialization error. Ensure that you are running R 3.0.0 or later and have the rJava extension installed (version 0.9-8 or later). Please report this error to bugs@ccl.northwestern.edu or open a new issue on [the R-Extension issue tracker](https://github.com/NetLogo/R-Extension/issues).
 * Error #05: There was an error setting `R_HOME`. Check your user.properties file to ensure that r.home specifies a valid path to the R extension. You may also be able to work around this error by setting the `R_HOME` environment variable. If this error persists, please report it!
 * Error #06: Cannot load R libraries. This may indicate a corrupted or improperly configured R installation. If you're certain that your R installation is fine, please report this as an issue.
-
 
 ## Citation
 

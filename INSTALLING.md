@@ -34,7 +34,15 @@ perform any further configuration.
 An easy way to determine whether you need to configure the extension it to open a new NetLogo model,
 add `extensions [ r ]` to the code tab and press "Check."
 If you see an error, you need to configure the `R` extension.
-The R extension can be configured by editing the "user.properties" file in a text editor ("user.properties" is located in the r extension directory as part of the NetLogo installation).
+The R extension can be configured by editing the "user.properties" file in a text editor.
+You should place the "user.properties" file in your user folder as indicated by the error message you get when `R` is not configured.
+
+The per-system user folders are typically:
+
+* On Mac OS X: `/Users/YOUR_USERNAME/Library/Application Support/NetLogo/6.1/r/`
+* On Windows: `C:\Users\YOUR_USERNAME\AppData\NetLogo\6.1\r\`
+* On Linux: `/home/YOUR_USERNAME/.netlogo/6.1/r/`
+
 The following keys are used to configure the extension:
 
 * `r.home`: Controls which installation of r is used.

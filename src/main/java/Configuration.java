@@ -16,9 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
-import org.nlogo.api.ExtensionManager$;
+import org.nlogo.api.FileIO$;
 
 public class Configuration {
+
+  static String userExtensionDir() {
+    return FileIO$.MODULE$.perUserDir("r", true);
+  }
 
   /**
    * pathsFromString takes a pathSeparator-separated string and returns a collection of paths
@@ -65,9 +69,9 @@ public class Configuration {
         System.err.println("Illegal character in default properties file");
       }
 
-      // check the R extension directory for user properties
+      // check the user's R extension directory for user properties
       Path userPropertiesPath =
-        ExtensionManager$.MODULE$.extensionsPath().resolve("r").resolve("user.properties");
+        Paths.get(Configuration.userExtensionDir(), "user.properties");
       if (Files.exists(userPropertiesPath)) {
         try {
           BufferedReader userPropertiesReader = Files.newBufferedReader(userPropertiesPath);

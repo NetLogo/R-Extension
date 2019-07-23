@@ -424,6 +424,32 @@ class ShellWindow extends javax.swing.JFrame
     cmd_hist_first = true;
   }
 
+  // This method matches the search order of the extensions manager from NetLogo 6.1.
+  public static String getRExtensionJarPath() throws FileNotFoundException {
+    // check the manual install path first
+    Path extensionsPath =
+      ExtensionManager$.MODULE$.extensionsPath().resolve("r").resolve("r.jar");
+    if (extensionsPath.toFile().exists()) {
+      return extensionsPath.toString();
+    }
+
+    // check for the per-user install path second
+    Path userExtensionsPath =
+      ExtensionManager$.MODULE$.userExtensionsPath().resolve("r").resolve("r.jar");
+    if (userExtensionsPath.toFile().exists()) {
+      return userExtensionsPath.toString();
+    }
+
+    // finally, check the bundled path
+    Path bundledExtensionsPath =
+      ExtensionManager$.MODULE$.extensionsPath().resolve(".bundled").resolve("r").resolve("r.jar");
+    if (bundledExtensionsPath.toFile().exists()) {
+      return bundledExtensionsPath.toString();
+    }
+
+    throw new FileNotFoundException("Unable to locate r.jar for the shell window to use.");
+  }
+
   /**
    * Method used to activate JavaGD-plot support JavaGD-Package must be installed.
    *
@@ -441,8 +467,7 @@ class ShellWindow extends javax.swing.JFrame
               .asString();
       final String filesep = System.getProperty("file.separator");
       JavaLibraryPath.addFile(filepath + filesep + "/java/javaGD.jar");
-      String extensionsPath = ExtensionManager$.MODULE$.extensionsPath().toString();
-      JavaLibraryPath.addFile(extensionsPath + "/r/r.jar");
+      JavaLibraryPath.addFile(ShellWindow.getRExtensionJarPath());
       org.nlogo.extension.r.plot.JavaGDFrame.engine = Entry.rConn.rConnection;
       Entry.rConn.execute(
           Entry.rConn.rConnection,

@@ -272,7 +272,7 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
         .orElseThrow(
             () ->
                 new ExtensionException(
-                    "Cannot locate rJava/JRI. Please check the location of your rJava installation and add a user.properties file in the r extension directory (Error #02).\n"));
+                    "Cannot locate rJava/JRI. Please check the location of your rJava installation and add a user.properties file in your r extension user directory: " + Configuration.userExtensionDir() + " (Error #02).\n"));
   }
 
   /** Adds standard JRI Libraries */

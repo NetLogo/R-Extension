@@ -3,6 +3,7 @@
 /models/
 target/
 *.jar
+*.zip
 
 # build components used by NetLogo
 .bundledFiles

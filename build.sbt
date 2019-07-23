@@ -4,10 +4,10 @@ enablePlugins(ExtensionDocumentationPlugin, NetLogoExtension)
 
 scalaVersion := "2.12.8"
 
-version := "1.2.1"
+version := "1.2.2"
 
 netLogoExtName := "r"
-netLogoVersion := "6.1.0-RC1"
+netLogoVersion := "6.1.0"
 netLogoClassManager := "org.nlogo.extension.r.Entry"
 netLogoZipSources := false
 netLogoPackageExtras ++=

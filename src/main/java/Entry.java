@@ -235,7 +235,7 @@ public class Entry extends org.nlogo.api.DefaultClassManager {
     if (rHomeEnv == null || rHomeEnv.isEmpty()) {
       if (!Files.exists(configuration.rHomePath())) {
         throw new ExtensionException(
-            "Could not find R Home. Please set R home in the environment or in user.properties (Error #01)\n");
+            "Could not find R Home. Please set R home in the environment or in user.properties in your r extension user directory: " + Configuration.userExtensionDir() + "  (Error #01)\n");
       }
       int setResult = 0;
       try {

@@ -204,7 +204,7 @@ You should place the "user.properties" file in your user folder as indicated by 
 The per-system user folders are typically:
 
 * On Mac OS X: `/Users/YOUR_USERNAME/Library/Application Support/NetLogo/6.1/r/`
-* On Windows: `C:\Users\YOUR_USERNAME\AppData\NetLogo\6.1\r\`
+* On Windows: `C:\Users\YOUR_USERNAME\AppData\Roaming\NetLogo\6.1\r\`
 * On Linux: `/home/YOUR_USERNAME/.netlogo/6.1/r/`
 
 The following keys are used to configure the extension:
@@ -739,3 +739,4 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with NetLogo-R-Extension (located in GPL.txt). If not, see <http://www.gnu.org/licenses/>.
+

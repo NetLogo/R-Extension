@@ -224,7 +224,7 @@ If you're having trouble finding this, you can run `R.home(component = "home")` 
 
 ```r
 R.home(component = "home")
-# Returns "C:/PROGRA~1/R/R-33~1.2/bin/x64" on Windows.
+# Returns "C:/PROGRA~1/R/R-36~1.1" on Windows.
 # Will return other results on other platforms or configurations
 ```
 
@@ -234,7 +234,7 @@ You can find the `jri` directory in the `rJava` package by running the following
 
 ```r
 system.file("jri", package = "rJava")
-# Returns "C:/Users/username/Documents/R/win-library/3.3/rJava/jri" on Windows.
+# Returns "C:/Users/USER_NAME/Documents/R/win-library/3.6/rJava/jri" on Windows.
 # Will return other results on other platforms or configurations
 ```
 
@@ -243,8 +243,8 @@ the values obtained in R.
 When you're done, the user.properties file should have the following lines (given the above results):
 
 ```text
-r.home=C:/PROGRA~1/R/R-33~1.2/bin/x64
-jri.home.paths=C:/Users/username/Documents/R/win-library/3.3/rJava/jri
+r.home=C:/PROGRA~1/R/R-36~1.1
+jri.home.paths=C:/Users/USER_NAME/Documents/R/win-library/3.6/rJava/jri
 ```
 
 Save user.properties and load a model using the R extension. You should see it start and run properly.
@@ -739,4 +739,3 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with NetLogo-R-Extension (located in GPL.txt). If not, see <http://www.gnu.org/licenses/>.
-

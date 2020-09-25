@@ -2,12 +2,12 @@ import org.nlogo.build.{ ExtensionDocumentationPlugin, NetLogoExtension }
 
 enablePlugins(ExtensionDocumentationPlugin, NetLogoExtension)
 
-scalaVersion := "2.12.8"
+scalaVersion := "2.12.12"
 
 version := "1.2.3"
 
 netLogoExtName := "r"
-netLogoVersion := "6.1.0"
+netLogoVersion := "6.1.1-c82c397"
 netLogoClassManager := "org.nlogo.extension.r.Entry"
 netLogoZipSources := false
 netLogoPackageExtras ++=
@@ -27,7 +27,7 @@ javacOptions ++=
     .split(" ").toSeq
 
 def cclArtifacts(path: String): String =
-  s"http://ccl-artifacts.s3-website-us-east-1.amazonaws.com/$path"
+  s"https://s3.amazonaws.com/ccl-artifacts/$path"
 
 libraryDependencies ++= Seq(
   "jri" % "jri"        % "0.9-8" % "provided" from cclArtifacts("JRI.jar"),

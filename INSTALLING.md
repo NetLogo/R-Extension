@@ -87,7 +87,9 @@ Save user.properties and load a model using the R extension. You should see it s
 
 ### Windows-Specific Installation Steps
 
-Windows requires the additional configuration step of configuring the PATH environment variable.
+The R Extension on Windows requires the Microsoft Visual C++ 2013 redistributable to be installed.  You can get that [as a free download from Microsoft](https://www.microsoft.com/en-us/download/details.aspx?id=40784).
+
+Windows also requires the additional configuration step of configuring the PATH environment variable.
 Additionally, editing the user.properties file on Windows is slightly more difficult than on other platforms.
 
 #### Configuring the PATH

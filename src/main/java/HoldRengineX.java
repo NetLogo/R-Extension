@@ -416,9 +416,9 @@ public class HoldRengineX {
       }
       if (result.isLogical()) {
         if (result.asInteger() == 1) {
-          return new Boolean(true);
+          return Boolean.valueOf(true);
         } else {
-          return new Boolean(false);
+          return Boolean.valueOf(false);
         }
       }
     }

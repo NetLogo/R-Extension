@@ -43,3 +43,4 @@ libraryDependencies ++= Seq(
 fork in Test := true
 
 javaOptions in (test in Test) += "-Dorg.nlogo.r.extension.msvcr.lib.name=msvcr100"
+isSnapshot := true

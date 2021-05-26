@@ -4,6 +4,7 @@ import java.io.File
 import java.nio.file.Paths
 import java.util.Properties
 import org.scalatest.FunSuite
+import org.scalatest.exceptions.TestPendingException
 import scala.collection.JavaConverters._
 
 class ConfigurationTests extends FunSuite {
@@ -84,19 +85,44 @@ class ConfigurationTests extends FunSuite {
     assertResult(java.util.Optional.of(Paths.get("foo/bar")))(config.selectedJRIPath)
   }
 
+  // These two tests depend on either the `R_HOME` environment variable being set or
+  // the R extension properties file to exist in the `Configuration.userExtensionDir()`
+  // location.  It will then try to actually load the R libraries.  That's more
+  // of an integration test that requires a lot more setup than indicated here.
+
+  // That setup could be handled by GitHub Actions (or whatever the current CI/automation
+  // environment is), if it can install R and setup the environment variables.  That's
+  // more work than I'm ready for at the moment, especially since these do not test
+  // extension funcitonality.  -Jeremy B May 2021
+
   test("the rpath primitive returns the r path") {
-    val entry = new Entry()
-    entry.runOnce(new org.nlogo.api.DummyExtensionManager())
-    val p = new entry.RPath()
-    assertResult(Configuration.fromRExtensionProperties.rHomePath.toString)(p.get())
+    checkIntegrationTest(() => {
+      val entry = new Entry()
+      entry.runOnce(new org.nlogo.api.DummyExtensionManager())
+      val p = new entry.RPath()
+      assertResult(Configuration.fromRExtensionProperties.rHomePath.toString)(p.get())
+    })
   }
 
   test("the jri path primitive returns the selected jri path") {
-    val entry = new Entry()
-    entry.runOnce(new org.nlogo.api.DummyExtensionManager() {
-      override def retrieveObject: AnyRef = null
+    checkIntegrationTest(() => {
+      val entry = new Entry()
+      entry.runOnce(new org.nlogo.api.DummyExtensionManager() {
+        override def retrieveObject: AnyRef = null
+      })
+      val p = new entry.JRIPath()
+      assert(p.get().endsWith("jri"))
     })
-    val p = new entry.JRIPath()
-    assert(p.get().endsWith("jri"))
+  }
+
+  def checkIntegrationTest[T](integrationTest: () => T): T = {
+    import org.nlogo.api.ExtensionException
+    try {
+      integrationTest()
+    } catch {
+      case e: ExtensionException =>
+        info("This test requires R_HOME or the R properties file to be setup and R installed at the indicated paths.")
+        throw new TestPendingException()
+    }
   }
 }

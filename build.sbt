@@ -4,7 +4,7 @@ enablePlugins(ExtensionDocumentationPlugin, NetLogoExtension)
 
 scalaVersion := "2.12.12"
 
-version := "1.2.3"
+version := "1.2.4"
 
 resolvers += "netlogo" at "https://dl.cloudsmith.io/public/netlogo/netlogo/maven/"
 

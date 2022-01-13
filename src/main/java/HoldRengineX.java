@@ -356,7 +356,7 @@ public class HoldRengineX {
       org.nlogo.api.LogoListBuilder llist =
           new org.nlogo.api.LogoListBuilder(); //new org.nlogo.core.LogoList();
       for (int i = 0; i < intarray.length; i++) {
-        llist.add(new Double(((Integer) intarray[i]).doubleValue()));
+        llist.add(Double.valueOf(intarray[i]));
       }
       // clean up
       intarray = null;

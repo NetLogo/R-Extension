@@ -21,7 +21,12 @@ netLogoPackageExtras ++=
 
 netLogoPackageExtras ++= ((baseDirectory.value / "examples") ** "*.nlogo").get.map(f => f -> Some(s"models/${f.getName}"))
 
-def cclArtifacts(path: String): String = s"https://s3.amazonaws.com/ccl-artifacts/$path"
+javacOptions ++=
+  "--release 11 -g -deprecation -Xlint:all -Xlint:-serial -Xlint:-fallthrough -encoding us-ascii -Xlint:-path -Werror"
+    .split(" ").toSeq
+
+def cclArtifacts(path: String): String =
+  s"https://s3.amazonaws.com/ccl-artifacts/$path"
 
 libraryDependencies ++= Seq(
   "jri"              % "jri"        % "0.9-8" % "provided" from cclArtifacts("JRI.jar"),

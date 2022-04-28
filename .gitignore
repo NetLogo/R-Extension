@@ -1,12 +1,14 @@
+.bundledFiles
+target/
+extensions/
+/*.jar
+/*.zip
+
 /build/
 /dist/
 /models/
-target/
-*.jar
-*.zip
 
 # build components used by NetLogo
-.bundledFiles
 GPL.txt
 user.properties
 
@@ -20,5 +22,3 @@ user.properties
 *~
 .#*
 \#*
-
-.bundledFiles

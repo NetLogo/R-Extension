@@ -3,11 +3,11 @@ package org.nlogo.extension.r
 import java.io.File
 import java.nio.file.Paths
 import java.util.Properties
-import org.scalatest.FunSuite
+import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.exceptions.TestPendingException
 import scala.collection.JavaConverters._
 
-class ConfigurationTests extends FunSuite {
+class ConfigurationTests extends AnyFunSuite {
   if (System.getProperty("os.name").toLowerCase.startsWith("mac")) {
     test("finds mac.properties") {
       val extensionProperties = Configuration.getRExtensionProperties()

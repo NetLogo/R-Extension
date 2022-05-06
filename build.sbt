@@ -5,8 +5,6 @@ enablePlugins(ExtensionDocumentationPlugin, NetLogoExtension)
 version := "1.2.4"
 isSnapshot := true
 
-javacOptions ++= Seq("-target", "1.8", "-source", "1.8", "-g", "-deprecation", "-Xlint:all", "-Xlint:-serial", "-Xlint:-fallthrough", "-encoding", "us-ascii", "-Xlint:-path", "-Werror")
-
 scalaVersion := "2.12.12"
 
 netLogoExtName := "r"

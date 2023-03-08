@@ -8,7 +8,7 @@ isSnapshot := true
 scalaVersion := "2.12.12"
 
 netLogoExtName := "r"
-netLogoVersion := "6.2.2"
+netLogoVersion := "6.3.0"
 netLogoClassManager := "org.nlogo.extension.r.Entry"
 netLogoPackageExtras ++=
   Seq(
@@ -34,6 +34,6 @@ libraryDependencies ++= Seq(
   "net.java.dev.jna" % "jna"        % "4.2.2"
 )
 
-fork in Test := true
+Test / fork := true
 
-javaOptions in (test in Test) += "-Dorg.nlogo.r.extension.msvcr.lib.name=msvcr100"
+Test / test / javaOptions += "-Dorg.nlogo.r.extension.msvcr.lib.name=msvcr100"

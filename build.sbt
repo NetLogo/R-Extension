@@ -5,10 +5,10 @@ enablePlugins(ExtensionDocumentationPlugin, NetLogoExtension)
 version := "1.2.4"
 isSnapshot := true
 
-scalaVersion := "2.12.12"
+scalaVersion := "2.13.16"
 
 netLogoExtName := "r"
-netLogoVersion := "6.3.0"
+netLogoVersion := "7.0.0-internal1"
 netLogoClassManager := "org.nlogo.extension.r.Entry"
 netLogoPackageExtras ++=
   Seq(

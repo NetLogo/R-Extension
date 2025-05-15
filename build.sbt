@@ -8,7 +8,7 @@ isSnapshot := true
 scalaVersion := "3.7.0"
 
 netLogoExtName := "r"
-netLogoVersion := "7.0.0-beta1"
+netLogoVersion      := "7.0.0-beta1-c8d671e"
 netLogoClassManager := "org.nlogo.extension.r.Entry"
 netLogoPackageExtras ++=
   Seq(

@@ -6,7 +6,6 @@ extensions/
 
 /build/
 /dist/
-/models/
 
 # build components used by NetLogo
 GPL.txt

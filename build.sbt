@@ -14,10 +14,10 @@ netLogoPackageExtras ++=
   Seq(
     (baseDirectory.value / "dist" / "user.properties"  -> Some("user.properties"))
   , (baseDirectory.value / "dist" / "GPL.txt"          -> Some("GPL.txt"))
-  , (baseDirectory.value / "examples" / "rfunction1.r" -> Some("models/rfunction1.r"))
+  , (baseDirectory.value / "models" / "rfunction1.r" -> Some("models/rfunction1.r"))
   )
 
-netLogoPackageExtras ++= ((baseDirectory.value / "examples") ** "*.nlogo").get.map(f => f -> Some(s"models/${f.getName}"))
+netLogoPackageExtras ++= ((baseDirectory.value / "models") ** "*.nlogo").get.map(f => f -> Some(s"models/${f.getName}"))
 
 javacOptions ++=
   "--release 11 -g -deprecation -Xlint:all -Xlint:-serial -Xlint:-fallthrough -encoding us-ascii -Xlint:-path -Werror"
